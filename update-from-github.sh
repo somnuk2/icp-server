@@ -26,8 +26,9 @@ echo "📦 NPM: $(npm -v)"
 echo "------- UPDATING ICP PROJECT -------"
 cd $PROJECT_DIR
 
-echo "📥 Pulling latest code from GitHub..."
-git pull origin master
+echo "📥 Fetching and Reseting to latest code from GitHub..."
+git fetch origin master
+git reset --hard origin/master
 
 echo "🧹 Cleaning old dependencies and build files..."
 rm -rf node_modules package-lock.json dist/spa
@@ -44,9 +45,9 @@ if [ ! -d "dist/spa" ]; then
 fi
 
 echo "📂 Deploying Frontend files to /var/www/icp-project-app..."
-# Empty destination first to ensure clean deploy
-rm -rf /var/www/icp-project-app/*
-cp -rv dist/spa/* /var/www/icp-project-app/
+# Using sudo because /var/www may have restricted permissions
+sudo rm -rf /var/www/icp-project-app/*
+sudo cp -rv dist/spa/* /var/www/icp-project-app/
 
 echo "🚀 Updating Backend..."
 cd $BACKEND_DIR
