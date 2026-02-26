@@ -1,0 +1,69 @@
+{
+  "name": "icp-2025",
+  "version": "0.0.1",
+  "description": "icp project",
+  "productName": "icp-2025",
+  "author": "somnuk2 <somnuk@mju.ac.th>",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report",
+    "test:debug": "playwright test --debug",
+    "dev": "quasar dev",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:backend:local": "cross-env DB_MODE=local npm run dev --prefix backend",
+    "dev:backend:remote": "cross-env DB_MODE=remote npm run dev --prefix backend",
+    "dev:all": "concurrently \"npm run dev\" \"npm run dev:backend\" --kill-others --prefix-colors auto",
+    "dev:all:local": "concurrently \"cross-env BACKEND_MODE=local npm run dev\" \"npm run dev:backend:local\" --kill-others --prefix-colors auto",
+    "dev:all:remote": "node verify-remote.js && cross-env BACKEND_MODE=remote npm run dev",
+    "build": "quasar build",
+    "postinstall": "quasar prepare"
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.16.4",
+    "axios": "^1.2.1",
+    "chart.js": "^4.0.0",
+    "core-js": "^3.31.1",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
+    "html-to-image": "^1.11.13",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.4",
+    "pinia": "^2.2.4",
+    "quasar": "^2.16.0",
+    "vue": "^3.4.18",
+    "vue-chartkick": "^1.1.0",
+    "vue-router": "^4.0.12",
+    "vue3-apexcharts": "^1.8.0",
+    "vuex": "^4.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@quasar/app-webpack": "^4.1.0",
+    "autoprefixer": "^10.4.2",
+    "concurrently": "^9.2.1",
+    "cross-env": "^7.0.3",
+    "dotenv": "^17.3.1",
+    "sass": "^1.32.12"
+  },
+  "browserslist": [
+    "last 10 Chrome versions",
+    "last 10 Firefox versions",
+    "last 4 Edge versions",
+    "last 7 Safari versions",
+    "last 8 Android versions",
+    "last 8 ChromeAndroid versions",
+    "last 8 FirefoxAndroid versions",
+    "last 10 iOS versions",
+    "last 5 Opera versions"
+  ],
+  "engines": {
+    "node": "^28 || ^26 || ^24 || ^22 || ^20 || ^18",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
+  }
+}

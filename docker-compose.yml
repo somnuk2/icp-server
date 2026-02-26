@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+  quasar:
+    build: .
+    container_name: quasar-app
+    image: quasar:latest
+    stdin_open: true # docker run -i
+    tty: true # docker run -t
+    ports:
+      - "8000:80"
+    volumes:
+      - ".:/app"
+    # command: /bin/sh -c "curl http://localhost:8000"

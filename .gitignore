@@ -1,0 +1,62 @@
+.DS_Store
+.thumbs.db
+node_modules
+
+# Quasar core related directories
+.quasar
+/dist
+/quasar.config.*.temporary.compiled*
+
+
+# Cordova related directories and files
+/src-cordova/node_modules
+/src-cordova/platforms
+/src-cordova/plugins
+/src-cordova/www
+
+# Capacitor related directories and files
+/src-capacitor/www
+/src-capacitor/node_modules
+# BEX related directories and files
+/src-bex/www
+/src-bex/js/core
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# local .env files
+.env
+.env.production
+.env.example
+.env.local*
+
+# Scripts and Config
+*.sh
+*.ps1
+*.conf
+*.sql
+*.bat
+*.log
+*.txt
+/backend/test*
+/backend/check*
+
+# Backup and Large Folders
+/playwright-report/
+/test-results/
+/icp2022-21-06-66/
+/backend_backup_qual_delete/
+/chatgpt-backend/
+/php_database/
+/dist/
+/.quasar/
+
+

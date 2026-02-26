@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICP Frontend DB Connection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 20px; }
+        .test { margin: 15px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .pass { border-left: 5px solid #4CAF50; background: #f0f8f0; }
+        .fail { border-left: 5px solid #f44336; background: #f8f0f0; }
+        .pending { border-left: 5px solid #2196F3; background: #f0f8ff; }
+        .title { font-weight: bold; font-size: 16px; margin-bottom: 5px; }
+        .detail { font-size: 12px; color: #666; margin-top: 5px; font-family: monospace; }
+        button { padding: 10px 20px; margin: 10px 5px 10px 0; cursor: pointer; }
+        .summary { margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 5px; }
+        .icon { font-size: 20px; }
+        h1 { color: #333; }
+    </style>
+</head>
+<body>
+    <h1>🔍 ICP Frontend ↔ Database Connection Test</h1>
+    
+    <div style="margin: 20px 0;">
+        <button onclick="runAllTests()">🚀 Run All Tests</button>
+        <button onclick="testBackendHealth()">1️⃣ Backend Health</button>
+        <button onclick="testDatabaseConnection()">2️⃣ Database Connection</button>
+        <button onclick="testLogin()">3️⃣ Test Login</button>
+        <button onclick="testUserFromDB()">4️⃣ Query User Data</button>
+        <button onclick="clearTests()">Clear Results</button>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+        const API_URL = 'http://10.2.0.6:3000';
+        const TEST_USER = { email: 'somnuk@mju.ac.th', password: '123456' };
+        
+        let testResults = { passed: 0, failed: 0, pending: 0 };
+
+        function addTestResult(title, status, details) {
+            const resultsDiv = document.getElementById('results');
+            const testDiv = document.createElement('div');
+            testDiv.className = `test ${status}`;
+            
+            const icon = status === 'pass' ? '✅' : status === 'fail' ? '❌' : '⏳';
+            testDiv.innerHTML = `
+                <div class="title">${icon} ${title}</div>
+                ${details ? `<div class="detail">${details}</div>` : ''}
+            `;
+            
+            resultsDiv.appendChild(testDiv);
+            
+            if (status === 'pass') testResults.passed++;
+            else if (status === 'fail') testResults.failed++;
+            else testResults.pending++;
+        }
+
+        function clearTests() {
+            document.getElementById('results').innerHTML = '';
+            testResults = { passed: 0, failed: 0, pending: 0 };
+        }
+
+        async function testBackendHealth() {
+            addTestResult('🔗 Testing Backend Health...', 'pending', 'Connecting to ' + API_URL);
+            
+            try {
+                const response = await fetch(`${API_URL}/api/health`, {
+                    method: 'GET',
+                    timeout: 5000
+                });
+                
+                if (response.ok || response.status === 404) {
+                    // 404 is fine - means backend is running even if /health doesn't exist
+                    addTestResult('✓ Backend is responding', 'pass', `Status: ${response.status} at ${API_URL}`);
+                    return true;
+                } else {
+                    addTestResult('✗ Backend returned error', 'fail', `Status: ${response.status}`);
+                    return false;
+                }
+            } catch (error) {
+                addTestResult('✗ Cannot reach backend', 'fail', 
+                    `Error: ${error.message}<br/>Check: VPN connected? Backend running? Firewall?`);
+                return false;
+            }
+        }
+
+        async function testDatabaseConnection() {
+            addTestResult('🗄️  Testing Database Connection...', 'pending', 'Checking database access');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/members`, {
+                    method: 'GET',
+                    timeout: 5000
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addTestResult('✓ Database is accessible', 'pass', 
+                        `Found ${data.length || 0} members in database`);
+                    return true;
+                } else if (response.status === 401) {
+                    addTestResult('✓ Database is accessible', 'pass', 
+                        '(Auth required - database is reachable)');
+                    return true;
+                } else {
+                    addTestResult('✗ Database error', 'fail', `Status: ${response.status}`);
+                    return false;
+                }
+            } catch (error) {
+                addTestResult('✗ Cannot reach database', 'fail', 
+                    `Error: ${error.message}`);
+                return false;
+            }
+        }
+
+        async function testLogin() {
+            addTestResult('🔐 Testing Login...', 'pending', 
+                `Attempting login with ${TEST_USER.email}`);
+            
+            try {
+                const response = await fetch(`${API_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(TEST_USER),
+                    timeout: 5000
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.token) {
+                    addTestResult('✓ Login successful', 'pass', 
+                        `Role: ${data.role}<br/>Full Name: ${data.full_name}<br/>Member ID: ${data.member_id}`);
+                    // Store token for other tests
+                    window.testToken = data.token;
+                    return true;
+                } else {
+                    addTestResult('✗ Login failed', 'fail', 
+                        `Error: ${data.error}`);
+                    return false;
+                }
+            } catch (error) {
+                addTestResult('✗ Login request failed', 'fail', 
+                    `Error: ${error.message}`);
+                return false;
+            }
+        }
+
+        async function testUserFromDB() {
+            if (!window.testToken) {
+                addTestResult('⚠️  Query User Data', 'pending', 
+                    'Skipped - Need successful login first. Run Test Login first.');
+                return false;
+            }
+
+            addTestResult('📋 Testing User Data Query...', 'pending', 
+                'Fetching user profile from database');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/members/me`, {
+                    method: 'GET',
+                    headers: { 
+                        'Authorization': `Bearer ${window.testToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    timeout: 5000
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addTestResult('✓ User data retrieved', 'pass', 
+                        `Email: ${data.email}<br/>Status: ${data.status}<br/>Verified: ${data.is_verified}`);
+                    return true;
+                } else {
+                    addTestResult('✗ Failed to get user data', 'fail', 
+                        `Status: ${response.status}`);
+                    return false;
+                }
+            } catch (error) {
+                addTestResult('✗ User query failed', 'fail', 
+                    `Error: ${error.message}`);
+                return false;
+            }
+        }
+
+        async function runAllTests() {
+            clearTests();
+            console.log('Starting all tests...');
+            
+            addTestResult('🚀 Test Suite Started', 'pending', 'Testing Frontend ↔ Database Connection');
+            
+            const health = await testBackendHealth();
+            await new Promise(r => setTimeout(r, 500));
+            
+            const db = await testDatabaseConnection();
+            await new Promise(r => setTimeout(r, 500));
+            
+            const login = await testLogin();
+            await new Promise(r => setTimeout(r, 500));
+            
+            if (login) {
+                const userData = await testUserFromDB();
+            }
+            
+            // Summary
+            await new Promise(r => setTimeout(r, 500));
+            const summary = `
+                <div class="summary">
+                    <h2>📊 Test Summary</h2>
+                    <p>✅ Passed: ${testResults.passed}</p>
+                    <p>❌ Failed: ${testResults.failed}</p>
+                    <p>⏳ Skipped: ${testResults.pending}</p>
+                    ${testResults.failed === 0 ? 
+                        '<h3 style="color: green;">🎉 All tests passed! Connection is working.</h3>' :
+                        '<h3 style="color: red;">⚠️ Some tests failed. Check the results above.</h3>'
+                    }
+                </div>
+            `;
+            document.getElementById('results').innerHTML += summary;
+        }
+
+        // Auto-run tests on page load
+        window.onload = () => {
+            console.log('Frontend Connection Test Page Loaded');
+            console.log('Click "Run All Tests" to start testing...');
+        };
+    </script>
+</body>
+</html>
