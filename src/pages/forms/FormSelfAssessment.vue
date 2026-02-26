@@ -1847,7 +1847,7 @@ Reply with ONLY the level ID (number).
           { role: 'user', content: prompt }
         ];
 
-        const res = await axios.post(this.chat_url, { messages });
+        const res = await axios.post(this.chat_url, { messages }, { timeout: 300000 });
         const reply = (res?.data?.reply || "").trim();
         const m = reply.match(/\d+/);
         if (m) {
@@ -1882,7 +1882,7 @@ Reply only as a JSON array of strings. Example: ["Certificate from Coursera", "S
           { role: 'user', content: prompt }
         ];
 
-        const res = await axios.post(this.chat_url, { messages });
+        const res = await axios.post(this.chat_url, { messages }, { timeout: 300000 });
         const reply = res?.data?.reply || "";
         let recs = [];
         try {

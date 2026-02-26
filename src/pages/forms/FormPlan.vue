@@ -1525,7 +1525,7 @@ ${qualsContext}
         { role: "user", content: prompt },
       ];
 
-      const res = await axios.post(urls.chat_url, { messages });
+      const res = await axios.post(urls.chat_url, { messages }, { timeout: 300000 });
       const reply = res?.data?.reply || "";
       const recs = safeExtractJsonArray(reply);
 
@@ -1629,7 +1629,7 @@ ${qualsContext}
       { role: "user", content: prompt },
     ];
 
-    const res = await axios.post(urls.chat_url, { messages });
+    const res = await axios.post(urls.chat_url, { messages }, { timeout: 300000 });
     const reply = res?.data?.reply || "";
     const recs = safeExtractJsonArray(reply);
 
