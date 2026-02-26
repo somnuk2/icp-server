@@ -19,6 +19,7 @@
     "dev:backend:remote": "cross-env DB_MODE=remote npm run dev --prefix backend",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev:backend\" --kill-others --prefix-colors auto",
     "dev:all:local": "concurrently \"cross-env BACKEND_MODE=local npm run dev\" \"npm run dev:backend:local\" --kill-others --prefix-colors auto",
+    "dev:all:gemini": "node verify-remote.js && cross-env AI_MODE=gemini BACKEND_MODE=remote npm run dev",
     "dev:all:remote": "node verify-remote.js && cross-env BACKEND_MODE=remote npm run dev",
     "build": "quasar build",
     "postinstall": "quasar prepare"

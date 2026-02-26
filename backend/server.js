@@ -4,6 +4,7 @@ import axios from 'axios'
 import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
 // Load .env from project root
 const __filename = fileURLToPath(import.meta.url)
@@ -92,31 +93,61 @@ app.use('/api/dashboard', dashboardRoutes)
 app.use('/api/reports', reportsRoutes)
 app.use('/api', constantsRoutes)
 
-// ─── AI Chat Service (Ollama) ────────────────────────────────────────────────
-const MODEL_NAME = process.env.AI_MODEL_NAME || 'promptnow/openthaigpt1.5-7b-instruct-q4_k_m:latest'
+// ─── AI Chat Service (Gemini & Ollama Fallback) ─────────────────────────────
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY
+const AI_MODE = process.env.AI_MODE || 'ollama' // 'gemini' or 'ollama'
+const MODEL_NAME = process.env.AI_MODEL_NAME || 'qwen2:1.5b'
 
 app.post('/api/chat', async (req, res) => {
   try {
     const { messages } = req.body
-    console.log(`🤖 AI Request: ${messages[messages.length - 1]?.content?.substring(0, 50)}...`)
+    const userPrompt = messages[messages.length - 1]?.content || ''
+    console.log(`🤖 AI Request [${AI_MODE.toUpperCase()}]: ${userPrompt.substring(0, 50)}...`)
 
+    // Mode 1: Google Gemini (Primary if configured)
+    if (AI_MODE === 'gemini' && GEMINI_API_KEY) {
+      try {
+        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY)
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" })
+
+        // Convert messages to Gemini format (System prompt + History + Current User Prompt)
+        const systemPrompt = "คุณคือผู้ช่วย AI ภาษาไทย ตอบคำถามให้สั้น กระชับ ตรงประเด็นที่สุด ยาวไม่เกิน 2-3 ประโยค"
+        const prompt = `${systemPrompt}\n\nUser: ${userPrompt}`
+
+        const result = await model.generateContent(prompt)
+        const response = await result.response
+        const reply = response.text()
+
+        return res.json({ reply, provider: 'gemini' })
+      } catch (geminiErr) {
+        console.error('⚠️ Gemini API Error, falling back to Ollama:', geminiErr.message)
+        // Continue to Ollama fallback
+      }
+    }
+
+    // Mode 2: Ollama (Local Fallback)
     const ollamaRes = await axios.post('http://localhost:11434/api/chat', {
       model: MODEL_NAME,
       messages: [
         {
           role: 'system',
-          content: 'คุณคือผู้ช่วย AI ภาษาไทย ช่วยตอบให้เข้าใจง่าย กระชับ และไม่ต้องถามย้ำคำถามซ้ำ'
+          content: 'คุณคือผู้ช่วย AI ภาษาไทย ตอบคำถามให้สั้น กระชับ ตรงประเด็นที่สุด ยาวไม่เกิน 2-3 ประโยค'
         },
         ...messages
       ],
-      stream: false
-    }, { timeout: 600000 }) // เพิ่ม timeout เป็น 10 นาที สำหรับ CPU ประมวลผล
+      stream: false,
+      options: {
+        num_predict: 150,
+        num_ctx: 512,
+        temperature: 0.3
+      }
+    }, { timeout: 600000 })
 
     const reply = ollamaRes.data?.message?.content || ''
-    res.json({ reply })
+    res.json({ reply, provider: 'ollama' })
   } catch (err) {
-    console.error('❌ AI Error:', err.message)
-    res.status(500).json({ error: 'LLM service error', details: err.message })
+    console.error('❌ AI System Error:', err.message)
+    res.status(500).json({ error: 'AI service unavailable', details: err.message })
   }
 })
 
