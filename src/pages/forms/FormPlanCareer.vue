@@ -1147,7 +1147,7 @@ ${profileText}
       { role: "user", content: prompt }
     ];
 
-    const res = await axios.post(CHAT_URL, { messages });
+    const res = await axios.post(CHAT_URL, { messages }, { timeout: 300000 });
     const reply = res?.data?.reply || "";
     const recommendations = safeParseJsonArray(reply);
 
