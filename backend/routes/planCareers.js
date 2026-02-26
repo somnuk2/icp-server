@@ -85,9 +85,10 @@ router.get('/:id', authenticate, async (req, res, next) => {
 router.post('/', authenticate, async (req, res, next) => {
     try {
         const { member_id, career_id, plan_career_date } = req.body
+        // ปรับให้ตรงกับ DB จริงที่มี start_date, end_date
         const [result] = await pool.query(
-            'INSERT INTO plan_career (member_id, career_id, plan_career_date) VALUES (?, ?, ?)',
-            [member_id || req.user.member_id, career_id, plan_career_date]
+            'INSERT INTO plan_career (member_id, career_id, start_date, end_date) VALUES (?, ?, ?, ?)',
+            [member_id || req.user.member_id, career_id, plan_career_date || '', plan_career_date || '']
         )
         res.status(201).json({ message: 'Insert Complete', plan_career_id: result.insertId })
     } catch (err) { next(err) }
@@ -104,8 +105,8 @@ router.put('/:id', authenticate, async (req, res, next) => {
 
         const { career_id, plan_career_date } = req.body
         await pool.query(
-            'UPDATE plan_career SET career_id=?, plan_career_date=? WHERE plan_career_id=?',
-            [career_id, plan_career_date, req.params.id]
+            'UPDATE plan_career SET career_id=?, start_date=?, end_date=? WHERE plan_career_id=?',
+            [career_id, plan_career_date, plan_career_date, req.params.id]
         )
         res.json({ message: 'Update Complete' })
     } catch (err) { next(err) }
