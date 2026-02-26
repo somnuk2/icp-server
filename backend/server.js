@@ -110,7 +110,7 @@ app.post('/api/chat', async (req, res) => {
         ...messages
       ],
       stream: false
-    }, { timeout: 300000 }) // เพิ่ม timeout เป็น 5 นาที สำหรับ CPU ประมวลผล
+    }, { timeout: 600000 }) // เพิ่ม timeout เป็น 10 นาที สำหรับ CPU ประมวลผล
 
     const reply = ollamaRes.data?.message?.content || ''
     res.json({ reply })
