@@ -228,7 +228,7 @@ router.get('/full-names', authenticate, async (req, res, next) => {
             sql += ' WHERE pla.member_id = ?'
             params.push(req.user.member_id)
         } else if (req.user.role === 'superuser') {
-            sql += ' WHERE mem.created_by = ? OR mem.member_id = ?'
+            sql += ' LEFT JOIN individual ind ON mem.member_id = ind.member_id WHERE ind.advisor_id = ? OR mem.member_id = ?'
             params.push(req.user.member_id, req.user.member_id)
         }
         sql += ' ORDER BY mem.full_name'
@@ -249,7 +249,7 @@ router.get('/career-names', authenticate, async (req, res, next) => {
             sql += ' WHERE pla.member_id = ?'
             params.push(req.user.member_id)
         } else if (req.user.role === 'superuser') {
-            sql += ' WHERE mem.created_by = ? OR mem.member_id = ?'
+            sql += ' LEFT JOIN individual ind ON mem.member_id = ind.member_id WHERE ind.advisor_id = ? OR mem.member_id = ?'
             params.push(req.user.member_id, req.user.member_id)
         }
         sql += ' ORDER BY car.career_name'
@@ -270,7 +270,7 @@ router.get('/qualification-names', authenticate, async (req, res, next) => {
             sql += ' WHERE pla.member_id = ?'
             params.push(req.user.member_id)
         } else if (req.user.role === 'superuser') {
-            sql += ' WHERE mem.created_by = ? OR mem.member_id = ?'
+            sql += ' LEFT JOIN individual ind ON mem.member_id = ind.member_id WHERE ind.advisor_id = ? OR mem.member_id = ?'
             params.push(req.user.member_id, req.user.member_id)
         }
         sql += ' ORDER BY qua.qualification_name'
@@ -314,8 +314,9 @@ router.post('/filter-month', authenticate, async (req, res, next) => {
             sql += ' AND pla.member_id = ?'
             params.push(req.user.member_id)
         } else if (req.user.role === 'superuser') {
-            // ใช้ความสัมพันธ์ Created By เป็นหลักในการดึงข้อมูลทั้งหมดภายใต้การดูแล
-            sql += ' AND (mem.created_by = ? OR mem.member_id = ?)'
+            // ใช้ความสัมพันธ์ Advisor ID จากตาราง individual
+            sql += ' LEFT JOIN individual ind ON mem.member_id = ind.member_id'
+            sql += ' AND (ind.advisor_id = ? OR mem.member_id = ?)'
             params.push(req.user.member_id, req.user.member_id)
 
             if (effectiveMemberId) {
