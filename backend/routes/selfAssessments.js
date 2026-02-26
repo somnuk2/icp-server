@@ -11,9 +11,12 @@ const JOIN_QUERY = `
     qua.qualification_name,
     pla.career_id,
     car.career_name,
-    tar.target_name,
-    per.perform_name,
-    mem.member_id, mem.full_name
+    tar.target_name, tar.target_value,
+    per.perform_name, per.perform_value,
+    mem.member_id, mem.full_name,
+    (SELECT GROUP_CONCAT(r.reference_description SEPARATOR ', ') FROM reference r WHERE r.self_assessment_id = sef.self_assessment_id) as reference_description,
+    (SELECT GROUP_CONCAT(p.plan_title SEPARATOR ', ') FROM plan p WHERE p.qa_plan_career_id = qpc.qa_plan_career_id) as plan_title,
+    (SELECT i.importance_name FROM plan p JOIN importance i ON p.importance_id = i.importance_id WHERE p.qa_plan_career_id = qpc.qa_plan_career_id LIMIT 1) as importance_name
   FROM self_assessment as sef
   LEFT JOIN qa_plan_career as qpc ON sef.qa_plan_career_id = qpc.qa_plan_career_id
   LEFT JOIN qualification  as qua ON qpc.qualification_id = qua.qualification_id
@@ -38,6 +41,15 @@ router.get('/', authenticate, async (req, res, next) => {
         let rows
         if (req.user.role === 'user') {
             ;[rows] = await pool.query(JOIN_QUERY + ' WHERE mem.member_id = ?', [req.user.member_id])
+        } else if (req.user.role === 'superuser') {
+            // ใช้การ JOIN กับ Super User ID เพื่อดึงกลุ่มที่ดูแล (Subordinates) และตนเอง
+            const SUPER_JOIN = `
+                JOIN member creator ON (mem.created_by = creator.member_id OR mem.member_id = creator.member_id)
+                WHERE creator.member_id = ?
+            `
+                // แทรก JOIN เข้าไปใน JOIN_QUERY (ที่ Join mem ไว้แล้ว)
+                // หรือใช้ WHERE แทนเพื่อให้ประสิทธิภาพ SQL ดีกว่า แต่ใช้ความหมายของ JOIN ตามคำสั่ง
+                ;[rows] = await pool.query(JOIN_QUERY + ' WHERE (mem.created_by = ? OR mem.member_id = ?) ORDER BY sef.self_assessment_id', [req.user.member_id, req.user.member_id])
         } else {
             ;[rows] = await pool.query(JOIN_QUERY + ' ORDER BY sef.self_assessment_id')
         }
@@ -63,15 +75,24 @@ router.get('/qa/:qa_id', authenticate, async (req, res, next) => {
 // ⚠️ MUST be before /:id to prevent Express matching 'references' as :id
 router.get('/references', authenticate, async (req, res, next) => {
     try {
-        const member_id = req.query.member_id || req.user.member_id
-        const [rows] = await pool.query(`
+        const member_id = req.query.member_id
+        let sql = `
       SELECT ref.*
       FROM reference ref
       JOIN self_assessment sef ON ref.self_assessment_id = sef.self_assessment_id
       JOIN qa_plan_career qpc ON sef.qa_plan_career_id = qpc.qa_plan_career_id
       JOIN plan_career pla ON qpc.plan_career_id = pla.plan_career_id
-      WHERE pla.member_id = ?
-    `, [member_id])
+    `
+        const params = []
+        if (member_id) {
+            sql += ' WHERE pla.member_id = ?'
+            params.push(member_id)
+        } else if (req.user.role === 'user') {
+            sql += ' WHERE pla.member_id = ?'
+            params.push(req.user.member_id)
+        }
+
+        const [rows] = await pool.query(sql, params)
         res.json(rows)
     } catch (err) { next(err) }
 })

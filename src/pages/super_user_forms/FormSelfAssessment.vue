@@ -820,7 +820,7 @@ export default {
     async getFilterMonth() {
       try {
         const res = await axios.post(`${getRestApiUrl(this.$store)}/qa-plan-careers/filter-month`, {
-          member_id: this.$store.getters.myMember_id,
+          member_id: null, // super user sees everything
           full_name: this.filterConditions.full_name || "%",
           career_name: this.filterConditions.career_name || "%",
           qualification_name: this.filterConditions.qualification_name || "%",

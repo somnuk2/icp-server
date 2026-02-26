@@ -15,6 +15,11 @@ router.get('/', authenticate, async (req, res, next) => {
                 'SELECT member_id, full_name, email, status, is_verified FROM member WHERE member_id = ?',
                 [req.user.member_id]
             )
+        } else if (req.user.role === 'superuser') {
+            ;[rows] = await pool.query(
+                'SELECT member_id, full_name, email, status, is_verified, created_by FROM member WHERE created_by = ? OR member_id = ? ORDER BY member_id',
+                [req.user.member_id, req.user.member_id]
+            )
         } else {
             ;[rows] = await pool.query(
                 'SELECT member_id, full_name, email, status, is_verified, created_by FROM member ORDER BY member_id'

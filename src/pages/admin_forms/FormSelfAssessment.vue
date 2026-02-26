@@ -300,12 +300,6 @@ export default {
       filter: "",
       filter_reference: "",
 
-      // progress state
-      isEnriching: false,
-      enrichStage: "",
-      enrichProgress: 0,
-      enrichInfo: "",
-
       // history table
       selfAssessments1: [],
       selfAssessments1_: [],
@@ -368,12 +362,6 @@ export default {
         { name: "target_value", align: "center", label: "ค่าเป้าหมาย", field: "target_value", sortable: true },
         { name: "perform_value", align: "center", label: "ผลการประเมิน", field: "perform_value", sortable: true },
       ],
-
-      // caches/maps for enrichment
-      assessmentDetailById: {}, // id -> detail (/self-assessments/:id)
-      referencesByAssessmentId: {}, // id -> "ref1, ref2"
-      planById: {}, // plan_id -> plan
-      plansByMemberQa: {}, // `${member_id}_${qa_plan_career_id}` -> plans[]
     };
   },
 
@@ -405,28 +393,18 @@ export default {
         member_id: r.member_id ?? null,
         qa_plan_career_id: r.qa_plan_career_id ?? null,
         perform_id: r.perform_id ?? null,
-        plan_id: r.plan_id ?? null, // สำคัญสำหรับ map plan
+        plan_id: r.plan_id ?? null,
 
         self_assessment_date: r.self_assessment_date || "-",
-
-        // list มักไม่มี -> placeholder
         full_name: r.full_name || "-",
         career_name: r.career_name || "-",
         qualification_name: r.qualification_name || "-",
         importance_name: r.importance_name || "-",
         plan_title: r.plan_title || "-",
         reference_description: r.reference_description || "-",
-        target_value: r.target_value || r.target_name || "-",
-        perform_value: r.perform_value || r.perform_name || "-",
+        target_value: r.target_value || "-",
+        perform_value: r.perform_value || "-",
       }));
-    },
-
-    enrichBasic(rows) {
-      return rows.map((r) => {
-        const mid = r.member_id != null ? String(r.member_id) : "";
-        const full = this.memberNameById[mid] || "-";
-        return { ...r, full_name: (r.full_name && r.full_name !== "-") ? r.full_name : full };
-      });
     },
 
     async fetch(url, paramsOrUndefined) {
@@ -434,233 +412,23 @@ export default {
       return this.normalizeRows(res.data);
     },
 
-    // ---------- preload plans (one call)
-    async preloadPlans() {
-      const base = getRestApiUrl(this.$store);
-      const res = await axios.get(`${base}/plans`);
-      const plans = this.normalizeRows(res.data);
-
-      this.planById = {};
-      this.plansByMemberQa = {};
-
-      for (const p of plans) {
-        if (p.plan_id != null) this.planById[p.plan_id] = p;
-
-        const k = `${p.member_id ?? ""}_${p.qa_plan_career_id ?? ""}`;
-        if (!this.plansByMemberQa[k]) this.plansByMemberQa[k] = [];
-        this.plansByMemberQa[k].push(p);
-      }
-    },
-
-    // ---------- fetch references for all ids
-    async fetchReferencesForAssessmentIds(ids) {
-      const base = getRestApiUrl(this.$store);
-      const concurrency = 20;
-      let idx = 0;
-      let done = 0;
-
-      const worker = async () => {
-        while (idx < ids.length) {
-          const i = idx++;
-          const id = ids[i];
-
-          if (this.referencesByAssessmentId[id] !== undefined) {
-            done++;
-            this.enrichProgress = done / ids.length;
-            this.enrichInfo = `${done}/${ids.length}`;
-            continue;
-          }
-
-          try {
-            const res = await axios.get(`${base}/self-assessments/${id}/references`);
-            const rows = this.normalizeRows(res.data);
-
-            const joined = rows
-              .map(r => (r.reference_description || "").trim())
-              .filter(Boolean)
-              .join(", ");
-
-            this.referencesByAssessmentId[id] = joined || "-";
-          } catch (e) {
-            this.referencesByAssessmentId[id] = "-";
-          } finally {
-            done++;
-            this.enrichProgress = done / ids.length;
-            this.enrichInfo = `${done}/${ids.length}`;
-          }
-        }
-      };
-
-      await Promise.all(Array.from({ length: concurrency }, worker));
-    },
-
-    // ---------- fetch detail (/self-assessments/:id) for all rows (concurrency)
-    async fetchDetailsForAssessmentIds(ids) {
-      const base = getRestApiUrl(this.$store);
-      const concurrency = 20;
-      let idx = 0;
-      let done = 0;
-
-      const worker = async () => {
-        while (idx < ids.length) {
-          const i = idx++;
-          const id = ids[i];
-
-          if (this.assessmentDetailById[id]) {
-            done++;
-            this.enrichProgress = done / ids.length;
-            this.enrichInfo = `${done}/${ids.length}`;
-            continue;
-          }
-
-          try {
-            const res = await axios.get(`${base}/self-assessments/${id}`);
-            this.assessmentDetailById[id] = res.data;
-          } catch (e) {
-            // keep undefined
-          } finally {
-            done++;
-            this.enrichProgress = done / ids.length;
-            this.enrichInfo = `${done}/${ids.length}`;
-          }
-        }
-      };
-
-      await Promise.all(Array.from({ length: concurrency }, worker));
-    },
-
-    // ---------- merge plan/importance/reference into rows
-    applyPlansAndReferences(rows) {
-      return rows.map(r => {
-        // references
-        const ref = this.referencesByAssessmentId[r.self_assessment_id];
-        const reference_description = (ref && String(ref).trim()) ? ref : "-";
-
-        // plan & importance
-        let plan_title = r.plan_title;
-        let importance_name = r.importance_name;
-
-        // 1) by plan_id
-        if (r.plan_id != null && this.planById[r.plan_id]) {
-          const p = this.planById[r.plan_id];
-          plan_title = p.plan_title || plan_title || "-";
-          importance_name = p.importance_name || p.importance || importance_name || "-";
-        } else {
-          // 2) by member_id + qa_plan_career_id
-          const k = `${r.member_id ?? ""}_${r.qa_plan_career_id ?? ""}`;
-          const ps = this.plansByMemberQa[k] || [];
-          if (ps.length > 0) {
-            plan_title = ps.map(x => x.plan_title).filter(Boolean).join(", ") || plan_title || "-";
-            importance_name = ps[0].importance_name || ps[0].importance || importance_name || "-";
-          }
-        }
-
-        return {
-          ...r,
-          plan_title: plan_title || "-",
-          importance_name: importance_name || "-",
-          reference_description,
-        };
-      });
-    },
-
-    // ---------- merge detail fields into rows
-    applyDetails(rows) {
-      return rows.map(r => {
-        const d = this.assessmentDetailById[r.self_assessment_id];
-        if (!d) return r;
-
-        return {
-          ...r,
-          full_name: (r.full_name && r.full_name !== "-") ? r.full_name : (d.full_name || r.full_name || "-"),
-          career_name: (r.career_name && r.career_name !== "-") ? r.career_name : (d.career_name || "-"),
-          qualification_name: (r.qualification_name && r.qualification_name !== "-") ? r.qualification_name : (d.qualification_name || "-"),
-          target_value: (r.target_value && r.target_value !== "-") ? r.target_value : (d.target_value || d.target_name || "-"),
-          perform_value: (r.perform_value && r.perform_value !== "-") ? r.perform_value : (d.perform_value || d.perform_name || "-"),
-
-          // ถ้า detail มีค่าเหล่านี้ ก็ให้ช่วยเติม
-          importance_name: (r.importance_name && r.importance_name !== "-") ? r.importance_name : (d.importance_name || r.importance_name || "-"),
-          plan_title: (r.plan_title && r.plan_title !== "-") ? r.plan_title : (d.plan_title || r.plan_title || "-"),
-        };
-      });
-    },
-
-    // ---------- main load
     async loadAll() {
       this.loading = true;
-      this.isEnriching = false;
-      this.enrichStage = "";
-      this.enrichProgress = 0;
-      this.enrichInfo = "";
-
       try {
         const base = getRestApiUrl(this.$store);
+        const raw = await this.fetch(`${base}/self-assessments`, undefined);
+        const mapped = this.mapSelfAssessments(raw);
 
-        // month-table (currently empty in your system)
-        let rows = await this.fetch(`${base}/qa-plan-careers/month-table`, undefined);
-        if (rows.length === 0) {
-          rows = await this.fetch(`${base}/qa-plan-careers/month-table`, {
-            member_id: "%", full_name: "%", career_name: "%", qualification_name: "%", year: "%", month: "%"
-          });
-        }
-
-        // fallback -> self-assessments
-        if (rows.length === 0) {
-          const raw = await this.fetch(`${base}/self-assessments`, undefined);
-          let mapped = this.mapSelfAssessments(raw);
-          mapped = this.enrichBasic(mapped);
-
-          // preload plans once
-          this.isEnriching = true;
-          this.enrichStage = "กำลังโหลดแผนพัฒนา/ความสำคัญ";
-          this.enrichProgress = 0;
-          this.enrichInfo = "";
-          await this.preloadPlans();
-
-          // references
-          const ids = mapped.map(r => r.self_assessment_id).filter(v => v != null);
-          this.enrichStage = "กำลังโหลดหลักฐาน";
-          this.enrichProgress = 0;
-          this.enrichInfo = "0/" + ids.length;
-          await this.fetchReferencesForAssessmentIds(ids);
-
-          // apply plans+refs
-          mapped = this.applyPlansAndReferences(mapped);
-
-          // detail
-          this.enrichStage = "กำลังโหลดรายละเอียดอาชีพ/คุณสมบัติ";
-          this.enrichProgress = 0;
-          this.enrichInfo = "0/" + ids.length;
-          await this.fetchDetailsForAssessmentIds(ids);
-
-          // apply detail
-          mapped = this.applyDetails(mapped);
-
-          // (เผื่อ detail มี reference_description/plan_title ที่ดีกว่า) ไม่จำเป็น แต่ปลอดภัย:
-          mapped = mapped.map(r => ({
-            ...r,
-            reference_description: (r.reference_description && r.reference_description !== "-")
-              ? r.reference_description
-              : (this.referencesByAssessmentId[r.self_assessment_id] || "-"),
-          }));
-
-          rows = mapped;
-        }
-
-        this.selfAssessments1 = rows;
-        this.selfAssessments1_ = rows;
+        this.selfAssessments1 = mapped;
+        this.selfAssessments1_ = mapped;
         this.tableKey++;
 
-        this.$q.notify({ color: "positive", icon: "check", message: `แสดงข้อมูลสำเร็จ ${rows.length} รายการ` });
+        this.$q.notify({ color: "positive", icon: "check", message: `แสดงข้อมูลสำเร็จ ${mapped.length} รายการ` });
       } catch (e) {
         console.error("[loadAll]", e);
         this.$q.notify({ color: "negative", icon: "error", message: "โหลดข้อมูลไม่สำเร็จ: " + (e.response?.data?.error || e.message) });
       } finally {
         this.loading = false;
-        this.isEnriching = false;
-        this.enrichStage = "";
-        this.enrichProgress = 0;
-        this.enrichInfo = "";
       }
     },
 

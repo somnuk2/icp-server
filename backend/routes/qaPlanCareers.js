@@ -32,9 +32,12 @@ router.get('/years', authenticate, async (req, res, next) => {
       FROM self_assessment sef
       JOIN qa_plan_career qpc ON sef.qa_plan_career_id = qpc.qa_plan_career_id
       JOIN plan_career pla ON qpc.plan_career_id = pla.plan_career_id
-      WHERE pla.member_id = ?
+      JOIN member mem ON pla.member_id = mem.member_id
+      WHERE (pla.member_id = ? AND ? != 'superuser' AND ? != 'admin')
+         OR (mem.created_by = ? AND ? = 'superuser')
+         OR (? = 'admin')
       ORDER BY Year DESC
-    `, [member_id])
+    `, [member_id, req.user.role, req.user.role, req.user.member_id, req.user.role, req.user.role])
         res.json(rows)
     } catch (err) { next(err) }
 })
@@ -50,9 +53,12 @@ router.get('/months', authenticate, async (req, res, next) => {
       FROM self_assessment sef
       JOIN qa_plan_career qpc ON sef.qa_plan_career_id = qpc.qa_plan_career_id
       JOIN plan_career pla ON qpc.plan_career_id = pla.plan_career_id
-      WHERE pla.member_id = ?
+      JOIN member mem ON pla.member_id = mem.member_id
+      WHERE (pla.member_id = ? AND ? != 'superuser' AND ? != 'admin')
+         OR (mem.created_by = ? AND ? = 'superuser')
+         OR (? = 'admin')
       ORDER BY M ASC
-    `, [member_id])
+    `, [member_id, req.user.role, req.user.role, req.user.member_id, req.user.role, req.user.role])
         res.json(rows)
     } catch (err) { next(err) }
 })
@@ -214,7 +220,6 @@ router.get('/month-table', authenticate, async (req, res, next) => {
 // GET /api/qa-plan-careers/full-names - ชื่อสมาชิกทั้งหมดใน qa_plan_career
 router.get('/full-names', authenticate, async (req, res, next) => {
     try {
-        const member_id = req.query.member_id || req.user.member_id
         let sql = `SELECT DISTINCT mem.full_name FROM qa_plan_career qpc
       JOIN plan_career pla ON qpc.plan_career_id = pla.plan_career_id
       JOIN member mem ON pla.member_id = mem.member_id`
@@ -222,6 +227,9 @@ router.get('/full-names', authenticate, async (req, res, next) => {
         if (req.user.role === 'user') {
             sql += ' WHERE pla.member_id = ?'
             params.push(req.user.member_id)
+        } else if (req.user.role === 'superuser') {
+            sql += ' WHERE mem.created_by = ? OR mem.member_id = ?'
+            params.push(req.user.member_id, req.user.member_id)
         }
         sql += ' ORDER BY mem.full_name'
         const [rows] = await pool.query(sql, params)
@@ -232,14 +240,17 @@ router.get('/full-names', authenticate, async (req, res, next) => {
 // GET /api/qa-plan-careers/career-names - อาชีพทั้งหมดใน qa_plan_career
 router.get('/career-names', authenticate, async (req, res, next) => {
     try {
-        const member_id = req.query.member_id || req.user.member_id
         let sql = `SELECT DISTINCT car.career_name FROM qa_plan_career qpc
       JOIN plan_career pla ON qpc.plan_career_id = pla.plan_career_id
+      JOIN member mem ON pla.member_id = mem.member_id
       JOIN career car ON pla.career_id = car.career_id`
         const params = []
         if (req.user.role === 'user') {
             sql += ' WHERE pla.member_id = ?'
             params.push(req.user.member_id)
+        } else if (req.user.role === 'superuser') {
+            sql += ' WHERE mem.created_by = ? OR mem.member_id = ?'
+            params.push(req.user.member_id, req.user.member_id)
         }
         sql += ' ORDER BY car.career_name'
         const [rows] = await pool.query(sql, params)
@@ -250,14 +261,17 @@ router.get('/career-names', authenticate, async (req, res, next) => {
 // GET /api/qa-plan-careers/qualification-names - คุณสมบัติทั้งหมดใน qa_plan_career
 router.get('/qualification-names', authenticate, async (req, res, next) => {
     try {
-        const member_id = req.query.member_id || req.user.member_id
         let sql = `SELECT DISTINCT qua.qualification_name FROM qa_plan_career qpc
       JOIN qualification qua ON qpc.qualification_id = qua.qualification_id
-      JOIN plan_career pla ON qpc.plan_career_id = pla.plan_career_id`
+      JOIN plan_career pla ON qpc.plan_career_id = pla.plan_career_id
+      JOIN member mem ON pla.member_id = mem.member_id`
         const params = []
         if (req.user.role === 'user') {
             sql += ' WHERE pla.member_id = ?'
             params.push(req.user.member_id)
+        } else if (req.user.role === 'superuser') {
+            sql += ' WHERE mem.created_by = ? OR mem.member_id = ?'
+            params.push(req.user.member_id, req.user.member_id)
         }
         sql += ' ORDER BY qua.qualification_name'
         const [rows] = await pool.query(sql, params)
@@ -269,7 +283,7 @@ router.get('/qualification-names', authenticate, async (req, res, next) => {
 router.post('/filter-month', authenticate, async (req, res, next) => {
     try {
         const { member_id, full_name, career_name, qualification_name, year, month } = req.body
-        const effectiveMemberId = req.user.role === 'user' ? req.user.member_id : (member_id || null)
+        const effectiveMemberId = (req.user.role === 'user') ? req.user.member_id : member_id
 
         let sql = `
       SELECT
@@ -296,7 +310,22 @@ router.post('/filter-month', authenticate, async (req, res, next) => {
       WHERE 1=1
     `
         const params = []
-        if (effectiveMemberId) { sql += ' AND pla.member_id = ?'; params.push(effectiveMemberId) }
+        if (req.user.role === 'user') {
+            sql += ' AND pla.member_id = ?'
+            params.push(req.user.member_id)
+        } else if (req.user.role === 'superuser') {
+            // ใช้ความสัมพันธ์ Created By เป็นหลักในการดึงข้อมูลทั้งหมดภายใต้การดูแล
+            sql += ' AND (mem.created_by = ? OR mem.member_id = ?)'
+            params.push(req.user.member_id, req.user.member_id)
+
+            if (effectiveMemberId) {
+                sql += ' AND pla.member_id = ?'
+                params.push(effectiveMemberId)
+            }
+        } else if (effectiveMemberId) {
+            sql += ' AND pla.member_id = ?'
+            params.push(effectiveMemberId)
+        }
         if (full_name && full_name !== '%') { sql += ' AND mem.full_name LIKE ?'; params.push(`%${full_name}%`) }
         if (career_name && career_name !== '%') { sql += ' AND car.career_name LIKE ?'; params.push(`%${career_name}%`) }
         if (qualification_name && qualification_name !== '%') { sql += ' AND qua.qualification_name LIKE ?'; params.push(`%${qualification_name}%`) }
