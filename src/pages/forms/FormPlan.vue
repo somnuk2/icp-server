@@ -1525,7 +1525,10 @@ ${qualsContext}
         { role: "user", content: prompt },
       ];
 
-      const res = await axios.post(urls.chat_url, { messages }, { timeout: 300000 });
+      const res = await axios.post(urls.chat_url, {
+        messages,
+        gemini_api_key: localStorage.getItem("gemini_api_key")
+      }, { timeout: 300000 });
       const reply = res?.data?.reply || "";
       const recs = safeExtractJsonArray(reply);
 
@@ -1629,7 +1632,10 @@ ${qualsContext}
       { role: "user", content: prompt },
     ];
 
-    const res = await axios.post(urls.chat_url, { messages }, { timeout: 300000 });
+    const res = await axios.post(urls.chat_url, {
+      messages,
+      gemini_api_key: localStorage.getItem("gemini_api_key")
+    }, { timeout: 300000 });
     const reply = res?.data?.reply || "";
     const recs = safeExtractJsonArray(reply);
 

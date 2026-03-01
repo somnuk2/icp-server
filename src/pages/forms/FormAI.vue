@@ -56,7 +56,11 @@ const notifyOk = (message) => $q.notify({ type: 'positive', message })
 const CHAT_URL = getChatUrl(store)
 
 const callChat = async (payloadMessages, timeout = 120000) => {
-  const res = await axios.post(CHAT_URL, { messages: payloadMessages }, { timeout })
+  const userApiKey = localStorage.getItem("gemini_api_key")
+  const res = await axios.post(CHAT_URL, {
+    messages: payloadMessages,
+    gemini_api_key: userApiKey
+  }, { timeout })
   return res?.data?.reply ?? ''
 }
 
@@ -87,7 +91,7 @@ const icpProfileText = computed(() => {
 - ภาวะความพิการ: ${f.disability || 'ไม่ระบุ'}
 - เรียนสาย: ${f.studyProgram || '-'}
 - วิชาที่ชอบ: ${f.favoriteSubject || '-'}
-- วิชาที่ไม่ชอบ: ${f.unfavoriteSubject || '-'}
+- อุปกรณ์ที่จำเป็น: ${f.unfavoriteSubject || '-'}
 - กิจกรรมที่ชอบทำ: ${f.favoriteActivity || '-'}
 - ความถนัด / ความชำนาญ: ${f.skill || '-'}
 - อาชีพที่ใฝ่ฝัน: ${f.dreamCareer || '-'}
@@ -552,7 +556,7 @@ const exportToExcel = async () => {
     addProfileRow('ภาวะความพิการ:', f.disability)
     addProfileRow('สายการเรียน:', f.studyProgram)
     addProfileRow('วิชาที่ชอบ:', f.favoriteSubject)
-    addProfileRow('วิชาที่ไม่ชอบ:', f.unfavoriteSubject)
+    addProfileRow('อุปกรณ์ที่จำเป็น:', f.unfavoriteSubject)
     addProfileRow('กิจกรรมที่ชอบทำ:', f.favoriteActivity)
     addProfileRow('ความถนัด / ทักษะเด่น:', f.skill)
     addProfileRow('อาชีพในฝัน:', f.dreamCareer)
@@ -865,7 +869,7 @@ const previewTreeData = computed(() => {
 
         <div class="row q-col-gutter-md">
           <div class="col-12 col-md-6"><q-input v-model="icpForm.favoriteSubject" label="วิชาที่ชอบ" outlined dense /></div>
-          <div class="col-12 col-md-6"><q-input v-model="icpForm.unfavoriteSubject" label="วิชาที่ไม่ชอบ" outlined dense /></div>
+          <div class="col-12 col-md-6"><q-input v-model="icpForm.unfavoriteSubject" label="อุปกรณ์ที่จำเป็น" outlined dense /></div>
         </div>
 
         <q-input v-model="icpForm.favoriteActivity" label="กิจกรรมที่ชอบทำ" outlined dense />

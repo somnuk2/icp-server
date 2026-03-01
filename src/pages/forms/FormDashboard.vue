@@ -541,7 +541,7 @@ const aboutMeText = computed(() => {
   // 3. Skills, Interests & Challenges
   const skillText = p.skill ? `ฉันมีความชื่นชอบและถนัดในด้าน ${p.skill}` : '';
   const subjectText = p.favorite_subject ? ` โดยมีวิชาที่ชอบเป็นพิเศษคือ ${p.favorite_subject}` : '';
-  const unfavText = p.unfavorite_subject ? ` และมีวิชาที่ไม่ถนัดนักคือ ${p.unfavorite_subject}` : '';
+  const unfavText = p.unfavorite_subject ? ` และมีอุปกรณ์ที่จำเป็นคือ ${p.unfavorite_subject}` : '';
 
   if (skillText || subjectText || unfavText) {
     parts.push(`${skillText}${subjectText}${unfavText}`);

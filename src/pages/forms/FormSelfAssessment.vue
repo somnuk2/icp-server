@@ -1064,7 +1064,7 @@ export default {
           ['', 'มาจากจังหวัด:', p.province || '-'],
           ['', 'อยากอยู่ในจังหวัด:', p.preferred_region || '-'],
           ['', 'วิชาที่ชอบ:', p.favorite_subject || '-'],
-          ['', 'วิชาที่ไม่ชอบ:', p.unfavorite_subject || '-'],
+          ['', 'อุปกรณ์ที่จำเป็น:', p.unfavorite_subject || '-'],
           ['', 'กิจกรรมที่ชอบ:', p.favorite_activity || '-'],
           ['', 'ความถนัด/ทักษะเด่น:', p.skill || '-'],
           ['', 'ความบกพร่องทางร่างกาย:', disability],
@@ -1847,7 +1847,10 @@ Reply with ONLY the level ID (number).
           { role: 'user', content: prompt }
         ];
 
-        const res = await axios.post(this.chat_url, { messages }, { timeout: 300000 });
+        const res = await axios.post(this.chat_url, {
+          messages,
+          gemini_api_key: localStorage.getItem("gemini_api_key")
+        }, { timeout: 300000 });
         const reply = (res?.data?.reply || "").trim();
         const m = reply.match(/\d+/);
         if (m) {
@@ -1882,7 +1885,10 @@ Reply only as a JSON array of strings. Example: ["Certificate from Coursera", "S
           { role: 'user', content: prompt }
         ];
 
-        const res = await axios.post(this.chat_url, { messages }, { timeout: 300000 });
+        const res = await axios.post(this.chat_url, {
+          messages,
+          gemini_api_key: localStorage.getItem("gemini_api_key")
+        }, { timeout: 300000 });
         const reply = res?.data?.reply || "";
         let recs = [];
         try {

@@ -117,8 +117,8 @@
                                 label="วิชาที่ชอบ"><template #prepend><q-icon name="bookmark" /></template></q-input>
                             </div>
                             <div class="col-md-6 col-xs-12"><q-input filled v-model="individual.unfavorite_subject"
-                                label="วิชาที่ไม่ชอบ"><template #prepend><q-icon
-                                    name="bookmark_border" /></template></q-input></div>
+                                label="อุปกรณ์ที่จำเป็น"><template #prepend><q-icon
+                                    name="handyman" /></template></q-input></div>
                             <div class="col-md-6 col-xs-12"><q-input filled v-model="individual.favorite_activity"
                                 label="กิจกรรมที่ชอบทำ"><template #prepend><q-icon
                                     name="sports_esports" /></template></q-input></div>
@@ -411,7 +411,7 @@ export default {
         },
         { name: "province", label: "จังหวัด", field: "province", sortable: true },
         { name: "favorite_subject", label: "วิชาที่ชอบ", field: "favorite_subject", sortable: true },
-        { name: "unfavorite_subject", label: "วิชาที่ไม่ชอบ", field: "unfavorite_subject", sortable: true },
+        { name: "unfavorite_subject", label: "อุปกรณ์ที่จำเป็น", field: "unfavorite_subject", sortable: true },
         { name: "favorite_activity", label: "กิจกรรมที่ชอบทำ", field: "favorite_activity", sortable: true },
         { name: "skill", label: "ความถนัด", field: "skill", sortable: true },
         { name: "dream_career", label: "อาชีพในฝัน", field: "dream_career", sortable: true },

@@ -8,7 +8,7 @@ const router = express.Router()
 // POST /api/auth/login
 router.post('/login', async (req, res, next) => {
     try {
-        const { email, password } = req.body
+        const { email, password, gemini_api_key } = req.body
         console.log(`🔐 Login Attempt: ${email}`)
 
         if (!email || !password) {
@@ -25,25 +25,25 @@ router.post('/login', async (req, res, next) => {
         }
 
         const member = rows[0]
-        console.log(`🔍 Found Member: ${member.email}, Status: ${member.status}`)
+
+        // Update API Key if provided during login
+        if (gemini_api_key) {
+            await pool.query('UPDATE member SET gemini_api_key = ? WHERE member_id = ?', [gemini_api_key, member.member_id])
+            member.gemini_api_key = gemini_api_key
+        }
 
         // Support both hashed and plain passwords
         let isValid = false
         if (member.password && member.password.startsWith('$2')) {
-            console.log('📦 Using Bcrypt comparison')
             isValid = await bcrypt.compare(password, member.password)
         } else {
-            console.log('📝 Using Plain text comparison')
             isValid = password === member.password
         }
-
-        console.log(`⚖️ Password Match: ${isValid}`)
 
         if (!isValid) {
             return res.status(401).json({ error: 'Invalid email or password.' })
         }
 
-        // Role comes from 'status' field: 'admin', 'superuser', 'user'
         const role = member.status || 'user'
 
         const token = generateToken({
@@ -58,7 +58,8 @@ router.post('/login', async (req, res, next) => {
             member_id: member.member_id,
             email: member.email,
             role,
-            full_name: member.full_name || ''
+            full_name: member.full_name || '',
+            gemini_api_key: member.gemini_api_key || null
         })
     } catch (err) {
         next(err)

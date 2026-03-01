@@ -1120,7 +1120,7 @@ async function recommendCareer() {
 - ระดับการศึกษา: ${f.degree_name || "-"}
 - สาขาวิชา: ${f.department_name || "-"}
 - วิชาที่ชอบ: ${f.favoriteSubject || "-"}
-- วิชาที่ไม่ชอบ: ${f.unfavoriteSubject || "-"}
+- อุปกรณ์ที่จำเป็น: ${f.unfavoriteSubject || "-"}
 - กิจกรรมที่ชอบทำ: ${f.favoriteActivity || "-"}
 - อาชีพในฝัน: ${f.dreamCareer || "-"}
 - ความถนัด/ทักษะเด่น: ${f.skill || "-"}
@@ -1147,7 +1147,10 @@ ${profileText}
       { role: "user", content: prompt }
     ];
 
-    const res = await axios.post(CHAT_URL, { messages }, { timeout: 300000 });
+    const res = await axios.post(CHAT_URL, {
+      messages,
+      gemini_api_key: localStorage.getItem("gemini_api_key")
+    }, { timeout: 300000 });
     const reply = res?.data?.reply || "";
     const recommendations = safeParseJsonArray(reply);
 

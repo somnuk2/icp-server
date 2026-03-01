@@ -321,7 +321,7 @@
                               </div>
                               <div class="col-md-6 col-xs-12 q-pa-xs">
                                 <q-input standout bottom-slots filled v-model="individual.unfavorite_subject"
-                                  label="วิชาที่ไม่ชอบ" />
+                                  label="อุปกรณ์ที่จำเป็น" />
                               </div>
                               <div class="col-md-6 col-xs-12 q-pa-xs">
                                 <q-input standout bottom-slots filled v-model="individual.favorite_activity"

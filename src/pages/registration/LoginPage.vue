@@ -34,6 +34,13 @@
                           <q-icon :name="visibilityIcon" @click="switchVisibility" class="cursor-pointer" />
                         </template>
                       </q-input>
+
+                      <q-input square clearable v-model="input.gemini_api_key" :type="passwordFieldType"
+                        label="Gemini API Key (Option):" placeholder="ใส่รหัสเพื่อใช้งาน AI ส่วนตัว">
+                        <template v-slot:prepend>
+                          <q-icon name="auto_awesome" />
+                        </template>
+                      </q-input>
                       <q-input ref="repassword" v-if="register" square clearable v-model="repassword"
                         :type="passwordFieldType" lazy-rules :rules="[this.required, this.short, this.diffPassword]"
                         label="ใส่รหัสผ่านซ้ำ">
@@ -82,6 +89,7 @@ export default {
       input: {
         username: "",
         password: "",
+        gemini_api_key: "",
       },
       $q: useQuasar(),
     };
@@ -98,12 +106,16 @@ export default {
         const response = await axios.post(`${this.apiUrl}/auth/login`, {
           email: this.input.username.trim(),
           password: this.input.password.trim(),
+          gemini_api_key: this.input.gemini_api_key?.trim() || null,
         });
 
         const { token, member_id, full_name, role } = response.data;
 
         if (token) {
           localStorage.setItem("token", token);
+          if (response.data.gemini_api_key) {
+            localStorage.setItem("gemini_api_key", response.data.gemini_api_key);
+          }
           this.storeCommit(member_id, full_name, role);
         }
       } catch (error) {

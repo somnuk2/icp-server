@@ -100,14 +100,19 @@ const MODEL_NAME = process.env.AI_MODEL_NAME || 'qwen2:1.5b'
 
 app.post('/api/chat', async (req, res) => {
   try {
-    const { messages } = req.body
+    const { messages, gemini_api_key: userApiKey } = req.body
     const userPrompt = messages[messages.length - 1]?.content || ''
+
+    // Check which key to use: 1. User specified key 2. Env default key
+    const activeApiKey = userApiKey || GEMINI_API_KEY
+
     console.log(`🤖 AI Request [${AI_MODE.toUpperCase()}]: ${userPrompt.substring(0, 50)}...`)
+    if (userApiKey) console.log('🔑 Using User-provided Gemini API Key')
 
     // Mode 1: Google Gemini (Primary if configured)
-    if (AI_MODE === 'gemini' && GEMINI_API_KEY) {
+    if (AI_MODE === 'gemini' && activeApiKey) {
       try {
-        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY)
+        const genAI = new GoogleGenerativeAI(activeApiKey)
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" })
 
         // Convert messages to Gemini format (System prompt + History + Current User Prompt)

@@ -333,7 +333,7 @@
                                 </div>
                                 <div class="col-md-6 col-xs-12 q-pa-xs">
                                   <q-input standout bottom-slots filled v-model="individual.unfavorite_subject"
-                                    label="วิชาที่ไม่ชอบ" />
+                                    label="อุปกรณ์ที่จำเป็น" />
                                 </div>
                                 <div class="col-md-6 col-xs-12 q-pa-xs">
                                   <q-input standout bottom-slots filled v-model="individual.favorite_activity"
@@ -708,7 +708,7 @@ export default {
         },
         { name: "province", label: "จังหวัด", field: "province", sortable: true },
         { name: "favorite_subject", label: "วิชาที่ชอบ", field: "favorite_subject", sortable: true },
-        { name: "unfavorite_subject", label: "วิชาที่ไม่ชอบ", field: "unfavorite_subject", sortable: true },
+        { name: "unfavorite_subject", label: "อุปกรณ์ที่จำเป็น", field: "unfavorite_subject", sortable: true },
         { name: "favorite_activity", label: "กิจกรรมที่ชอบทำ", field: "favorite_activity", sortable: true },
         { name: "skill", label: "ความถนัด", field: "skill", sortable: true },
         { name: "dream_career", label: "อาชีพในฝัน", field: "dream_career", sortable: true },
