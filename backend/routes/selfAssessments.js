@@ -43,7 +43,7 @@ router.get('/', authenticate, async (req, res, next) => {
         let rows
         if (req.user.role === 'user') {
             ;[rows] = await pool.query(JOIN_QUERY + ' WHERE mem.member_id = ?', [req.user.member_id])
-        } else if (req.user.role === 'superuser') {
+        } else if (req.user.role === 'suser') {
             ;[rows] = await pool.query(JOIN_QUERY + ' WHERE (ind.advisor_id = ? OR mem.member_id = ?) ORDER BY sef.self_assessment_id', [req.user.member_id, req.user.member_id])
         } else {
             ;[rows] = await pool.query(JOIN_QUERY + ' ORDER BY sef.self_assessment_id')

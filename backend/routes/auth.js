@@ -69,7 +69,7 @@ router.post('/login', async (req, res, next) => {
 // POST /api/auth/register
 router.post('/register', async (req, res, next) => {
     try {
-        const { email, password, full_name, status } = req.body
+        const { email, password, full_name, status, created_by, is_verified } = req.body
         if (!email || !password) {
             return res.status(400).json({ error: 'Email and password are required.' })
         }
@@ -82,8 +82,8 @@ router.post('/register', async (req, res, next) => {
 
         const hashed = await bcrypt.hash(password, 10)
         const [result] = await pool.query(
-            'INSERT INTO member (email, password, full_name, status, is_verified) VALUES (?, ?, ?, ?, ?)',
-            [email, hashed, full_name || '', status || 'user', 1] // Set is_verified=1 for now as per previous logic or if email verification is handled separately
+            'INSERT INTO member (email, password, full_name, status, is_verified, created_by) VALUES (?, ?, ?, ?, ?, ?)',
+            [email, hashed, full_name || '', status || 'user', is_verified !== undefined ? is_verified : 1, created_by || null]
         )
 
         res.status(201).json({ message: 'Registered successfully.', member_id: result.insertId })

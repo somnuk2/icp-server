@@ -33,8 +33,8 @@ router.get('/years', authenticate, async (req, res, next) => {
       JOIN qa_plan_career qpc ON sef.qa_plan_career_id = qpc.qa_plan_career_id
       JOIN plan_career pla ON qpc.plan_career_id = pla.plan_career_id
       JOIN member mem ON pla.member_id = mem.member_id
-      WHERE (pla.member_id = ? AND ? != 'superuser' AND ? != 'admin')
-         OR (mem.created_by = ? AND ? = 'superuser')
+      WHERE (pla.member_id = ? AND ? != 'suser' AND ? != 'admin')
+         OR (mem.created_by = ? AND ? = 'suser')
          OR (? = 'admin')
       ORDER BY Year DESC
     `, [member_id, req.user.role, req.user.role, req.user.member_id, req.user.role, req.user.role])
@@ -54,8 +54,8 @@ router.get('/months', authenticate, async (req, res, next) => {
       JOIN qa_plan_career qpc ON sef.qa_plan_career_id = qpc.qa_plan_career_id
       JOIN plan_career pla ON qpc.plan_career_id = pla.plan_career_id
       JOIN member mem ON pla.member_id = mem.member_id
-      WHERE (pla.member_id = ? AND ? != 'superuser' AND ? != 'admin')
-         OR (mem.created_by = ? AND ? = 'superuser')
+      WHERE (pla.member_id = ? AND ? != 'suser' AND ? != 'admin')
+         OR (mem.created_by = ? AND ? = 'suser')
          OR (? = 'admin')
       ORDER BY M ASC
     `, [member_id, req.user.role, req.user.role, req.user.member_id, req.user.role, req.user.role])
@@ -227,7 +227,7 @@ router.get('/full-names', authenticate, async (req, res, next) => {
         if (req.user.role === 'user') {
             sql += ' WHERE pla.member_id = ?'
             params.push(req.user.member_id)
-        } else if (req.user.role === 'superuser') {
+        } else if (req.user.role === 'suser') {
             sql += ' LEFT JOIN individual ind ON mem.member_id = ind.member_id WHERE ind.advisor_id = ? OR mem.member_id = ?'
             params.push(req.user.member_id, req.user.member_id)
         }
@@ -248,7 +248,7 @@ router.get('/career-names', authenticate, async (req, res, next) => {
         if (req.user.role === 'user') {
             sql += ' WHERE pla.member_id = ?'
             params.push(req.user.member_id)
-        } else if (req.user.role === 'superuser') {
+        } else if (req.user.role === 'suser') {
             sql += ' LEFT JOIN individual ind ON mem.member_id = ind.member_id WHERE ind.advisor_id = ? OR mem.member_id = ?'
             params.push(req.user.member_id, req.user.member_id)
         }
@@ -269,7 +269,7 @@ router.get('/qualification-names', authenticate, async (req, res, next) => {
         if (req.user.role === 'user') {
             sql += ' WHERE pla.member_id = ?'
             params.push(req.user.member_id)
-        } else if (req.user.role === 'superuser') {
+        } else if (req.user.role === 'suser') {
             sql += ' LEFT JOIN individual ind ON mem.member_id = ind.member_id WHERE ind.advisor_id = ? OR mem.member_id = ?'
             params.push(req.user.member_id, req.user.member_id)
         }
@@ -313,7 +313,7 @@ router.post('/filter-month', authenticate, async (req, res, next) => {
         if (req.user.role === 'user') {
             sql += ' AND pla.member_id = ?'
             params.push(req.user.member_id)
-        } else if (req.user.role === 'superuser') {
+        } else if (req.user.role === 'suser') {
             // ใช้ความสัมพันธ์ Advisor ID จากตาราง individual
             sql += ' LEFT JOIN individual ind ON mem.member_id = ind.member_id'
             sql += ' AND (ind.advisor_id = ? OR mem.member_id = ?)'

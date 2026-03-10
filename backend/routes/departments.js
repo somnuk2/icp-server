@@ -9,7 +9,7 @@ const router = express.Router()
 router.get('/', authenticate, async (req, res, next) => {
     try {
         const { degree_id } = req.query
-        let sql = `SELECT dep.*, deg.degree_name, f.faculty_name, i.institute_name
+        let sql = `SELECT dep.*, deg.degree_name, deg.faculty_id, f.faculty_name, f.institute_id, i.institute_name
        FROM department dep
        LEFT JOIN degree  deg ON dep.degree_id    = deg.degree_id
        LEFT JOIN faculty f   ON deg.faculty_id   = f.faculty_id
@@ -27,13 +27,29 @@ router.get('/', authenticate, async (req, res, next) => {
     } catch (err) { next(err) }
 })
 
+// GET /api/departments/:id
+router.get('/:id', authenticate, async (req, res, next) => {
+    try {
+        const [rows] = await pool.query(`
+            SELECT dep.*, deg.degree_name, deg.faculty_id, f.faculty_name, f.institute_id, i.institute_name
+            FROM department dep
+            LEFT JOIN degree  deg ON dep.degree_id    = deg.degree_id
+            LEFT JOIN faculty f   ON deg.faculty_id   = f.faculty_id
+            LEFT JOIN institute i ON f.institute_id   = i.institute_id
+            WHERE dep.department_id = ?
+        `, [req.params.id])
+        if (rows.length === 0) return res.status(404).json({ error: 'Not found.' })
+        res.json(rows[0])
+    } catch (err) { next(err) }
+})
+
 // POST /api/departments - admin only
 router.post('/', authenticate, authorize(['admin']), async (req, res, next) => {
     try {
         const { department_id, department_name, degree_id } = req.body
         await pool.query(
-            'INSERT INTO department (department_id, department_name, degree_id) VALUES (?, ?, ?)',
-            [department_id, department_name, degree_id]
+            'INSERT INTO department (department_name, degree_id) VALUES (?, ?)',
+            [department_name, degree_id]
         )
         res.status(201).json({ message: 'Insert Complete' })
     } catch (err) { next(err) }

@@ -347,526 +347,79 @@ export default {
       this.individual.institute_name = "";
     },
     submitForm() {
-      if (!this.isEdit) {
-        this.$q
-          .dialog({
-            title: "ยืนยัน",
-            message: "คุณต้องการบันทึกการเพิ่มข้อมูลหรือไม่?",
-            cancel: true,
-            persistent: true,
-          })
-          .onOk(() => {
-            console.log("บันทึกข้อมูล member:", this.member.value);
-            const newindividual = {
-              institute_name: this.individual.institute_name,
-            };
-            this.$emit("saveData", newindividual);
-
-            axios
-              .post(this.url_api_individual, {
-                action: "insert",
-                institute_name: this.individual.institute_name,
-              })
-              .then((res) => {
-                console.log("บันทึกข้อมูล:", res.data);
-                this.getUpdate();
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-          });
-      } else {
-        this.$q
-          .dialog({
-            title: "ยืนยัน",
-            message: "คุณต้องการบันทึกการเแก้ไขข้อมูลหรือไม่?",
-            cancel: true,
-            persistent: true,
-          })
-          .onOk(() => {
-            console.log("บันทึกการแก้ไข project:", this.member.value);
-            axios
-              .post(this.url_api_individual, {
-                action: "update",
-                institute_id: this.individual.institute_id,
-                institute_name: this.individual.institute_name,
-              })
-              .then((response) => {
-                console.log("บันทึกการแก้ไข:", response.data);
-                this.isEdit = false;
-                console.log("isEdit:", this.isEdit);
-                this.btnLabel = "เพิ่มข้อมูล";
-                this.getUpdate();
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-          })
-          .onCancel(() => {
-            this.isEdit = false;
-            console.log("isEdit:", this.isEdit);
-            this.btnLabel = "เพิ่มข้อมูล";
-          });
-      }
+      const message = this.isEdit ? "คุณต้องการบันทึกการแก้ไขข้อมูลหรือไม่?" : "คุณต้องการบันทึกการเพิ่มข้อมูลหรือไม่?";
+      this.$q.dialog({
+        title: "ยืนยัน",
+        message: message,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        try {
+          const payload = {
+            institute_name: this.individual.institute_name,
+          };
+          if (!this.isEdit) {
+            await axios.post(`${getRestApiUrl(this.$store)}/institutes`, payload);
+            this.$q.notify({ message: "บันทึกข้อมูลสำเร็จ", color: "positive" });
+          } else {
+            await axios.put(`${getRestApiUrl(this.$store)}/institutes/${this.individual.institute_id}`, payload);
+            this.$q.notify({ message: "แก้ไขข้อมูลสำเร็จ", color: "positive" });
+          }
+          this.resetForm();
+          this.getUpdate();
+        } catch (error) {
+          this.$q.notify({ message: "Error: " + (error.response?.data?.error || error.message), color: "negative" });
+        }
+      });
     },
-    editUser(institute_id) {
-      console.log("Edit data");
+    async editUser(institute_id) {
       this.btnLabel = "แก้ไขข้อมูล";
       this.isEdit = true;
-      var self = this;
-      axios
-        .post(this.url_api_individual, {
-          action: "edit",
-          institute_id: institute_id,
-        })
-        .then(function (response) {
-          console.log("Edit data:", response.data);
-          self.individual.institute_id = response.data.institute_id;
-          self.individual.institute_name = response.data.institute_name;
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      try {
+        const res = await axios.get(`${getRestApiUrl(this.$store)}/institutes/${institute_id}`);
+        const item = res.data;
+        if (item) {
+          this.individual.institute_id = item.institute_id;
+          this.individual.institute_name = item.institute_name;
+        }
+      } catch (error) {
+        this.$q.notify({ message: "Error: " + error.message, color: "negative" });
+      }
     },
     deleteUser(institute_id, institute_name) {
-      this.$q
-        .dialog({
-          title: "ยืนยัน",
-          message:
-            "คุณต้องการลบ [ " +
-            institute_id +
-            "-" +
-            institute_name +
-            " ] หรือไม่ ?",
-          cancel: true,
-          persistent: true,
-        })
-        .onOk(() => {
-          var self = this;
-          axios
-            .post(this.url_api_individual, {
-              action: "delete",
-              institute_id: institute_id,
-            })
-            .then(function (response) {
-              console.log("delete:", response.data);
-              self.getUpdate();
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        });
-    },
-    getUpdate() {
-      console.log("get update-member_id:");
-      var self = this;
-      axios
-        .post(this.url_api_individual, {
-          action: "getall",
-        })
-        .then(function (res) {
-          console.log("q-table:", res);
-          self.individuals1 = Array.isArray(res.data) ? res.data : [];
-          console.log("individuals1:", self.individuals1);
-        })
-        .finally(() => {
-          self.loading = false;
-        });
-    },
-    getMember() {
-      console.log("Get Member:");
-      var self = this;
-      axios
-        .get(`${getRestApiUrl(this.$store)}/members/options`)
-        .then(function (res) {
-          console.log("name:", res);
-          var member_id = res.data.map((item) => item.member_id);
-          var full_name = res.data.map((item) => item.full_name);
-          var status = res.data.map((item) => item.status);
-          self.members.options.splice(0);
-          for (var i = 0; i < member_id.length; i++) {
-            self.members.options.push({
-              label: full_name[i],
-              value: member_id[i],
-              description: status[i],
-            });
-          }
-          self.members_.options = self.members.options;
-        })
-        .finally(() => {
-          self.loading = false;
-        });
-    },
-    onNext() {
-      this.$router.replace({ name: "FormPlanCareer" });
-    },
-    onPrevious() { },
-    getInstitutes() {
-      console.log(" แสดงข้อมูลสถาบัน ");
-      var self = this;
-      axios
-        .get(`${getRestApiUrl(this.$store)}/institutes`)
-        .then(function (res) {
-          console.log("ข้อมูลสถาบัน:", res.data);
-          var institute_id = res.data.map((item) => item.institute_id);
-          var institute_name = res.data.map((item) => item.institute_name);
-          self.institutes.options.splice(0);
-          for (var i = 0; i < institute_id.length; i++) {
-            self.institutes.options.push({
-              label: institute_name[i],
-              value: institute_id[i],
-            });
-          }
-          self.institutes_.options = self.institutes.options;
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    getFacultys() {
-      console.log(" แสดงข้อมูลคณะ: ", this.institute.value);
-      var self = this;
-      axios
-        .get(`${getRestApiUrl(this.$store)}/faculties`, {
-          params: { institute_id: this.institute.value }
-        })
-        .then(function (res) {
-          console.log("ข้อมูลคณะ:", res.data);
-          var faculty_id = res.data.map((item) => item.faculty_id);
-          var faculty_name = res.data.map((item) => item.faculty_name);
-          self.facultys.options.splice(0);
-          for (var i = 0; i < faculty_id.length; i++) {
-            self.facultys.options.push({
-              label: faculty_name[i],
-              value: faculty_id[i],
-            });
-          }
-          self.facultys_.options = self.facultys.options;
-          console.log("ข้อมูล ชื่อคณะ:", self.facultys.options[0].label);
-          console.log("ข้อมูล รหัสคณะ:", self.facultys.options[0].value);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    getDegrees() {
-      console.log(" แสดงข้อมูลระดับการศึกษา ");
-      var self = this;
-      axios
-        .get(`${getRestApiUrl(this.$store)}/degrees`, {
-          params: { faculty_id: this.faculty.value }
-        })
-        .then(function (res) {
-          console.log("ข้อมูลระดับการศึกษา:", res.data);
-          var degree_id = res.data.map((item) => item.degree_id);
-          var degree_name = res.data.map((item) => item.degree_name);
-          self.degrees.options.splice(0);
-          for (var i = 0; i < degree_id.length; i++) {
-            self.degrees.options.push({
-              label: degree_name[i],
-              value: degree_id[i],
-            });
-          }
-          self.degrees_.options = self.degrees.options;
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    getDepartments() {
-      console.log(" แสดงข้อมูลสาขาวิชา ");
-      var self = this;
-      axios
-        .get(`${getRestApiUrl(this.$store)}/departments`, {
-          params: { degree_id: this.degree.value }
-        })
-        .then(function (res) {
-          console.log("ข้อมูลสาขาวิชา:", res.data);
-          var department_id = res.data.map((item) => item.department_id);
-          var department_name = res.data.map((item) => item.department_name);
-          self.departments.options.splice(0);
-          for (var i = 0; i < department_id.length; i++) {
-            self.departments.options.push({
-              label: department_name[i],
-              value: department_id[i],
-            });
-          }
-          self.departments_.options = self.departments.options;
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    getDisabilitys() {
-      console.log(" แสดงข้อมูลสาขาวิชา ");
-      var self = this;
-      axios
-        .get(`${getRestApiUrl(this.$store)}/disabilities`) // Adjust if plural/singular
-        .then(function (res) {
-          console.log("ข้อมูลชนิดความพิการ:", res.data);
-          var disability_id = res.data.map((item) => item.disability_id);
-          var disability_name = res.data.map((item) => item.disability_name);
-          self.disabilitys.options.splice(0);
-          for (var i = 0; i < disability_id.length; i++) {
-            self.disabilitys.options.push({
-              label: disability_name[i],
-              value: disability_id[i],
-            });
-          }
-          self.disabilitys_.options = self.disabilitys.options;
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    getProjects() {
-      console.log(" แสดงข้อมูลโครงการ ");
-      var self = this;
-      axios
-        .get(`${getRestApiUrl(this.$store)}/projects`)
-        .then(function (res) {
-          console.log("ข้อมูลโครงการ:", res.data);
-          var project_id = res.data.map((item) => item.project_id);
-          var project_name = res.data.map((item) => item.project_name);
-          self.projects.options.splice(0);
-          for (var i = 0; i < project_id.length; i++) {
-            self.projects.options.push({
-              label: project_name[i],
-              value: project_id[i],
-            });
-          }
-          self.projects_.options = self.projects.options;
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    getAdvisors_() {
-      console.log(" แสดงข้อมูลอาจารย์ที่ปรึกษา ");
-      var self = this;
-      axios
-        .post(this.url_api_advisor, {
-          action: "getAdvisors",
-        })
-        .then(function (res) {
-          console.log("ข้อมูลอาจารย์ที่ปรึกษา:", res.data);
-          var advisor_id = res.data.map((item) => item.advisor_id);
-          var advisor_name = res.data.map((item) => item.advisor_name);
-          self.advisors.options.splice(0);
-          for (var i = 0; i < advisor_id.length; i++) {
-            self.advisors.options.push({
-              label: advisor_name[i],
-              value: advisor_id[i],
-            });
-          }
-          self.advisors_.options = self.advisors.options;
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    getAdvisors() {
-      console.log(" แสดงข้อมูลอาจารย์ที่ปรึกษา ");
-      var self = this;
-      axios
-        .post(this.url_api_advisor, {
-          action: "getAdvisors",
-        })
-        .then(function (res) {
-          console.log("ข้อมูลอาจารย์ที่ปรึกษา:", res.data);
-          var advisor_id = res.data.map((item) => item.member_id);
-          var advisor_name = res.data.map((item) => item.full_name);
-          self.advisors.options.splice(0);
-          for (var i = 0; i < advisor_id.length; i++) {
-            self.advisors.options.push({
-              label: advisor_name[i],
-              value: advisor_id[i],
-            });
-          }
-          self.advisors_.options = self.advisors.options;
-          console.log("ข้อมูลอาจารย์ที่ปรึกษา1:", self.advisors_.options);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    onBirthday(val) {
-      console.log("Thai Date:", val);
-    },
-    onInstituteValueChange(val) {
-      console.log("เลือกสถาบัน:", val.label);
-      console.log("รหัสสถาบัน:", val.value);
-      this.getFacultys();
-    },
-    onFacultyValueChange(val) {
-      console.log("เลือกคณะ:", val.label);
-      console.log("รหัสคณะ:", val.value);
-      this.getDegrees();
-    },
-    onDegreeValueChange(val) {
-      console.log("เลือกระดับการศึกษา:", val.label);
-      console.log("รหัสระดับการศึกษา:", val.value);
-      this.getDepartments();
-    },
-    onDepartmentValueChange(val) {
-      console.log("เลือกสาขาวิชา:", val.label);
-      console.log("รหัสสาขาวิชา:", val.value);
-    },
-    onProjectValueChange(val) {
-      console.log("เลือกโครงการ:", val.label);
-      console.log("รหัสโครงการ:", val.value);
-    },
-    onDisabilityValueChange(val) {
-      console.log("เลือกความพิการ:", val.label);
-      console.log("รหัสความพิการ:", val.value);
-    },
-    filterInstitute(val, update) {
-      if (val === "") {
-        update(() => {
-          this.institutes.options = this.institutes_.options;
-          console.log("institutes_.options:", this.institutes_.options);
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.institutes.options = this.institutes_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-        console.log("institutes_.options:", this.institutes_.options);
+      this.$q.dialog({
+        title: "ยืนยัน",
+        message: `คุณต้องการลบ [ ${institute_name} ] หรือไม่ ?`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        try {
+          await axios.delete(`${getRestApiUrl(this.$store)}/institutes/${institute_id}`);
+          this.$q.notify({ message: "ลบข้อมูลสำเร็จ", color: "positive" });
+          this.getUpdate();
+        } catch (error) {
+          this.$q.notify({ message: "Error: " + error.message, color: "negative" });
+        }
       });
     },
-    filterMember(val, update) {
-      if (val === "") {
-        update(() => {
-          this.members.options = this.members_.options;
-          console.log("members_.options:", this.members_.options);
-        });
-        return;
+    async getUpdate() {
+      this.loading = true;
+      try {
+        const res = await axios.get(`${getRestApiUrl(this.$store)}/institutes`);
+        this.individuals1 = Array.isArray(res.data) ? res.data : [];
+      } catch (error) {
+        this.$q.notify({ message: "Error: " + error.message, color: "negative" });
+      } finally {
+        this.loading = false;
       }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.members.options = this.members_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-        console.log("members_.options:", this.members_.options);
-      });
-    },
-    filterFaculty(val, update) {
-      if (val === "") {
-        update(() => {
-          this.facultys.options = this.facultys_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.facultys.options = this.facultys_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
-    },
-    filterDegree(val, update) {
-      if (val === "") {
-        update(() => {
-          this.degrees.options = this.degrees_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.degrees.options = this.degrees_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
-    },
-    filterDepartment(val, update) {
-      if (val === "") {
-        update(() => {
-          this.departments.options = this.departments_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.departments.options = this.departments_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
-    },
-    filterDisability(val, update) {
-      if (val === "") {
-        update(() => {
-          this.disabilitys.options = this.disabilitys_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.disabilitys.options = this.disabilitys_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
-    },
-    filterProject(val, update) {
-      if (val === "") {
-        update(() => {
-          this.projects.options = this.projects_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.projects.options = this.projects_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
-    },
-    filterAdvisor(val, update) {
-      if (val === "") {
-        update(() => {
-          this.advisors.options = this.advisors_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.advisors.options = this.advisors_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
     },
   },
   mounted() {
     this.getUpdate();
-    this.getMember();
-    this.getInstitutes();
-    this.getFacultys();
-    this.getDegrees();
-    this.getDepartments();
-    this.getDisabilitys();
-    this.getProjects();
-    this.getAdvisors();
   },
-  created() {
-    const restBaseUrl = getRestApiUrl(this.$store);
-    this.url_api_individual = `${restBaseUrl}/individuals`;
-    this.url_api_institute = `${restBaseUrl}/institutes`;
-    this.url_api_disability = `${restBaseUrl}/disabilities`;
-    this.url_api_project = `${restBaseUrl}/projects`;
-    this.url_api_advisor = `${restBaseUrl}/members?role=advisor`;
-    this.url_api_member = `${restBaseUrl}/members`;
-  }
 };
 </script>
+
 <style lang="sass">
 .my-sticky-header-table
   height: 310px

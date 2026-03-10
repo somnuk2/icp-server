@@ -764,7 +764,9 @@ export default {
     async onPlan_career(pc) {
       if (pc) {
         try {
-          const res = await axios.post(`${getRestApiUrl(this.$store)}/qa-plan-careers`, { action: "get_qa_plan_career_by_plan_career_id", plan_career_id: pc.value });
+          const res = await axios.get(`${getRestApiUrl(this.$store)}/qa-plan-careers`, {
+            params: { plan_career_id: pc.value }
+          });
           this.qa_plan_careers.options = res.data.map(i => ({ label: i.qualification_name, value: i.qa_plan_career_id, description: (i.level_description || '') + "\n" + (i.target_name || '') }));
           this.qa_plan_careers_.options = this.qa_plan_careers.options;
         } catch (error) { console.error(error); }

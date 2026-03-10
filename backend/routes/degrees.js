@@ -9,7 +9,7 @@ const router = express.Router()
 router.get('/', authenticate, async (req, res, next) => {
     try {
         const { faculty_id } = req.query
-        let sql = 'SELECT d.*, f.faculty_name, i.institute_name FROM degree d LEFT JOIN faculty f ON d.faculty_id = f.faculty_id LEFT JOIN institute i ON f.institute_id = i.institute_id'
+        let sql = 'SELECT d.*, f.faculty_name, f.institute_id, i.institute_name FROM degree d LEFT JOIN faculty f ON d.faculty_id = f.faculty_id LEFT JOIN institute i ON f.institute_id = i.institute_id'
         const params = []
 
         if (faculty_id) {
@@ -27,7 +27,7 @@ router.get('/', authenticate, async (req, res, next) => {
 router.get('/:id', authenticate, async (req, res, next) => {
     try {
         const [rows] = await pool.query(
-            'SELECT d.*, f.faculty_name, i.institute_name FROM degree d LEFT JOIN faculty f ON d.faculty_id = f.faculty_id LEFT JOIN institute i ON f.institute_id = i.institute_id WHERE d.degree_id = ?',
+            'SELECT d.*, f.faculty_name, f.institute_id, i.institute_name FROM degree d LEFT JOIN faculty f ON d.faculty_id = f.faculty_id LEFT JOIN institute i ON f.institute_id = i.institute_id WHERE d.degree_id = ?',
             [req.params.id]
         )
         if (rows.length === 0) return res.status(404).json({ error: 'Not found.' })

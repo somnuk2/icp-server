@@ -32,6 +32,8 @@ router.get('/', authenticate, async (req, res, next) => {
         let rows
         if (req.user.role === 'user') {
             ;[rows] = await pool.query(FULL_JOIN + ' WHERE ind.member_id = ?', [req.user.member_id])
+        } else if (req.user.role === 'suser') {
+            ;[rows] = await pool.query(FULL_JOIN + ' WHERE ind.advisor_id = ? OR ind.member_id = ? ORDER BY ind.individual_id', [req.user.member_id, req.user.member_id])
         } else {
             ;[rows] = await pool.query(FULL_JOIN + ' ORDER BY ind.individual_id')
         }

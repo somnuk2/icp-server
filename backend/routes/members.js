@@ -6,7 +6,7 @@ import { authorize } from '../middleware/authorize.js'
 
 const router = express.Router()
 
-// GET /api/members - admin/superuser เห็นทั้งหมด, user เห็นตัวเอง
+// GET /api/members - admin/suser เห็นทั้งหมด (ตามเงื่อนไข), user เห็นตัวเอง
 router.get('/', authenticate, async (req, res, next) => {
     try {
         let rows
@@ -110,31 +110,55 @@ router.get('/:id', authenticate, async (req, res, next) => {
 // PUT /api/members/:id
 router.put('/:id', authenticate, async (req, res, next) => {
     try {
-        if (req.user.role === 'user' && req.user.member_id !== parseInt(req.params.id)) {
+        const memberId = parseInt(req.params.id);
+        const { full_name, email, password, status, is_verified } = req.body
+
+        // Check permissions
+        if (req.user.role === 'user' && req.user.member_id !== memberId) {
             return res.status(403).json({ error: 'Access denied.' })
         }
-        const { full_name, email, password, status } = req.body
 
-        if (req.user.role === 'admin' && status) {
-            // Admin can update password and status
-            if (password) {
-                const hashed = await bcrypt.hash(password, 10)
-                await pool.query(
-                    'UPDATE member SET full_name=?, email=?, password=?, status=? WHERE member_id=?',
-                    [full_name, email, hashed, status, req.params.id]
-                )
-            } else {
-                await pool.query(
-                    'UPDATE member SET full_name=?, email=?, status=? WHERE member_id=?',
-                    [full_name, email, status, req.params.id]
-                )
+        if (req.user.role === 'suser') {
+            // Check if suser owns this member or is advisor
+            const [check] = await pool.query(
+                'SELECT member_id FROM member WHERE member_id = ? AND created_by = ?',
+                [memberId, req.user.member_id]
+            );
+            // Also check individual table if advisor
+            const [check2] = await pool.query(
+                'SELECT member_id FROM individual WHERE member_id = ? AND advisor_id = ?',
+                [memberId, req.user.member_id]
+            );
+
+            if (check.length === 0 && check2.length === 0 && req.user.member_id !== memberId) {
+                return res.status(403).json({ error: 'Access denied. You do not manage this member.' })
             }
-        } else {
-            await pool.query(
-                'UPDATE member SET full_name=?, email=? WHERE member_id=?',
-                [full_name, email, req.params.id]
-            )
         }
+
+        // Prepare updates
+        let query = 'UPDATE member SET full_name=?, email=?'
+        let params = [full_name, email]
+
+        if (password) {
+            const hashed = await bcrypt.hash(password, 10)
+            query += ', password=?'
+            params.push(hashed)
+        }
+
+        if (status && (req.user.role === 'admin' || req.user.role === 'suser')) {
+            query += ', status=?'
+            params.push(status)
+        }
+
+        if (is_verified !== undefined && (req.user.role === 'admin' || req.user.role === 'suser')) {
+            query += ', is_verified=?'
+            params.push(is_verified)
+        }
+
+        query += ' WHERE member_id=?'
+        params.push(memberId)
+
+        await pool.query(query, params)
         res.json({ message: 'Update Complete' })
     } catch (err) { next(err) }
 })

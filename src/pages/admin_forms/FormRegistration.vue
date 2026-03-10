@@ -354,6 +354,7 @@ export default {
           password: this.member.password,
           status: this.member_role.value,
           is_verified: this.member.is_verified,
+          created_by: this.$store.getters.myMember_id,
         });
         this.$q.notify({ message: "เพิ่มสมาชิกสำเร็จ", color: "positive" });
         this.getUpdate();

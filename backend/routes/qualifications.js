@@ -19,8 +19,20 @@ router.get('/', authenticate, async (req, res, next) => {
          WHERE pc.member_id = ?`,
                 [req.user.member_id]
             )
+        } else if (req.user.role === 'suser') {
+            ;[rows] = await pool.query(
+                `SELECT qa_pc.*, qa.qualification_name, car.career_name
+         FROM qa_plan_career as qa_pc
+         INNER JOIN qualification as qa ON qa_pc.qualification_id = qa.qualification_id
+         INNER JOIN plan_career as pc ON qa_pc.plan_career_id = pc.plan_career_id
+         INNER JOIN career as car ON pc.career_id = car.career_id
+         INNER JOIN member as mem ON pc.member_id = mem.member_id
+         LEFT JOIN individual as ind ON mem.member_id = ind.member_id
+         WHERE ind.advisor_id = ? OR mem.member_id = ?`,
+                [req.user.member_id, req.user.member_id]
+            )
         } else {
-            // PHP version of getall for admin/superuser
+            // admin เห็นทั้งหมด
             ;[rows] = await pool.query(
                 `SELECT qa_pc.*, qa.qualification_name, car.career_name
          FROM qa_plan_career as qa_pc
