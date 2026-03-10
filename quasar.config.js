@@ -200,7 +200,7 @@ export default defineConfig((ctx) => {
       },
       builder: {
         // https://www.electron.build/configuration/configuration
-        appId: 'icp-2025'
+        appId: 'icp-2026-with-Generative-AI'
       }
     },
 

@@ -1,8 +1,8 @@
 {
-  "name": "icp-2025",
+  "name": "icp-2026-with-generative-ai",
   "version": "0.0.1",
   "description": "icp project",
-  "productName": "icp-2025",
+  "productName": "icp-2026-with-Generative-AI",
   "author": "somnuk2 <somnuk@mju.ac.th>",
   "private": true,
   "type": "module",

@@ -1,4 +1,4 @@
-# icp-2025 (icp-2025)
+# icp-2026-with-Generative-AI (icp-2026-with-Generative-AI)
 
 icp project
 
