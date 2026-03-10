@@ -265,7 +265,7 @@ export default {
     async getUpdate() {
       this.loading = true;
       try {
-        const res = await axios.get(`${getRestApiUrl(this.$store)}/members/created_by/${this.$store.getters.myMember_id}`);
+        const res = await axios.get(`${getRestApiUrl(this.$store)}/members`);
         this.members1 = Array.isArray(res.data) ? res.data : [];
       } catch (error) { console.error(error); }
       finally { this.loading = false; }

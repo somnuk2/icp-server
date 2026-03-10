@@ -15,14 +15,14 @@ router.get('/', authenticate, async (req, res, next) => {
                 'SELECT member_id, full_name, email, status, is_verified FROM member WHERE member_id = ?',
                 [req.user.member_id]
             )
-        } else if (req.user.role === 'superuser') {
+        } else if (req.user.role === 'suser') {
             ;[rows] = await pool.query(`
                 SELECT m.member_id, m.full_name, m.email, m.status, m.is_verified, m.created_by
                 FROM member m
                 LEFT JOIN individual i ON m.member_id = i.member_id
-                WHERE i.advisor_id = ? OR m.member_id = ?
+                WHERE i.advisor_id = ? OR m.member_id = ? OR m.created_by = ?
                 ORDER BY m.member_id
-            `, [req.user.member_id, req.user.member_id])
+            `, [req.user.member_id, req.user.member_id, req.user.member_id])
         } else {
             ;[rows] = await pool.query(
                 'SELECT member_id, full_name, email, status, is_verified, created_by FROM member ORDER BY member_id'
