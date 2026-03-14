@@ -832,17 +832,23 @@ async function deleteItem(row) {
     const { plan_count, assessment_count } = resCheck.data;
     const hasDeps = plan_count > 0 || assessment_count > 0;
 
-    let message = `ต้องการลบข้อมูลคุณสมบัติ "${row.qualification_name}" ของอาชีพ "${row.career_name}" หรือไม่?`;
     if (hasDeps) {
-      message += `\n⚠️ ตรวจพบข้อมูลที่เกี่ยวข้อง:`;
-      if (plan_count > 0) message += `\n- แผนการพัฒนา ${plan_count} รายการ`;
-      if (assessment_count > 0) message += `\n- ผลการประเมินและหลักฐาน ${assessment_count} รายการ`;
-      message += `\n\nข้อมูลเหล่านี้จะถูกลบออกทั้งหมด คุณยืนยันที่จะลบหรือไม่?`;
+      let msg = `ไม่สามารถลบคุณสมบัติ "${row.qualification_name}" ได้ เนื่องจากมีข้อมูลที่เกี่ยวข้อง:\n`;
+      if (plan_count > 0) msg += `- แผนการพัฒนา ${plan_count} รายการ\n`;
+      if (assessment_count > 0) msg += `- ผลการประเมินและหลักฐาน ${assessment_count} รายการ\n`;
+      msg += "\nกรุณาลบข้อมูลทักษะ/แผน/ผลประเมินที่เกี่ยวข้องออกให้หมดก่อน";
+
+      $q.dialog({
+        title: "ไม่สามารถลบได้",
+        message: msg,
+        ok: { label: 'รับทราบ', color: 'primary' }
+      });
+      return;
     }
 
     $q.dialog({
       title: "ยืนยันการลบ",
-      message: message,
+      message: `ต้องการลบข้อมูลคุณสมบัติ "${row.qualification_name}" ของอาชีพ "${row.career_name}" หรือไม่?`,
       cancel: true,
       persistent: true,
       ok: { label: 'ยืนยันการลบ', color: 'negative' }
@@ -930,17 +936,23 @@ async function deleteSelected() {
     const { plan_count, assessment_count } = resCheck.data;
     const hasDeps = plan_count > 0 || assessment_count > 0;
 
-    let message = `ต้องการลบข้อมูลคุณสมบัติที่เลือกทั้งหมด ${selectedIds.length} รายการหรือไม่?`;
     if (hasDeps) {
-      message += `\n⚠️ ตรวจพบข้อมูลที่เกี่ยวข้องในรายการที่เลือก:`;
-      if (plan_count > 0) message += `\n- แผนการพัฒนา ${plan_count} รายการ`;
-      if (assessment_count > 0) message += `\n- ผลการประเมินและหลักฐาน ${assessment_count} รายการ`;
-      message += `\n\nข้อมูลเหล่านี้จะถูกลบออกทั้งหมด คุณยืนยันที่จะลบหรือไม่?`;
+      let msg = `ไม่สามารถลบรายการที่เลือกได้ เนื่องจากตรวจพบข้อมูลที่เกี่ยวข้อง:\n`;
+      if (plan_count > 0) msg += `- แผนการพัฒนา ${plan_count} รายการ\n`;
+      if (assessment_count > 0) msg += `- ผลการประเมินและหลักฐาน ${assessment_count} รายการ\n`;
+      msg += "\nกรุณาลบข้อมูลที่เกี่ยวข้องออกให้หมดก่อนทำการลบแบบกลุ่ม";
+
+      $q.dialog({
+        title: "ไม่สามารถลบแบบกลุ่มได้",
+        message: msg,
+        ok: { label: 'รับทราบ', color: 'primary' }
+      });
+      return;
     }
 
     $q.dialog({
       title: "ยืนยันการลบแบบกลุ่ม",
-      message: message,
+      message: `ต้องการลบข้อมูลคุณสมบัติที่เลือกทั้งหมด ${selectedIds.length} รายการหรือไม่?`,
       cancel: true,
       persistent: true,
       ok: { label: 'ยืนยันการลบ', color: 'negative' }

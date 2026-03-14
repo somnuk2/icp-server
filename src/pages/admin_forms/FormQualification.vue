@@ -775,45 +775,101 @@ export default {
       }
     },
     async onDelete(qa_plan_career_id, career_name, qualification_name) {
-      this.$q.dialog({
-        title: "ยืนยัน",
-        message: `คุณต้องการลบคุณสมบัติ [ ${qualification_name} ] อาชีพ [ ${career_name} ] หรือไม่?`,
-        persistent: true,
-        cancel: true,
-      }).onOk(async () => {
-        try {
-          await axios.delete(`${getRestApiUrl(this.$store)}/qa-plan-careers/${qa_plan_career_id}`);
-          this.$q.notify({ message: "ลบข้อมูลสำเร็จ", color: "positive" });
-          await this.getUpdateQualification();
-        } catch (error) {
-          this.$q.notify({ message: "Error: " + error.message, color: "negative" });
+      try {
+        // Check dependencies
+        const resCheck = await axios.post(`${getRestApiUrl(this.$store)}/qa-plan-careers/check-dependencies`, {
+          id: qa_plan_career_id,
+          type: 'single'
+        });
+
+        const { plan_count, assessment_count } = resCheck.data;
+        const hasDeps = plan_count > 0 || assessment_count > 0;
+
+        if (hasDeps) {
+          let msg = `ไม่สามารถลบคุณสมบัติ "${qualification_name}" ได้ เนื่องจากมีข้อมูลที่เกี่ยวข้อง:\n`;
+          if (plan_count > 0) msg += `- แผนการพัฒนา ${plan_count} รายการ\n`;
+          if (assessment_count > 0) msg += `- ผลการประเมินและหลักฐาน ${assessment_count} รายการ\n`;
+          msg += "\nกรุณาลบข้อมูลทักษะ/แผน/ผลประเมินที่เกี่ยวข้องออกให้หมดก่อน";
+
+          this.$q.dialog({
+            title: "ไม่สามารถลบได้",
+            message: msg,
+            ok: { label: 'รับทราบ', color: 'primary' }
+          });
+          return;
         }
-      });
+
+        this.$q.dialog({
+          title: "ยืนยัน",
+          message: `คุณต้องการลบคุณสมบัติ [ ${qualification_name} ] อาชีพ [ ${career_name} ] หรือไม่?`,
+          persistent: true,
+          cancel: true,
+        }).onOk(async () => {
+          try {
+            await axios.delete(`${getRestApiUrl(this.$store)}/qa-plan-careers/${qa_plan_career_id}`);
+            this.$q.notify({ message: "ลบข้อมูลสำเร็จ", color: "positive" });
+            await this.getUpdateQualification();
+          } catch (error) {
+            this.$q.notify({ message: "Error: " + error.message, color: "negative" });
+          }
+        });
+      } catch (error) {
+        console.error("Dependency check failed:", error);
+        this.$q.notify({ type: "negative", message: "ตรวจสอบข้อมูลที่เกี่ยวข้องไม่สำเร็จ" });
+      }
     },
     async deleteSelected() {
       const selectedIds = this.selectedRows.map((row) => row.qa_plan_career_id);
       if (selectedIds.length === 0) return;
 
-      this.$q
-        .dialog({
-          title: "ยืนยันการลบแบบกลุ่ม",
-          message: `ต้องการลบข้อมูลที่เลือกทั้งหมด ${selectedIds.length} รายการหรือไม่?`,
-          persistent: true,
-          cancel: true,
-        })
-        .onOk(async () => {
-          try {
-            await axios.post(`${getRestApiUrl(this.$store)}/qa-plan-careers/bulk-delete`, {
-              qa_plan_career_ids: selectedIds,
-            });
-            this.$q.notify({ type: "positive", message: "ลบข้อมูลสำเร็จ" });
-            this.selectedRows = [];
-            this.getUpdateQualification();
-          } catch (error) {
-            console.error(error);
-            this.$q.notify({ type: "negative", message: "ลบข้อมูลไม่สำเร็จ" });
-          }
+      try {
+        // Check dependencies for multiple records
+        const resCheck = await axios.post(`${getRestApiUrl(this.$store)}/qa-plan-careers/check-dependencies`, {
+          type: 'bulk',
+          ids: selectedIds
         });
+
+        const { plan_count, assessment_count } = resCheck.data;
+        const hasDeps = plan_count > 0 || assessment_count > 0;
+
+        if (hasDeps) {
+          let msg = `ไม่สามารถลบรายการที่เลือกได้ เนื่องจากตรวจพบข้อมูลที่เกี่ยวข้อง:\n`;
+          if (plan_count > 0) msg += `- แผนการพัฒนา ${plan_count} รายการ\n`;
+          if (assessment_count > 0) msg += `- ผลการประเมินและหลักฐาน ${assessment_count} รายการ\n`;
+          msg += "\nกรุณาลบข้อมูลที่เกี่ยวข้องออกให้หมดก่อนทำการลบแบบกลุ่ม";
+
+          this.$q.dialog({
+            title: "ไม่สามารถลบแบบกลุ่มได้",
+            message: msg,
+            ok: { label: 'รับทราบ', color: 'primary' }
+          });
+          return;
+        }
+
+        this.$q
+          .dialog({
+            title: "ยืนยันการลบแบบกลุ่ม",
+            message: `ต้องการลบข้อมูลที่เลือกทั้งหมด ${selectedIds.length} รายการหรือไม่?`,
+            persistent: true,
+            cancel: true,
+          })
+          .onOk(async () => {
+            try {
+              await axios.post(`${getRestApiUrl(this.$store)}/qa-plan-careers/bulk-delete`, {
+                qa_plan_career_ids: selectedIds,
+              });
+              this.$q.notify({ type: "positive", message: "ลบข้อมูลสำเร็จ" });
+              this.selectedRows = [];
+              this.getUpdateQualification();
+            } catch (error) {
+              console.error(error);
+              this.$q.notify({ type: "negative", message: "ลบข้อมูลไม่สำเร็จ" });
+            }
+          });
+      } catch (error) {
+        console.error("Dependency check failed:", error);
+        this.$q.notify({ type: "negative", message: "ตรวจสอบข้อมูลที่เกี่ยวข้องไม่สำเร็จ" });
+      }
     },
     customFilter(rows, terms) {
       console.log(terms, rows);

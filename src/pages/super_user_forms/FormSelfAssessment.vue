@@ -675,16 +675,39 @@ export default {
         this.references1 = refRes.data;
       } catch (error) { this.$q.notify({ message: "Error: " + error.message, color: "negative" }); }
     },
-    onDelete(id, dateStr) {
-      this.$q.dialog({ title: "ยืนยัน", message: `ลบผลการประเมินวัน ${dateStr} หรือไม่?`, cancel: true, persistent: true })
-        .onOk(async () => {
-          try {
-            await axios.delete(`${getRestApiUrl(this.$store)}/self-assessments/${id}`);
-            this.$q.notify({ message: "ลบสำเร็จ", color: "positive" });
-            this.getUpdate();
-            this.getFilterMonth();
-          } catch (error) { this.$q.notify({ message: "Error: " + error.message, color: "negative" }); }
+    async onDelete(id, dateStr) {
+      try {
+        // Check dependencies
+        const resCheck = await axios.post(`${getRestApiUrl(this.$store)}/self-assessments/check-dependencies`, {
+          self_assessment_id: id,
+          type: 'single'
         });
+
+        const hasDeps = resCheck.data.has_dependencies;
+        const depCount = resCheck.data.count;
+
+        if (hasDeps) {
+          this.$q.dialog({
+            title: "ไม่สามารถลบได้",
+            message: `ไม่สามารถลบผลการประเมินวันที่ ${dateStr} ได้ เนื่องจากมีรายการหลักฐาน/อ้างอิง ที่เชื่อมโยงอยู่ ${depCount} รายการ\n\nกรุณาลบข้อมูลหลักฐานที่เกี่ยวข้องออกให้หมดก่อน`,
+            ok: { label: 'รับทราบ', color: 'primary' }
+          });
+          return;
+        }
+
+        this.$q.dialog({ title: "ยืนยัน", message: `ลบผลการประเมินวัน ${dateStr} หรือไม่?`, cancel: true, persistent: true })
+          .onOk(async () => {
+            try {
+              await axios.delete(`${getRestApiUrl(this.$store)}/self-assessments/${id}`);
+              this.$q.notify({ message: "ลบสำเร็จ", color: "positive" });
+              this.getUpdate();
+              this.getFilterMonth();
+            } catch (error) { this.$q.notify({ message: "Error: " + error.message, color: "negative" }); }
+          });
+      } catch (error) {
+        console.error("Dependency check failed:", error);
+        this.$q.notify({ type: "negative", message: "ตรวจสอบข้อมูลที่เกี่ยวข้องไม่สำเร็จ" });
+      }
     },
     async getMember() {
       try {

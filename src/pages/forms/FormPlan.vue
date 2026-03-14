@@ -1083,14 +1083,18 @@ async function onDelete(plan_id, plan_name) {
     const hasDeps = resCheck.data.has_dependencies;
     const depCount = resCheck.data.count;
 
-    let message = `คุณต้องการลบการพัฒนา [${plan_name}] หรือไม่ ?`;
     if (hasDeps) {
-      message += `\n⚠️ ตรวจพบข้อมูลหลักฐาน/ผลงานที่เชื่อมโยงกับแผนนี้ ${depCount} รายการ ซึ่งจะถูกลบออกด้วย`;
+      $q.dialog({
+        title: "ไม่สามารถลบได้",
+        message: `ไม่สามารถลบการพัฒนา [${plan_name}] ได้ เนื่องจากมีข้อมูลหลักฐาน/ผลงานที่เชื่อมโยงอยู่ ${depCount} รายการ\n\nกรุณาลบข้อมูลหลักฐานที่เกี่ยวข้องออกให้หมดก่อน (สามารถจัดการได้ที่หน้าประเมินตนเอง)`,
+        ok: { label: 'รับทราบ', color: 'primary' }
+      });
+      return;
     }
 
     $q.dialog({
       title: "ยืนยันการลบ",
-      message: message,
+      message: `คุณต้องการลบการพัฒนา [${plan_name}] หรือไม่ ?`,
       cancel: true,
       persistent: true,
       ok: { label: 'ยืนยันการลบ', color: 'negative' }
@@ -1195,15 +1199,19 @@ async function deleteSelectedPlans() {
     const hasDeps = resCheck.data.has_dependencies;
     const depCount = resCheck.data.count;
 
-    const count = plan_ids.length;
-    let message = `คุณต้องการลบแผนพัฒนาที่เลือกทั้งสิ้น ${count} รายการ หรือไม่?`;
     if (hasDeps) {
-      message += `\n⚠️ ตรวจพบข้อมูลหลักฐาน/ผลงานที่เชื่อมโยงกับแผนเหล่านี้ ${depCount} รายการ ซึ่งจะถูกลบออกด้วย`;
+      $q.dialog({
+        title: "ไม่สามารถลบแบบกลุ่มได้",
+        message: `ไม่สามารถลบแผนพัฒนาที่เลือกได้ เนื่องจากตรวจพบข้อมูลหลักฐาน/ผลงานที่เชื่อมโยงรวม ${depCount} รายการ\n\nกรุณาลบข้อมูลหลักฐานที่เกี่ยวข้องออกให้หมดก่อนทำการลบแผนพัฒนา`,
+        ok: { label: 'รับทราบ', color: 'primary' }
+      });
+      return;
     }
 
+    const count = plan_ids.length;
     $q.dialog({
       title: "ยืนยันการลบแบบกลุ่ม",
-      message: message,
+      message: `คุณต้องการลบแผนพัฒนาที่เลือกทั้งสิ้น ${count} รายการ หรือไม่?`,
       cancel: true,
       persistent: true,
       ok: { label: 'ลบ', color: 'negative', flat: false },

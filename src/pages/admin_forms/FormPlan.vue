@@ -812,16 +812,38 @@ export default {
       }
     },
     async onDelete(plan_id, plan_name) {
-      this.$q.dialog({ title: "ยืนยัน", message: `คุณต้องการลบการพัฒนา [${plan_name}] หรือไม่ ?`, cancel: true, persistent: true })
-        .onOk(async () => {
-          try {
-            await axios.delete(`${getRestApiUrl(this.$store)}/plans/${plan_id}`);
-            this.$q.notify({ message: "ลบข้อมูลสำเร็จ", color: "positive" });
-            this.getUpdate();
-          } catch (error) {
-            this.$q.notify({ message: "Error: " + error.message, color: "negative" });
-          }
+      try {
+        // Check dependencies
+        const resCheck = await axios.post(`${getRestApiUrl(this.$store)}/plans/check-dependencies`, {
+          plan_id: plan_id,
+          type: 'single'
         });
+        const hasDeps = resCheck.data.has_dependencies;
+        const depCount = resCheck.data.count;
+
+        if (hasDeps) {
+          this.$q.dialog({
+            title: "ไม่สามารถลบได้",
+            message: `ไม่สามารถลบการพัฒนา [${plan_name}] ได้ เนื่องจากมีข้อมูลหลักฐาน/ผลงานที่เชื่อมโยงอยู่ ${depCount} รายการ\n\nกรุณาลบข้อมูลหลักฐานที่เกี่ยวข้องออกให้หมดก่อน (สามารถจัดการได้ที่หน้าประเมินตนเอง)`,
+            ok: { label: 'รับทราบ', color: 'primary' }
+          });
+          return;
+        }
+
+        this.$q.dialog({ title: "ยืนยัน", message: `คุณต้องการลบการพัฒนา [${plan_name}] หรือไม่ ?`, cancel: true, persistent: true })
+          .onOk(async () => {
+            try {
+              await axios.delete(`${getRestApiUrl(this.$store)}/plans/${plan_id}`);
+              this.$q.notify({ message: "ลบข้อมูลสำเร็จ", color: "positive" });
+              this.getUpdate();
+            } catch (error) {
+              this.$q.notify({ message: "Error: " + error.message, color: "negative" });
+            }
+          });
+      } catch (error) {
+        console.error("Dependency check failed:", error);
+        this.$q.notify({ type: "negative", message: "ตรวจสอบข้อมูลที่เกี่ยวข้องไม่สำเร็จ" });
+      }
     },
     onNext() {
       this.$router.replace({ name: "FormSelfAssessment" });

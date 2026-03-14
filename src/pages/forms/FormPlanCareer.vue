@@ -817,15 +817,18 @@ async function deleteUser(plan_career_id, career_name) {
     const hasDeps = resCheck.data.has_dependencies;
     const depCount = resCheck.data.count;
 
-    let message = `ต้องการลบ "${career_name}" ใช่หรือไม่?`;
     if (hasDeps) {
-      message += `\n⚠️ ตรวจพบข้อมูลคุณสมบัติ/ทักษะที่เกี่ยวข้อง ${depCount} รายการ`;
-      message += `\n\nการลบอาชีพนี้จะทำให้ข้อมูลคุณสมบัติ แผนการพัฒนา และผลการประเมินทั้งหมดที่เกี่ยวข้องถูกลบออกไปด้วย คุณยืนยันที่จะลบหรือไม่?`;
+      $q.dialog({
+        title: "ไม่สามารถลบได้",
+        message: `ไม่สามารถลบอาชีพ "${career_name}" ได้ เนื่องจากตรวจพบข้อมูลคุณสมบัติ/ทักษะที่เกี่ยวข้อง ${depCount} รายการ\n\nกรุณาลบข้อมูลคุณสมบัติที่เกี่ยวข้องออกให้หมดก่อนทำการลบอาชีพนี้`,
+        ok: { label: 'รับทราบ', color: 'primary' }
+      });
+      return;
     }
 
     $q.dialog({
       title: "ยืนยันการลบ",
-      message: message,
+      message: `ต้องการลบ "${career_name}" ใช่หรือไม่?`,
       cancel: true,
       persistent: true,
       ok: { label: 'ยืนยันการลบ', color: 'negative' }
@@ -862,15 +865,18 @@ async function deleteSelected() {
     const hasDeps = resCheck.data.has_dependencies;
     const depCount = resCheck.data.count;
 
-    let message = `ต้องการลบทิ้งทั้งหมด ${tickedCareers.value.length} รายการที่เลือกใช่หรือไม่?`;
     if (hasDeps) {
-      message += `\n⚠️ ตรวจพบข้อมูลคุณสมบัติ/ทักษะที่เกี่ยวข้องทั้งหมด ${depCount} รายการ ในรายการที่เลือก`;
-      message += `\n\nการลบจะทำให้ข้อมูลที่เกี่ยวข้องทั้งหมดถูกลบออกไปด้วย คุณยืนยันที่จะลบหรือไม่?`;
+      $q.dialog({
+        title: "ไม่สามารถลบแบบกลุ่มได้",
+        message: `ไม่สามารถลบรายการที่เลือกได้ เนื่องจากตรวจพบข้อมูลคุณสมบัติ/ทักษะที่เกี่ยวข้องรวม ${depCount} รายการ ในรายการที่คุณเลือก\n\nกรุณาลบข้อมูลคุณสมบัติที่เกี่ยวข้องออกให้หมดก่อนทำการลบอาชีพ`,
+        ok: { label: 'รับทราบ', color: 'primary' }
+      });
+      return;
     }
 
     $q.dialog({
       title: "ยืนยันการลบแบบกลุ่ม",
-      message: message,
+      message: `ต้องการลบทิ้งทั้งหมด ${tickedCareers.value.length} รายการที่เลือกใช่หรือไม่?`,
       cancel: true,
       persistent: true,
       ok: { label: 'ยืนยันการลบ', color: 'negative' }

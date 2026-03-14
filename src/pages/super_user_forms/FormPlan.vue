@@ -675,16 +675,38 @@ export default {
     },
 
     async onDelete(id, name) {
-      this.$q.dialog({ title: "ยืนยัน", message: `คุณต้องการลบการพัฒนา [${name}] หรือไม่ ?`, cancel: true, persistent: true })
-        .onOk(async () => {
-          try {
-            await axios.delete(`${getRestApiUrl(this.$store)}/plans/${id}`);
-            this.$q.notify({ message: "ลบสำเร็จ", color: "positive" });
-            await this.getUpdate();
-          } catch (error) {
-            this.$q.notify({ message: "Error: " + error.message, color: "negative", icon: "error" });
-          }
+      try {
+        // Check dependencies
+        const resCheck = await axios.post(`${getRestApiUrl(this.$store)}/plans/check-dependencies`, {
+          plan_id: id,
+          type: 'single'
         });
+        const hasDeps = resCheck.data.has_dependencies;
+        const depCount = resCheck.data.count;
+
+        if (hasDeps) {
+          this.$q.dialog({
+            title: "ไม่สามารถลบได้",
+            message: `ไม่สามารถลบการพัฒนา [${name}] ได้ เนื่องจากมีข้อมูลหลักฐาน/ผลงานที่เชื่อมโยงอยู่ ${depCount} รายการ\n\nกรุณาลบข้อมูลหลักฐานที่เกี่ยวข้องออกให้หมดก่อน (สามารถจัดการได้ที่หน้าประเมินตนเอง)`,
+            ok: { label: 'รับทราบ', color: 'primary' }
+          });
+          return;
+        }
+
+        this.$q.dialog({ title: "ยืนยัน", message: `คุณต้องการลบการพัฒนา [${name}] หรือไม่ ?`, cancel: true, persistent: true })
+          .onOk(async () => {
+            try {
+              await axios.delete(`${getRestApiUrl(this.$store)}/plans/${id}`);
+              this.$q.notify({ message: "ลบสำเร็จ", color: "positive" });
+              await this.getUpdate();
+            } catch (error) {
+              this.$q.notify({ message: "Error: " + error.message, color: "negative", icon: "error" });
+            }
+          });
+      } catch (error) {
+        console.error("Dependency check failed:", error);
+        this.$q.notify({ type: "negative", message: "ตรวจสอบข้อมูลที่เกี่ยวข้องไม่สำเร็จ" });
+      }
     },
 
     onNext() {

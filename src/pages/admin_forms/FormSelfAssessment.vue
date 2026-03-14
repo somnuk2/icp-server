@@ -717,21 +717,42 @@ export default {
       }
     },
 
-    onDelete(self_assessment_id, self_assessment_date) {
-      this.$q.dialog({
-        title: "ยืนยัน",
-        message: `คุณต้องการลบผลการประเมินวัน ${self_assessment_date} หรือไม่ ?`,
-        cancel: true,
-        persistent: true,
-      }).onOk(async () => {
-        try {
-          await axios.delete(`${getRestApiUrl(this.$store)}/self-assessments/${self_assessment_id}`);
-          this.$q.notify({ color: "positive", icon: "check_circle", message: "ลบข้อมูลสำเร็จ" });
-          await this.loadAll();
-        } catch (e) {
-          this.$q.notify({ color: "negative", icon: "error", message: "ลบไม่สำเร็จ: " + (e.response?.data?.error || e.message) });
+    async onDelete(self_assessment_id, self_assessment_date) {
+      try {
+        // Check dependencies
+        const resCheck = await axios.post(`${getRestApiUrl(this.$store)}/self-assessments/check-dependencies`, {
+          id: self_assessment_id,
+        });
+        const hasDeps = resCheck.data.has_dependencies;
+        const depCount = resCheck.data.count;
+
+        if (hasDeps) {
+          this.$q.dialog({
+            title: "ไม่สามารถลบได้",
+            message: `ไม่สามารถลบผลการประเมินวัน ${self_assessment_date} ได้ เนื่องจากมีข้อมูลหลักฐาน/ผลงานที่เกี่ยวข้อง ${depCount} รายการ\n\nกรุณาลบข้อมูลหลักฐานที่เกี่ยวข้องออกให้หมดก่อน`,
+            ok: { label: 'รับทราบ', color: 'primary' }
+          });
+          return;
         }
-      });
+
+        this.$q.dialog({
+          title: "ยืนยัน",
+          message: `คุณต้องการลบผลการประเมินวัน ${self_assessment_date} หรือไม่ ?`,
+          cancel: true,
+          persistent: true,
+        }).onOk(async () => {
+          try {
+            await axios.delete(`${getRestApiUrl(this.$store)}/self-assessments/${self_assessment_id}`);
+            this.$q.notify({ color: "positive", icon: "check_circle", message: "ลบข้อมูลสำเร็จ" });
+            await this.loadAll();
+          } catch (e) {
+            this.$q.notify({ color: "negative", icon: "error", message: "ลบไม่สำเร็จ: " + (e.response?.data?.error || e.message) });
+          }
+        });
+      } catch (e) {
+        console.error("Dependency check failed:", e);
+        this.$q.notify({ color: "negative", icon: "error", message: "ตรวจสอบข้อมูลที่เกี่ยวข้องไม่สำเร็จ" });
+      }
     },
 
     resetForm() {

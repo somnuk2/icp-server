@@ -514,16 +514,39 @@ export default {
       }
     },
     async deleteUser(plan_career_id, career_name) {
-      this.$q.dialog({ title: "ยืนยัน", message: `คุณต้องการลบ [${career_name}] หรือไม่ ?`, cancel: true, persistent: true })
-        .onOk(async () => {
-          try {
-            await axios.delete(`${getRestApiUrl(this.$store)}/plan-careers/${plan_career_id}`);
-            this.$q.notify({ message: "ลบข้อมูลสำเร็จ", color: "positive" });
-            await this.getUpdate();
-          } catch (error) {
-            this.$q.notify({ message: "Error: " + error.message, color: "negative" });
-          }
+      try {
+        // Check dependencies
+        const resCheck = await axios.post(`${getRestApiUrl(this.$store)}/plan-careers/check-dependencies`, {
+          plan_career_id: plan_career_id,
+          type: 'single'
         });
+
+        const hasDeps = resCheck.data.has_dependencies;
+        const depCount = resCheck.data.count;
+
+        if (hasDeps) {
+          this.$q.dialog({
+            title: "ไม่สามารถลบได้",
+            message: `ไม่สามารถลบอาชีพ "${career_name}" ได้ เนื่องจากตรวจพบข้อมูลคุณสมบัติ/ทักษะที่เกี่ยวข้อง ${depCount} รายการ\n\nกรุณาลบข้อมูลคุณสมบัติที่เกี่ยวข้องออกให้หมดก่อนทำการลบอาชีพนี้`,
+            ok: { label: 'รับทราบ', color: 'primary' }
+          });
+          return;
+        }
+
+        this.$q.dialog({ title: "ยืนยัน", message: `คุณต้องการลบ [${career_name}] หรือไม่ ?`, cancel: true, persistent: true })
+          .onOk(async () => {
+            try {
+              await axios.delete(`${getRestApiUrl(this.$store)}/plan-careers/${plan_career_id}`);
+              this.$q.notify({ message: "ลบข้อมูลสำเร็จ", color: "positive" });
+              await this.getUpdate();
+            } catch (error) {
+              this.$q.notify({ message: "Error: " + error.message, color: "negative" });
+            }
+          });
+      } catch (error) {
+        console.error("Dependency check failed:", error);
+        this.$q.notify({ type: "negative", message: "ตรวจสอบข้อมูลที่เกี่ยวข้องไม่สำเร็จ" });
+      }
     },
     async getUpdate() {
       this.loading = true;

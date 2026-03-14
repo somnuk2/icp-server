@@ -1429,15 +1429,19 @@ export default {
         const hasDeps = resCheck.data.has_dependencies;
         const depCount = resCheck.data.count;
 
-        let message = `คุณต้องการลบผลการประเมินวัน ${self_assessment_date} หรือไม่ ?`;
         if (hasDeps) {
-          message += `\n⚠️ ตรวจพบข้อมูลหลักฐาน/ผลงานที่เกี่ยวข้อง ${depCount} รายการ ซึ่งจะถูกลบออกด้วย`;
+          this.$q.dialog({
+            title: "ไม่สามารถลบได้",
+            message: `ไม่สามารถลบผลการประเมินวัน ${self_assessment_date} ได้ เนื่องจากมีข้อมูลหลักฐาน/ผลงานที่เกี่ยวข้อง ${depCount} รายการ\n\nกรุณาลบข้อมูลหลักฐานที่เกี่ยวข้องออกให้หมดก่อน`,
+            ok: { label: 'รับทราบ', color: 'primary' }
+          });
+          return;
         }
 
         this.$q
           .dialog({
             title: "ยืนยันการลบ",
-            message: message,
+            message: `คุณต้องการลบผลการประเมินวัน ${self_assessment_date} หรือไม่ ?`,
             persistent: true,
             cancel: true,
             ok: { label: 'ยืนยันการลบ', color: 'negative' }
