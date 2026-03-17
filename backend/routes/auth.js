@@ -83,7 +83,7 @@ router.post('/register', async (req, res, next) => {
         const hashed = await bcrypt.hash(password, 10)
         const [result] = await pool.query(
             'INSERT INTO member (email, password, full_name, status, is_verified, created_by) VALUES (?, ?, ?, ?, ?, ?)',
-            [email, hashed, full_name || '', status || 'user', is_verified !== undefined ? is_verified : 1, created_by || null]
+            [email, hashed, full_name || '', status || 'user', is_verified !== undefined ? is_verified : 1, created_by || 0]
         )
 
         res.status(201).json({ message: 'Registered successfully.', member_id: result.insertId })
