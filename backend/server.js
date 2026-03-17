@@ -58,6 +58,11 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', dbMode: DB_MODE, timestamp: new Date().toISOString() })
 })
 
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK', dbMode: DB_MODE, timestamp: new Date().toISOString() })
+})
+
+
 app.get('/api/db-info', (req, res) => {
   const isRemote = DB_MODE === 'remote'
   res.json({
