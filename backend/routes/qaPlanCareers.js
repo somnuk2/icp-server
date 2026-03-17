@@ -413,10 +413,10 @@ router.get('/:id', authenticate, async (req, res, next) => {
 // POST /api/qa-plan-careers
 router.post('/', authenticate, async (req, res, next) => {
     try {
-        const { plan_career_id, qualification_id, target_id } = req.body
+        const { plan_career_id, qualification_id, target_id, level_id } = req.body
         const [result] = await pool.query(
-            'INSERT INTO qa_plan_career (plan_career_id, qualification_id, target_id) VALUES (?, ?, ?)',
-            [plan_career_id, qualification_id, target_id]
+            'INSERT INTO qa_plan_career (plan_career_id, qualification_id, target_id, level_id) VALUES (?, ?, ?, ?)',
+            [plan_career_id, qualification_id, target_id, level_id]
         )
         res.status(201).json({ message: 'Insert Complete', qa_plan_career_id: result.insertId })
     } catch (err) { next(err) }
@@ -434,10 +434,10 @@ router.put('/:id', authenticate, async (req, res, next) => {
             return res.status(403).json({ error: 'Access denied.' })
         }
 
-        const { plan_career_id, qualification_id, target_id } = req.body
+        const { plan_career_id, qualification_id, target_id, level_id } = req.body
         await pool.query(
-            'UPDATE qa_plan_career SET plan_career_id=?, qualification_id=?, target_id=? WHERE qa_plan_career_id=?',
-            [plan_career_id, qualification_id, target_id, req.params.id]
+            'UPDATE qa_plan_career SET plan_career_id=?, qualification_id=?, target_id=?, level_id=? WHERE qa_plan_career_id=?',
+            [plan_career_id, qualification_id, target_id, level_id, req.params.id]
         )
         res.json({ message: 'Update Complete' })
     } catch (err) { next(err) }
