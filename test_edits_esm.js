@@ -32,12 +32,12 @@ async function testEditWorkflow() {
     const deptId2 = deptRes.data[1]?.department_id || deptId1;
     
     const indPost = await axios.post(`${baseUrl}/individuals`, {
-      member_id: memberId, birthday: '1990', telephone: '081', department_id: deptId1
+      member_id: memberId, birthday: '1990', telephone: '081', department_id: deptId1, is_graduate: 0
     }, authHeader);
     const individualId = indPost.data.individual_id;
     
     const editIndRes = await axios.put(`${baseUrl}/individuals/${individualId}`, {
-      birthday: '1991', telephone: '082', department_id: deptId2
+      birthday: '1991', telephone: '082', department_id: deptId2, is_graduate: 1
     }, authHeader);
     console.log('   Success:', editIndRes.data.message);
 

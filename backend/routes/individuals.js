@@ -103,6 +103,9 @@ router.put('/:id', authenticate, async (req, res, next) => {
         if (req.user.role === 'user' && check[0].member_id !== req.user.member_id) {
             return res.status(403).json({ error: 'Access denied.' })
         }
+        const toInt = (v, def = null) => (v === '' || v === undefined || v === null) ? def : parseInt(v)
+        const toStr = (v) => (v === undefined || v === null) ? '' : String(v)
+
         const { birthday, telephone, department_id,
             is_graduate, date, year, is_disability, disability_id,
             dis_description, project_id, advisor_id, province, preferred_region,
@@ -117,11 +120,15 @@ router.put('/:id', authenticate, async (req, res, next) => {
                 skill=?, additional_info=?
              WHERE individual_id=?`,
             [
-                birthday, telephone, department_id,
-                is_graduate, date, year, is_disability, disability_id,
-                dis_description, project_id, advisor_id, province, preferred_region,
-                favorite_subject, unfavorite_subject, favorite_activity, dream_career,
-                skill, additional_info, req.params.id
+                toStr(birthday), toStr(telephone), toInt(department_id),
+                toInt(is_graduate, 0), toStr(date), toStr(year),
+                toInt(is_disability, 0), toInt(disability_id),
+                toStr(dis_description), toInt(project_id),
+                toInt(advisor_id, 0), toStr(province), toStr(preferred_region),
+                toStr(favorite_subject), toStr(unfavorite_subject),
+                toStr(favorite_activity), toStr(dream_career),
+                toStr(skill), toStr(additional_info),
+                req.params.id
             ]
         )
         res.json({ message: 'Update Complete' })
