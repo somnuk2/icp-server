@@ -118,7 +118,7 @@ app.post('/api/chat', async (req, res) => {
     if (AI_MODE === 'gemini' && activeApiKey) {
       try {
         const genAI = new GoogleGenerativeAI(activeApiKey)
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" })
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite-001" })
 
         // Convert messages to Gemini format (System prompt + History + Current User Prompt)
         const systemPrompt = "คุณคือผู้ช่วย AI ภาษาไทย ตอบคำถามให้สั้น กระชับ ตรงประเด็นที่สุด ยาวไม่เกิน 2-3 ประโยค"
