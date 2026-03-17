@@ -20,6 +20,25 @@ export function authenticate(req, res, next) {
     }
 }
 
+// Middleware: เลือกให้ผ่านแม้ไม่มี Token (สำหรับ Route ที่ดูได้ทั้ง Guest และ Member)
+export function optionalAuthenticate(req, res, next) {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (!token) {
+        return next()
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET)
+        req.user = decoded
+        next()
+    } catch (err) {
+        // Token invalid/expired - proceed as guest (no req.user)
+        next()
+    }
+}
+
 // Helper: สร้าง JWT Token
 export function generateToken(payload) {
     return jwt.sign(payload, JWT_SECRET, { expiresIn: '8h' })
