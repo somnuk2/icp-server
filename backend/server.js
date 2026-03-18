@@ -108,56 +108,40 @@ app.post('/api/chat', async (req, res) => {
     const { messages, gemini_api_key: userApiKey } = req.body
     const userPrompt = messages[messages.length - 1]?.content || ''
 
-    // Check which key to use: 1. User specified key 2. Env default key
+    // Force use of Gemini with active API key
     const activeApiKey = userApiKey || GEMINI_API_KEY
 
-    console.log(`🤖 AI Request [${AI_MODE.toUpperCase()}]: ${userPrompt.substring(0, 50)}...`)
-    if (userApiKey) console.log('🔑 Using User-provided Gemini API Key')
-
-    // Mode 1: Google Gemini (Primary if configured)
-    if (AI_MODE === 'gemini' && activeApiKey) {
-      try {
-        const genAI = new GoogleGenerativeAI(activeApiKey)
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" })
-
-        // Convert messages to Gemini format (System prompt + History + Current User Prompt)
-        const systemPrompt = "คุณคือผู้ช่วย AI ภาษาไทย ตอบคำถามให้สั้น กระชับ ตรงประเด็นที่สุด ยาวไม่เกิน 2-3 ประโยค"
-        const prompt = `${systemPrompt}\n\nUser: ${userPrompt}`
-
-        const result = await model.generateContent(prompt)
-        const response = await result.response
-        const reply = response.text()
-
-        return res.json({ reply, provider: 'gemini' })
-      } catch (geminiErr) {
-        console.error('⚠️ Gemini API Error, falling back to Ollama:', geminiErr.message)
-        // Continue to Ollama fallback
-      }
+    if (!activeApiKey) {
+      console.error('❌ NO KEY: GEMINI_API_KEY is not configured in .env')
+      return res.status(500).json({ error: 'AI Error: Gemini API Key is missing.' })
     }
 
-    // Mode 2: Ollama (Local Fallback)
-    const ollamaRes = await axios.post('http://localhost:11434/api/chat', {
-      model: MODEL_NAME,
-      messages: [
-        {
-          role: 'system',
-          content: 'คุณคือผู้ช่วย AI ภาษาไทย ตอบคำถามให้สั้น กระชับ ตรงประเด็นที่สุด ยาวไม่เกิน 2-3 ประโยค'
-        },
-        ...messages
-      ],
-      stream: false,
-      options: {
-        num_predict: 150,
-        num_ctx: 512,
-        temperature: 0.3
-      }
-    }, { timeout: 600000 })
+    console.log(`🤖 AI Request [GEMINI]: ${userPrompt.substring(0, 50)}...`)
 
-    const reply = ollamaRes.data?.message?.content || ''
-    res.json({ reply, provider: 'ollama' })
+    try {
+      const genAI = new GoogleGenerativeAI(activeApiKey)
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" })
+
+      const systemPrompt = "คุณคือผู้ช่วย AI ภาษาไทย ตอบคำถามให้สั้น กระชับ ตรงประเด็นที่สุด ยาวไม่เกิน 2-3 ประโยค"
+      const prompt = `${systemPrompt}\n\nUser: ${userPrompt}`
+
+      const result = await model.generateContent(prompt)
+      const response = await result.response
+      const reply = response.text()
+
+      console.log('✅ Gemini Response Success!')
+      return res.json({ reply, provider: 'gemini' })
+
+    } catch (geminiErr) {
+      console.error('❌ Gemini Critical Error:', geminiErr.message)
+      return res.status(500).json({ 
+        error: `Gemini API Error: ${geminiErr.message}`,
+        provider: 'none'
+      })
+    }
   } catch (err) {
     console.error('❌ AI System Error:', err.message)
-    res.status(500).json({ error: 'AI service unavailable', details: err.message })
+    res.status(500).json({ error: 'System Error', details: err.message })
   }
 })
 
