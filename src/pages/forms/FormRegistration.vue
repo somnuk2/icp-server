@@ -173,6 +173,7 @@ export default {
       filter: ref(""),
       loading: ref(false),
       isEdit: false,
+      isAdminOrSuperUser: false,
       member: {
         member_id: this.$store.getters.myMember_id,
         full_name: "",
@@ -445,7 +446,11 @@ export default {
     this.apiUrl = getRestApiUrl(this.$store);
   },
   mounted() {
-    this.getUpdate();
+    const role = this.$store.getters.myStatus || '';
+    this.isAdminOrSuperUser = (role === 'admin' || role === 'super_user');
+    if (this.isAdminOrSuperUser) {
+      this.getUpdate();
+    }
   },
 };
 </script>

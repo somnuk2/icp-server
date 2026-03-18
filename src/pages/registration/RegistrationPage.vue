@@ -54,7 +54,8 @@
             </q-form>
           </q-card>
 
-          <q-table class="custom-green-table shadow-2 full-width" title="ข้อมูลสมาชิก" :rows="members1"
+          <!-- Only show member table if admin/super_user -->
+          <q-table v-if="isAdminOrSuperUser" class="custom-green-table shadow-2 full-width" title="ข้อมูลสมาชิก" :rows="members1"
             :columns="columns" row-key="member_id" :filter="filter" :loading="loading" separator="cell"
             :rows-per-page-options="[10, 30, 50, 0]"
             :pagination-label="(first, end, total) => `หน้า : ${end}/${total}`">
@@ -181,6 +182,7 @@ export default {
       visibilityIcon: "visibility",
       checkUser: ref(false),
       isEdit: false,
+      isAdminOrSuperUser: false,
 
     };
   },
@@ -355,7 +357,11 @@ export default {
     this.apiUrl = getRestApiUrl(this.$store);
   },
   mounted() {
-    this.getUpdate();
+    const role = this.$store.getters.myStatus || '';
+    this.isAdminOrSuperUser = (role === 'admin' || role === 'super_user');
+    if (this.isAdminOrSuperUser) {
+      this.getUpdate();
+    }
   },
 
 };
