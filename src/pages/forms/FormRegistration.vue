@@ -332,38 +332,38 @@ export default {
     async addNewMember() {
       console.log("บันทึกข้อมูล");
       try {
-        await axios.post(`${this.apiUrl}/auth/register`, {
+        const response = await axios.post(`${this.apiUrl}/auth/register`, {
           full_name: this.member.full_name,
           email: this.member.email,
           password: this.member.password,
-          status: this.member.status,
+          status: this.member.status || "user",
         });
+
         this.$q.notify({ message: "เพิ่มสมาชิกสำเร็จ", color: "positive" });
-        this.getUpdate();
+
+        // Add newly registered member to local list so user can see it
+        const newMember = {
+          member_id: response.data?.member_id || Date.now(),
+          full_name: this.member.full_name,
+          email: this.member.email,
+          password: this.member.password,
+          status: this.member.status || "user",
+          is_verified: 0,
+        };
+        this.members1.push(newMember);
+
+        this.resetForm();
       } catch (error) {
         console.error(error);
-        this.$q.notify({ message: "เพิ่มสมาชิกไม่สำเร็จ", color: "negative" });
+        const msg = (error.response?.status === 409)
+          ? `อีเมล: ${this.member.email} เป็นสมาชิคแล้ว`
+          : (error.response?.data?.error || "เพิ่มสมาชิกไม่สำเร็จ");
+        this.$q.notify({ message: msg, color: "negative" });
       }
     },
     async checkNewMemeber(email) {
       console.log(" ตรวจสอบผู้ใช้ ", email);
-      try {
-        const res = await axios.get(`${this.apiUrl}/members`);
-        const members = Array.isArray(res.data) ? res.data : [];
-        const isMember = members.some(m => m.email === email);
-        if (isMember) {
-          this.$q.dialog({
-            title: "แจ้งเพื่อทราบ",
-            message: "อีเมล:" + email + " เป็นสมาชิคแล้ว",
-            persistent: true,
-          });
-        } else {
-          this.addNewMember();
-        }
-      } catch (error) {
-        console.error(error);
-        this.addNewMember();
-      }
+      this.addNewMember();
     },
     async getUpdate() {
       this.getAllUser();
@@ -446,11 +446,8 @@ export default {
     this.apiUrl = getRestApiUrl(this.$store);
   },
   mounted() {
-    const role = this.$store.getters.myStatus || '';
-    this.isAdminOrSuperUser = (role === 'admin' || role === 'super_user');
-    if (this.isAdminOrSuperUser) {
-      this.getUpdate();
-    }
+    // We no longer pull all members from DB for privacy and speed
+    // this.getUpdate();
   },
 };
 </script>

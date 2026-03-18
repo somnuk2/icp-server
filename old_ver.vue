@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <q-layout view="hHh Lpr lFf">
     <q-page-container style="background: linear-gradient(#74c588, #0ad13c); min-height: 100vh;">
       <q-page class="q-pa-none">
@@ -15,12 +15,12 @@
             <q-form @submit.prevent="submitForm" @reset="resetForm" method="post">
               <div class="row q-col-gutter-md">
                 <div class="col-md-6 col-xs-12">
-                  <q-input outlined dense filled v-model="member.full_name" label="ชื่อ-สกุล" bg-color="white">
+                  <q-input outlined dense filled v-model="member.full_name" label="α╕èα╕╖α╣êα╕¡-α╕¬α╕üα╕╕α╕Ñ" bg-color="white">
                     <template v-slot:prepend><q-icon name="person" /></template>
                   </q-input>
                 </div>
                 <div class="col-md-6 col-xs-12">
-                  <q-input outlined dense filled v-model="member.email" label="อีเมล" type="email" bg-color="white"
+                  <q-input outlined dense filled v-model="member.email" label="α╕¡α╕╡α╣Çα╕íα╕Ñ" type="email" bg-color="white"
                     :rules="[required, isEmail]">
                     <template v-slot:prepend><q-icon name="email" /></template>
                   </q-input>
@@ -28,7 +28,7 @@
 
                 <template v-if="!isEdit">
                   <div class="col-md-6 col-xs-12">
-                    <q-input outlined dense filled v-model="member.password" :type="passwordFieldType" label="รหัสผ่าน"
+                    <q-input outlined dense filled v-model="member.password" :type="passwordFieldType" label="α╕úα╕½α╕▒α╕¬α╕£α╣êα╕▓α╕Ö"
                       :rules="[required, short]">
                       <template v-slot:prepend><q-icon name="lock" /></template>
                       <template v-slot:append>
@@ -38,7 +38,7 @@
                   </div>
                   <div class="col-md-6 col-xs-12">
                     <q-input outlined dense filled v-model="member.repassword" :type="passwordFieldType"
-                      label="ยืนยันรหัสผ่าน" :rules="[required, diffPassword]">
+                      label="α╕óα╕╖α╕Öα╕óα╕▒α╕Öα╕úα╕½α╕▒α╕¬α╕£α╣êα╕▓α╕Ö" :rules="[required, diffPassword]">
                       <template v-slot:prepend><q-icon name="lock" /></template>
                     </q-input>
                   </div>
@@ -46,21 +46,20 @@
               </div>
 
               <div class="row justify-center q-gutter-x-md q-mt-md">
-                <q-btn :label="isEdit ? 'บันทึกการแก้ไข' : 'ลงทะเบียน'" type="submit" color="primary" icon="save"
+                <q-btn :label="isEdit ? 'α╕Üα╕▒α╕Öα╕ùα╕╢α╕üα╕üα╕▓α╕úα╣üα╕üα╣ëα╣äα╕é' : 'α╕Ñα╕çα╕ùα╕░α╣Çα╕Üα╕╡α╕óα╕Ö'" type="submit" color="primary" icon="save"
                   unelevated />
-                <q-btn label="ยกเลิก" type="reset" color="grey-7" flat icon="clear" />
-                <q-btn label="ออก" color="red" flat icon="logout" to="/" />
+                <q-btn label="α╕óα╕üα╣Çα╕Ñα╕┤α╕ü" type="reset" color="grey-7" flat icon="clear" />
+                <q-btn label="α╕¡α╕¡α╕ü" color="red" flat icon="logout" to="/" />
               </div>
             </q-form>
           </q-card>
 
-          <!-- Only show member table if admin/super_user -->
-          <q-table class="custom-green-table shadow-2 full-width" title="ข้อมูลสมาชิก" :rows="members1"
+          <q-table class="custom-green-table shadow-2 full-width" title="α╕éα╣ëα╕¡α╕íα╕╣α╕Ñα╕¬α╕íα╕▓α╕èα╕┤α╕ü" :rows="members1"
             :columns="columns" row-key="member_id" :filter="filter" :loading="loading" separator="cell"
             :rows-per-page-options="[10, 30, 50, 0]"
-            :pagination-label="(first, end, total) => `หน้า : ${end}/${total}`">
+            :pagination-label="(first, end, total) => `α╕½α╕Öα╣ëα╕▓ : ${end}/${total}`">
             <template v-slot:top-right>
-              <q-input dense outlined v-model="filter" placeholder="ค้นหา..." bg-color="white">
+              <q-input dense outlined v-model="filter" placeholder="α╕äα╣ëα╕Öα╕½α╕▓..." bg-color="white">
                 <template v-slot:append><q-icon name="search" /></template>
               </q-input>
             </template>
@@ -109,7 +108,7 @@ export default {
       // url_api_verified_mail: "",
 
       // ------------------------------------------------------------------------------
-      title: "การลงทะเบียน",
+      title: "α╕üα╕▓α╕úα╕Ñα╕çα╕ùα╕░α╣Çα╕Üα╕╡α╕óα╕Ö",
       members: Array,
       register: true,
       filter: ref(""),
@@ -123,7 +122,7 @@ export default {
         status: "user",
       },
       columns: [
-        { name: "actions", align: "center", label: "แก้ไข/ลบ" },
+        { name: "actions", align: "center", label: "α╣üα╕üα╣ëα╣äα╕é/α╕Ñα╕Ü" },
         {
           name: "mem_id",
           required: true,
@@ -136,7 +135,7 @@ export default {
         {
           name: "full_name",
           align: "center",
-          label: "ชื่อ-สกุล",
+          label: "α╕èα╕╖α╣êα╕¡-α╕¬α╕üα╕╕α╕Ñ",
           field: (row) => row.full_name,
           format: (val) => `${val}`,
           sortable: true,
@@ -144,7 +143,7 @@ export default {
         {
           name: "e-mail",
           align: "center",
-          label: "อีเมลย์",
+          label: "α╕¡α╕╡α╣Çα╕íα╕Ñα╕óα╣î",
           field: (row) => row.email,
           format: (val) => `${val}`,
           sortable: true,
@@ -152,7 +151,7 @@ export default {
         {
           name: "password",
           align: "center",
-          label: "รหัสผ่าน",
+          label: "α╕úα╕½α╕▒α╕¬α╕£α╣êα╕▓α╕Ö",
           field: (row) => row.password,
           format: (val) => `${val}`,
           sortable: true,
@@ -160,7 +159,7 @@ export default {
         {
           name: "status",
           align: "center",
-          label: "หน้าที่",
+          label: "α╕½α╕Öα╣ëα╕▓α╕ùα╕╡α╣ê",
           field: (row) => row.status,
           format: (val) => `${val}`,
           sortable: true,
@@ -168,21 +167,20 @@ export default {
         {
           name: "is_verified",
           align: "center",
-          label: "ยืนยันอีเมลย์",
+          label: "α╕óα╕╖α╕Öα╕óα╕▒α╕Öα╕¡α╕╡α╣Çα╕íα╕Ñα╕óα╣î",
           field: (row) => row.is_verified,
-          format: (val) => `${val == 0 ? "ยังไม่ยืนยัน" : "ยืนยัน"}`,
+          format: (val) => `${val == 0 ? "α╕óα╕▒α╕çα╣äα╕íα╣êα╕óα╕╖α╕Öα╕óα╕▒α╕Ö" : "α╕óα╕╖α╕Öα╕óα╕▒α╕Ö"}`,
           sortable: true,
         },
       ],
       members1: [],
       $q: useQuasar(),
       passwordFieldType: "password",
-      btnLabel: "กดปุ่ม",
+      btnLabel: "α╕üα╕öα╕¢α╕╕α╣êα╕í",
       visibility: false,
       visibilityIcon: "visibility",
       checkUser: ref(false),
       isEdit: false,
-      isAdminOrSuperUser: false,
 
     };
   },
@@ -191,8 +189,8 @@ export default {
       if (!this.isEdit) {
         this.$q
           .dialog({
-            title: "ยืนยัน",
-            message: "คุณต้องการสมัครสมาชิคด้วยอีเมล : " + this.member.email + " หรือไม่?",
+            title: "α╕óα╕╖α╕Öα╕óα╕▒α╕Ö",
+            message: "α╕äα╕╕α╕ôα╕òα╣ëα╕¡α╕çα╕üα╕▓α╕úα╕¬α╕íα╕▒α╕äα╕úα╕¬α╕íα╕▓α╕èα╕┤α╕äα╕öα╣ëα╕ºα╕óα╕¡α╕╡α╣Çα╕íα╕Ñ : " + this.member.email + " α╕½α╕úα╕╖α╕¡α╣äα╕íα╣ê?",
             cancel: true,
             persistent: true,
           })
@@ -202,8 +200,8 @@ export default {
       } else {
         this.$q
           .dialog({
-            title: "ยืนยัน",
-            message: "คุณต้องการบันทึกการแก้ไขข้อมูลหรือไม่?",
+            title: "α╕óα╕╖α╕Öα╕óα╕▒α╕Ö",
+            message: "α╕äα╕╕α╕ôα╕òα╣ëα╕¡α╕çα╕üα╕▓α╕úα╕Üα╕▒α╕Öα╕ùα╕╢α╕üα╕üα╕▓α╕úα╣üα╕üα╣ëα╣äα╕éα╕éα╣ëα╕¡α╕íα╕╣α╕Ñα╕½α╕úα╕╖α╕¡α╣äα╕íα╣ê?",
             cancel: true,
             persistent: true,
           })
@@ -214,66 +212,67 @@ export default {
                 email: this.member.email,
                 status: this.member.status,
               });
-              this.$q.notify({ message: "แก้ไขข้อมูลสำเร็จ", color: "positive" });
+              this.$q.notify({ message: "α╣üα╕üα╣ëα╣äα╕éα╕éα╣ëα╕¡α╕íα╕╣α╕Ñα╕¬α╕│α╣Çα╕úα╣çα╕ê", color: "positive" });
               this.isEdit = false;
               this.resetForm();
               this.getUpdate();
             } catch (error) {
               console.error(error);
-              this.$q.notify({ message: "แก้ไขข้อมูลไม่สำเร็จ: " + (error.response?.data?.error || error.message), color: "negative" });
+              this.$q.notify({ message: "α╣üα╕üα╣ëα╣äα╕éα╕éα╣ëα╕¡α╕íα╕╣α╕Ñα╣äα╕íα╣êα╕¬α╕│α╣Çα╕úα╣çα╕ê: " + (error.response?.data?.error || error.message), color: "negative" });
             }
           });
       }
     },
 
     async getAllUser() {
-      console.log(" แสดงข้อมูลทั้งหมด ");
+      console.log(" α╣üα╕¬α╕öα╕çα╕éα╣ëα╕¡α╕íα╕╣α╕Ñα╕ùα╕▒α╣ëα╕çα╕½α╕íα╕ö ");
       try {
         const res = await axios.get(`${this.apiUrl}/members`);
         console.log("Registration:", res.data);
         this.members1 = res.data;
       } catch (error) {
         console.error(error);
-        this.$q.notify({ message: "ดึงข้อมูลไม่สำเร็จ", color: "negative" });
+        this.$q.notify({ message: "α╕öα╕╢α╕çα╕éα╣ëα╕¡α╕íα╕╣α╕Ñα╣äα╕íα╣êα╕¬α╕│α╣Çα╕úα╣çα╕ê", color: "negative" });
       }
     },
 
     async addNewMember() {
-      console.log("บันทึกข้อมูล");
+      console.log("α╕Üα╕▒α╕Öα╕ùα╕╢α╕üα╕éα╣ëα╕¡α╕íα╕╣α╕Ñ");
       try {
-        const response = await axios.post(`${this.apiUrl}/auth/register`, {
+        await axios.post(`${this.apiUrl}/auth/register`, {
           full_name: this.member.full_name,
           email: this.member.email,
           password: this.member.password,
-          status: this.member.status || "user",
+          status: this.member.status,
         });
-
-        this.$q.notify({ message: "สมัครสมาชิกสำเร็จ", color: "positive" });
-
-        // Add newly registered member to local list so user can see it
-        const newMember = {
-          member_id: response.data?.member_id || Date.now(),
-          full_name: this.member.full_name,
-          email: this.member.email,
-          password: this.member.password,
-          status: this.member.status || "user",
-          is_verified: 0,
-        };
-        this.members1.push(newMember);
-
+        this.$q.notify({ message: "α╕¬α╕íα╕▒α╕äα╕úα╕¬α╕íα╕▓α╕èα╕┤α╕üα╕¬α╕│α╣Çα╕úα╣çα╕ê", color: "positive" });
         this.resetForm();
+        this.getUpdate();
       } catch (error) {
         console.error(error);
-        const msg = (error.response?.status === 409)
-          ? `อีเมล: ${this.member.email} เป็นสมาชิคแล้ว`
-          : (error.response?.data?.error || error.message);
-        this.$q.notify({ message: "สมัครสมาชิกไม่สำเร็จ: " + msg, color: "negative" });
+        this.$q.notify({ message: "α╕¬α╕íα╕▒α╕äα╕úα╕¬α╕íα╕▓α╕èα╕┤α╕üα╣äα╕íα╣êα╕¬α╕│α╣Çα╕úα╣çα╕ê: " + (error.response?.data?.error || error.message), color: "negative" });
       }
     },
 
     async checkNewMemeber(email) {
-      console.log(" ตรวจสอบผู้ใช้ ", email);
-      this.addNewMember();
+      console.log(" α╕òα╕úα╕ºα╕êα╕¬α╕¡α╕Üα╕£α╕╣α╣ëα╣âα╕èα╣ë ", email);
+      try {
+        const res = await axios.get(`${this.apiUrl}/members`);
+        const members = Array.isArray(res.data) ? res.data : [];
+        const isMember = members.some(m => m.email === email);
+        if (isMember) {
+          this.$q.dialog({
+            title: "α╣üα╕êα╣ëα╕çα╣Çα╕₧α╕╖α╣êα╕¡α╕ùα╕úα╕▓α╕Ü",
+            message: "α╕¡α╕╡α╣Çα╕íα╕Ñ:" + email + " α╣Çα╕¢α╣çα╕Öα╕¬α╕íα╕▓α╕èα╕┤α╕äα╣üα╕Ñα╣ëα╕º",
+            persistent: true,
+          });
+        } else {
+          this.addNewMember();
+        }
+      } catch (error) {
+        console.error(error);
+        this.addNewMember(); // Fallback to register
+      }
     },
     async getUpdate() {
       // For admin/superuser, get all members to show in table
@@ -290,12 +289,12 @@ export default {
         this.member.password = ""; // Don't auto-fill password for security
       } catch (error) {
         console.error(error);
-        this.$q.notify({ message: "โหลดข้อมูลไม่สำเร็จ", color: "negative" });
+        this.$q.notify({ message: "α╣éα╕½α╕Ñα╕öα╕éα╣ëα╕¡α╕íα╕╣α╕Ñα╣äα╕íα╣êα╕¬α╕│α╣Çα╕úα╣çα╕ê", color: "negative" });
       }
     },
 
     resetForm() {
-      console.log("ยกเลิกการบันทึกข้อมูล");
+      console.log("α╕óα╕üα╣Çα╕Ñα╕┤α╕üα╕üα╕▓α╕úα╕Üα╕▒α╕Öα╕ùα╕╢α╕üα╕éα╣ëα╕¡α╕íα╕╣α╕Ñ");
       this.member.member_id = 0;
       this.member.full_name = "";
       this.member.email = "";
@@ -306,42 +305,42 @@ export default {
     deleteUser(id, name) {
       this.$q
         .dialog({
-          title: "ยืนยัน",
-          message: "คุณต้องการลบ [" + name + "] หรือไม่ ?",
+          title: "α╕óα╕╖α╕Öα╕óα╕▒α╕Ö",
+          message: "α╕äα╕╕α╕ôα╕òα╣ëα╕¡α╕çα╕üα╕▓α╕úα╕Ñα╕Ü [" + name + "] α╕½α╕úα╕╖α╕¡α╣äα╕íα╣ê ?",
           cancel: true,
           persistent: true,
         })
         .onOk(async () => {
           try {
             await axios.delete(`${this.apiUrl}/members/${id}`);
-            this.$q.notify({ message: "ลบสำเร็จ", color: "positive" });
+            this.$q.notify({ message: "α╕Ñα╕Üα╕¬α╕│α╣Çα╕úα╣çα╕ê", color: "positive" });
             this.getUpdate();
           } catch (error) {
             console.error(error);
-            this.$q.notify({ message: "ลบไม่สำเร็จ", color: "negative" });
+            this.$q.notify({ message: "α╕Ñα╕Üα╣äα╕íα╣êα╕¬α╕│α╣Çα╕úα╣çα╕ê", color: "negative" });
           }
         });
     },
 
     required(val) {
-      return (val && val.length > 0) || "ช่องที่ต้องกรอก";
+      return (val && val.length > 0) || "α╕èα╣êα╕¡α╕çα╕ùα╕╡α╣êα╕òα╣ëα╕¡α╕çα╕üα╕úα╕¡α╕ü";
     },
     diffPassword(val) {
       const val2 = this.member.password;
-      return (val && val === val2) || "รหัสผ่านไม่ตรงกัน!";
+      return (val && val === val2) || "α╕úα╕½α╕▒α╕¬α╕£α╣êα╕▓α╕Öα╣äα╕íα╣êα╕òα╕úα╕çα╕üα╕▒α╕Ö!";
     },
     short(val) {
-      return (val && val.length > 3) || "ค่าสั้นเกินไป";
+      return (val && val.length > 3) || "α╕äα╣êα╕▓α╕¬α╕▒α╣ëα╕Öα╣Çα╕üα╕┤α╕Öα╣äα╕¢";
     },
     isEmail(val) {
       const emailPattern =
         /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
-      return emailPattern.test(val) || "กรุณาใส่อีเมลที่ถูกต้อง";
+      return emailPattern.test(val) || "α╕üα╕úα╕╕α╕ôα╕▓α╣âα╕¬α╣êα╕¡α╕╡α╣Çα╕íα╕Ñα╕ùα╕╡α╣êα╕ûα╕╣α╕üα╕òα╣ëα╕¡α╕ç";
     },
     switchTypeForm() {
       this.register = !this.register;
-      this.title = this.register ? "ผู้ใช้ใหม่" : "การอนุญาต";
-      this.btnLabel = this.register ? "การลงทะเบียน" : "ทางเข้า";
+      this.title = this.register ? "α╕£α╕╣α╣ëα╣âα╕èα╣ëα╣âα╕½α╕íα╣ê" : "α╕üα╕▓α╕úα╕¡α╕Öα╕╕α╕ìα╕▓α╕ò";
+      this.btnLabel = this.register ? "α╕üα╕▓α╕úα╕Ñα╕çα╕ùα╕░α╣Çα╕Üα╕╡α╕óα╕Ö" : "α╕ùα╕▓α╕çα╣Çα╕éα╣ëα╕▓";
     },
     switchVisibility() {
       this.visibility = !this.visibility;
@@ -356,20 +355,19 @@ export default {
     this.apiUrl = getRestApiUrl(this.$store);
   },
   mounted() {
-    // We no longer pull all members from DB for privacy and speed
-    // this.getUpdate();
+    this.getUpdate();
   },
 
 };
 </script>
 
 <style lang="sass">
-/* พื้นที่เขียวอ่อนครอบคลุมใต้ Header */
+/* α╕₧α╕╖α╣ëα╕Öα╕ùα╕╡α╣êα╣Çα╕éα╕╡α╕óα╕ºα╕¡α╣êα╕¡α╕Öα╕äα╕úα╕¡α╕Üα╕äα╕Ñα╕╕α╕íα╣âα╕òα╣ë Header */
 .content-area
   background-color: #c8e6c9
   min-height: calc(100vh - 80px)
 
-/* ปรับแต่งตารางให้เป็นสีเขียวเข้มสลับแถว */
+/* α╕¢α╕úα╕▒α╕Üα╣üα╕òα╣êα╕çα╕òα╕▓α╕úα╕▓α╕çα╣âα╕½α╣ëα╣Çα╕¢α╣çα╕Öα╕¬α╕╡α╣Çα╕éα╕╡α╕óα╕ºα╣Çα╕éα╣ëα╕íα╕¬α╕Ñα╕▒α╕Üα╣üα╕ûα╕º */
 .custom-green-table
   border-radius: 4px
 
