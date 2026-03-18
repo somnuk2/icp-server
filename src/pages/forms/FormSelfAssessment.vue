@@ -1853,7 +1853,7 @@ Reply with ONLY the level ID (number).
 
         const res = await axios.post(this.chat_url, {
           messages,
-          gemini_api_key: localStorage.getItem("gemini_api_key")
+          gemini_api_key: sessionStorage.getItem("gemini_api_key")
         }, { timeout: 300000 });
         const reply = (res?.data?.reply || "").trim();
         const m = reply.match(/\d+/);
@@ -1891,7 +1891,7 @@ Reply only as a JSON array of strings. Example: ["Certificate from Coursera", "S
 
         const res = await axios.post(this.chat_url, {
           messages,
-          gemini_api_key: localStorage.getItem("gemini_api_key")
+          gemini_api_key: sessionStorage.getItem("gemini_api_key")
         }, { timeout: 300000 });
         const reply = res?.data?.reply || "";
         let recs = [];

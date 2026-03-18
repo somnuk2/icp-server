@@ -56,7 +56,7 @@ const notifyOk = (message) => $q.notify({ type: 'positive', message })
 const CHAT_URL = getChatUrl(store)
 
 const callChat = async (payloadMessages, timeout = 120000) => {
-  const userApiKey = localStorage.getItem("gemini_api_key")
+  const userApiKey = sessionStorage.getItem("gemini_api_key")
   const res = await axios.post(CHAT_URL, {
     messages: payloadMessages,
     gemini_api_key: userApiKey

@@ -1155,7 +1155,7 @@ ${profileText}
 
     const res = await axios.post(CHAT_URL, {
       messages,
-      gemini_api_key: localStorage.getItem("gemini_api_key")
+      gemini_api_key: sessionStorage.getItem("gemini_api_key")
     }, { timeout: 300000 });
     const reply = res?.data?.reply || "";
     const recommendations = safeParseJsonArray(reply);

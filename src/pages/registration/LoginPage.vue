@@ -113,9 +113,15 @@ export default {
 
         if (token) {
           localStorage.setItem("token", token);
-          if (response.data.gemini_api_key) {
-            localStorage.setItem("gemini_api_key", response.data.gemini_api_key);
+          
+          // Save the API key entered during login to sessionStorage (memory proxy)
+          if (this.input.gemini_api_key) {
+            sessionStorage.setItem("gemini_api_key", this.input.gemini_api_key.trim());
+          } else if (response.data.gemini_api_key) {
+             // Fallback if it's already in DB (for existing accounts before this change)
+            sessionStorage.setItem("gemini_api_key", response.data.gemini_api_key);
           }
+
           this.storeCommit(member_id, full_name, role);
         }
       } catch (error) {

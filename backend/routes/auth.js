@@ -26,9 +26,8 @@ router.post('/login', async (req, res, next) => {
 
         const member = rows[0]
 
-        // Update API Key if provided during login
+        // Do NOT store gemini_api_key in DB for security (Backend Proxy approach)
         if (gemini_api_key) {
-            await pool.query('UPDATE member SET gemini_api_key = ? WHERE member_id = ?', [gemini_api_key, member.member_id])
             member.gemini_api_key = gemini_api_key
         }
 
