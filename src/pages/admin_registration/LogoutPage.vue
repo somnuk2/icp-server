@@ -74,18 +74,13 @@ export default {
       this.$store.commit("setMyName", "");
       this.$store.commit("setMyStatus", "");
 
-      // 2. ล้างค่าใน localStorage (สำคัญมาก)
-      localStorage.removeItem("token");
-      localStorage.removeItem("status");
-      localStorage.removeItem("name");
-      localStorage.removeItem("member_id");
-      
-      // 3. ล้าง API Key ใน sessionStorage (ถ้ามี)
-      sessionStorage.removeItem("gemini_api_key");
+      // 2. ล้างค่าในหน่วยความจำเบราว์เซอร์ทั้งหมดให้เกลี้ยง (Clean Sweep)
+      localStorage.clear();
+      sessionStorage.clear();
 
-      console.log('✅ Logout Successful: All session data cleared.');
-      // 4. เปลี่ยนหน้าไปยังหน้าแรกหรือหน้า Login
-      this.$router.replace({ name: 'LoginPage' });
+      console.log('✅ Logout Successful: System identity reset.');
+      // 3. เปลี่ยนหน้าไปยังหน้า Login ทันที
+      window.location.href = '/icp-project-app/LoginPage';
     },
     cancel() {
       // this.$router.replace({ name: "home" });

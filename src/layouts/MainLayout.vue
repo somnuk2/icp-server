@@ -88,7 +88,7 @@
     <!-- ผู้ดูแลกลุ่ม -->
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered v-if="
       $store.getters.myAuthenticate == true &&
-      $store.getters.myStatus == 'suser'
+      ['suser', 'superuser', 'super_user'].includes($store.getters.myStatus.toLowerCase())
     ">
       <q-list>
         <q-item-label header>
