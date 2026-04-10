@@ -34,8 +34,7 @@
                             color="primary"
                             label="ยืนยัน"
                             icon="check_box"
-                            @Click="confirm()"
-                            to="/"
+                            @click="confirm()"
                           />
                           <q-btn
                             class="btn btn-dark btn-lg btn-block"
