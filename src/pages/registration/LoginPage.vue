@@ -113,6 +113,9 @@ export default {
 
         if (token) {
           localStorage.setItem("token", token);
+          localStorage.setItem("status", role);
+          localStorage.setItem("name", full_name);
+          localStorage.setItem("member_id", member_id);
           
           // Save the API key entered during login to sessionStorage (memory proxy)
           if (this.input.gemini_api_key) {
