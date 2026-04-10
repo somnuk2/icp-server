@@ -27,23 +27,25 @@
                     <q-form class="q-gutter-md">
                       <div class="row">
                         <div class="col-md-12 col-xs-12 q-pa-xs text-center">
-                          <q-icon :name="logout" />
-                          <h6>คุณต้องการออกระบบใช่ไหม?</h6>
-                          <q-btn
-                            class="btn btn-dark btn-lg btn-block"
-                            color="primary"
-                            label="ยืนยัน"
-                            icon="check_box"
-                            @click="confirm()"
-                          />
-                          <q-btn
-                            class="btn btn-dark btn-lg btn-block"
-                            flat
-                            color="primary"
-                            label="ยกเลิก"
-                            icon="dangerous"
-                            to="/"
-                          />
+                          <q-icon name="logout" size="64px" color="primary" />
+                          <h6 class="q-my-md">คุณต้องการออกระบบใช่ไหม?</h6>
+                          <div class="row justify-center q-gutter-sm">
+                            <q-btn
+                              color="primary"
+                              label="ยืนยันออกจากระบบ"
+                              icon="logout"
+                              @click="confirm()"
+                              size="lg"
+                            />
+                            <q-btn
+                              flat
+                              color="primary"
+                              label="ยกเลิก"
+                              icon="close"
+                              to="/"
+                              size="lg"
+                            />
+                          </div>
                         </div>
                       </div>
                     </q-form>
@@ -67,24 +69,20 @@ export default {
   },
   methods: {
     confirm() {
-      // 1. ล้างค่าใน Vuex Store
+      // 1. ล้างค่าในเครื่องให้หมดเกลี้ยง
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // 2. ล้างค่าใน Store
       this.$store.commit("setMyAuthenticate", false);
       this.$store.commit("setMyMember_id", 0);
       this.$store.commit("setMyName", "");
       this.$store.commit("setMyStatus", "");
 
-      // 2. ล้างค่าในหน่วยความจำเบราว์เซอร์ทั้งหมดให้เกลี้ยง (Clean Sweep)
-      localStorage.clear();
-      sessionStorage.clear();
-
-      console.log('✅ Logout Successful: System identity reset.');
-      // 3. เปลี่ยนหน้าไปยังหน้า Login ทันที
-      window.location.href = '/icp-project-app/LoginPage';
-    },
-    cancel() {
-      // this.$router.replace({ name: "home" });
+      // 3. บังคับโหลดหน้าใหม่ไปที่หน้าแรก (ซึ่งไม่มีสิทธิ์แล้ว จะถูก Boot/Auth ดีดไปหน้า Login ที่ถูกต้องเอง)
+      // วิธีนี้ได้ผลแน่นอน 100% ไม่ว่าเว็บจะรันอยู่ที่ Path ไหน หรือโหมดอะไร
+      window.location.href = window.location.origin + window.location.pathname;
     },
   },
 };
 </script>
-<style scoped></style>
