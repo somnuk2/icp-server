@@ -102,11 +102,6 @@ export default {
       }
     },
     async checkMember() {
-      // ล้างค่าเก่าทิ้งก่อนเริ่ม Login ใหม่ทุกครั้ง
-      localStorage.clear();
-      sessionStorage.clear();
-      delete axios.defaults.headers.common['Authorization'];
-
       try {
         const response = await axios.post(`${this.apiUrl}/auth/login`, {
           email: this.input.username.trim(),
@@ -117,16 +112,16 @@ export default {
         const { token, member_id, full_name, role } = response.data;
 
         if (token) {
+          // บันทึกข้อมูลลง localStorage
           localStorage.setItem("token", token);
           localStorage.setItem("status", role);
           localStorage.setItem("name", full_name);
-          localStorage.setItem("member_id", member_id);
-          
-          // Save the API key entered during login to sessionStorage (memory proxy)
+          localStorage.setItem("member_id", String(member_id));
+
+          // บันทึก API Key ลง sessionStorage (ถ้ามี)
           if (this.input.gemini_api_key) {
             sessionStorage.setItem("gemini_api_key", this.input.gemini_api_key.trim());
           } else if (response.data.gemini_api_key) {
-             // Fallback if it's already in DB (for existing accounts before this change)
             sessionStorage.setItem("gemini_api_key", response.data.gemini_api_key);
           }
 
@@ -144,11 +139,13 @@ export default {
       }
     },
     storeCommit(member_id, full_name, status) {
+      // อัปเดต Store
       this.$store.commit("setMyAuthenticate", true);
       this.$store.commit("setMyMember_id", member_id);
       this.$store.commit("setMyName", full_name);
       this.$store.commit("setMyStatus", status);
-      this.$router.replace({ path: "/" });
+      // ใช้ router.replace เพื่อไปหน้าหลัก (Auth Guard จะไม่บล็อกเพราะ requiresAuth = false)
+      this.$router.replace({ name: "IndexPage" });
     },
     required(val) {
       return (val && val.length > 0) || "ช่องที่ต้องกรอก";
