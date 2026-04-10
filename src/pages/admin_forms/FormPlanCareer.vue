@@ -1,11 +1,11 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-page-container class="bg-grey-2">
-      <q-page padding class="items-center justify-center" style="background: linear-gradient(#74c588, #0ad13c)">
+      <q-page padding class="items-center justify-center bg-grey-2" style="min-height: 100vh;">
         <div class="full-width">
           <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
             <q-card flat class="bg-white text-black">
-              <q-card-section class="bg-blue-14">
+              <q-card-section class="bg-primary">
                 <h4 class="text-h5 text-white q-my-xs text-center">
                   {{ title }}
                 </h4>
@@ -16,7 +16,7 @@
                     <!-- รายชื่อ -->
                     <div class="row">
                       <div class="col-md-12 col-xs-12 q-pa-xs">
-                        <q-select use-input @filter="filterMember" color="blue-3" v-model="member"
+                        <q-select use-input @filter="filterMember" color="primary" v-model="member"
                           :options="members.options" label="ชื่อ-สกุล *" stack-label>
                           <template v-slot:prepend>
                             <q-icon name="school" />
@@ -60,7 +60,7 @@
                     <div class="row">
                       <!-- อาชีพเป้าหมาย -->
                       <div class="col-md-5 col-xs-12 q-pa-xs">
-                        <q-select @filter="filterCareer" color="blue-5" v-model="planCareer" use-input
+                        <q-select @filter="filterCareer" color="primary" v-model="planCareer" use-input
                           :options="career.options" label="อาชีพเป้าหมาย *"
                           @update:model-value="onCareer_plan(planCareer)">
                           <template v-slot:prepend>
@@ -82,7 +82,7 @@
                       </div>
                       <!-- กลุ่มอาชีพ -->
                       <div class="col-md-4 col-xs-12 q-pa-xs">
-                        <q-input standout bottom-slots filled v-model="plan_career.ca_group_name" label="กลุ่มอาชีพ"
+                        <q-input standout="bg-primary text-white" bottom-slots filled v-model="plan_career.ca_group_name" label="กลุ่มอาชีพ"
                           clearable>
                           <template v-slot:prepend>
                             <q-icon name="school" />
@@ -137,7 +137,7 @@
                           <q-table title="ข้อมูลอาชีพเป้าหมาย" :rows="plan_careers1" :columns="columns"
                             row-key="Name_Plan_Career" :filter="filter" :loading="loading"
                             :visible-columns="visibleColumns" separator="cell" table-header-style="height: 65px; "
-                            table-header-class="bg-blue-5" :rows-per-page-options="[30, 50, 100, 0]"
+                            table-header-class="bg-primary text-white" :rows-per-page-options="[30, 50, 100, 0]"
                             icon-first-page="home" icon-last-page="all_inclusive" icon-next-page="arrow_right"
                             icon-prev-page="arrow_left" :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                               return `หน้า : ${endRowIndex}/${totalRowsNumber}`
@@ -645,7 +645,8 @@ export default {
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
-    background-color: #c1f4cd
+    background-color: $primary
+    color: white
   thead tr th
     position: sticky
     z-index: 1

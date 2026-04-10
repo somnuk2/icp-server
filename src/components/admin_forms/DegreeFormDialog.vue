@@ -1,6 +1,6 @@
 <template>
     <q-card style="min-width: 80vw; max-width: 95vw;">
-        <q-card-section class="bg-blue-14 row items-center q-pb-none">
+        <q-card-section class="bg-primary row items-center q-pb-none">
             <div class="text-h6 text-white">{{ title }}</div>
             <q-space />
             <q-btn icon="close" flat round dense v-close-popup text-color="white" />
@@ -11,7 +11,7 @@
                 <q-form @submit.prevent="submitForm()" @reset="resetForm()" method="post" class="q-gutter-md">
                     <div class="row">
                         <div class="col-md-6 col-xs-12 q-pa-xs">
-                            <q-select use-input @filter="filterInstitute" color="blue-3" v-model="institute"
+                            <q-select use-input @filter="filterInstitute" color="primary" v-model="institute"
                                 :options="institutes.options" label="สถาบันการศึกษา *" stack-label
                                 @update:model-value="onInstituteValueChange">
                                 <template v-slot:prepend>
@@ -20,7 +20,7 @@
                             </q-select>
                         </div>
                         <div class="col-md-6 col-xs-12 q-pa-xs">
-                            <q-select use-input @filter="filterFaculty" color="blue-3" v-model="faculty"
+                            <q-select use-input @filter="filterFaculty" color="primary" v-model="faculty"
                                 :options="facultys.options" label="คณะ *" stack-label
                                 @update:model-value="onFacultyValueChange">
                                 <template v-slot:prepend>
@@ -29,7 +29,7 @@
                             </q-select>
                         </div>
                         <div class="col-md-12 col-xs-12 q-pa-xs">
-                            <q-input color="white" bg-color="blue-5" standout bottom-slots
+                            <q-input standout="bg-primary text-white" bottom-slots
                                 v-model="individual.degree_name" label="ระดับการศึกษา *" clearable
                                 :rules="[(val) => (val && val.length > 0) || 'ต้องใส่ระดับการศึกษา']">
                                 <template v-slot:prepend>
@@ -49,7 +49,7 @@
                 <div class="col-md-12 col-xs-12 q-pa-xs">
                     <q-table title="ข้อมูลระดับการศึกษา" :rows="individuals1" :columns="columns" row-key="name"
                         :filter="filter" :loading="loading" :visible-columns="visibleColumns" separator="cell"
-                        table-header-style="height: 65px; " table-header-class="bg-blue-5"
+                        table-header-style="height: 65px; " table-header-class="bg-primary text-white"
                         :rows-per-page-options="[10, 20, 50, 0]">
                         <template v-slot:top-right="props">
                             <q-input borderless dense debounce="300" v-model="filter"

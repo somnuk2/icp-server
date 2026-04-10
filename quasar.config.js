@@ -26,7 +26,8 @@ export default defineConfig((ctx) => {
 
     boot: [
       'axios',
-      'store'
+      'store',
+      'auth'
     ],
 
     // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-file#css

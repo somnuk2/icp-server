@@ -13,7 +13,6 @@ import FormSelfAssessment from "pages/forms/FormSelfAssessment.vue";
 // import FormReport from "pages/forms/FormReport.vue";
 import FormRegistration from "pages/forms/FormRegistration.vue";
 import FormNotification from "pages/forms/FormNotification.vue";
-import FormAI from "src/pages/forms/FormAI.vue";
 import FormDashboard from "pages/forms/FormDashboard.vue";
 // registration
 import LoginPage from "src/pages/registration/LoginPage.vue";
@@ -92,6 +91,7 @@ const routes = [
         path: "/",
         name: "IndexPage",
         component: IndexPage,
+        meta: { requiresAuth: false }
       },
     ],
 
@@ -109,46 +109,55 @@ const routes = [
     path: "/FormRegistration",
     name: "FormRegistration",
     component: FormRegistration,
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user'] }
   },
   {
     path: "/FormComponent",
     name: "FormComponent",
     component: FormComponent,
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user'] }
   },
   {
     path: "/FormPlan",
     name: "FormPlan",
     component: FormPlan,
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user'] }
   },
   {
     path: "/FormPlanCareer",
     name: "FormPlanCareer",
     component: FormPlanCareer,
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user'] }
   },
   {
     path: "/FormQualification",
     name: "FormQualification",
     component: FormQualification,
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user'] }
   },
   {
     path: "/FormSelfAssessment",
     name: "FormSelfAssessment",
     component: FormSelfAssessment,
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user'] }
   },
   {
     path: "/LoginPage",
     name: "LoginPage",
     component: LoginPage,
+    meta: { requiresAuth: false }
   },
   {
     path: "/LogoutPage",
     name: "LogoutPage",
     component: LogoutPage,
+    meta: { requiresAuth: false }
   },
   {
     path: "/RegistrationPage",
     name: "RegistrationPage",
     component: RegistrationPage,
+    meta: { requiresAuth: false }
   },
   // {
   //   path: "/FormReference",
@@ -159,27 +168,26 @@ const routes = [
     path: "/FormNotification",
     name: "FormNotification",
     component: FormNotification,
-  },
-  {
-    path: "/FormAI",
-    name: "FormAI",
-    component: FormAI,
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user'] }
   },
   {
     path: "/FormDashboard",
     name: "FormDashboard",
     component: FormDashboard,
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user'] }
   },
   // Admin forms
   {
     path: "/AdminFormRegistration",
     name: "AdminFormRegistration",
     component: AdminFormRegistration,
+    meta: { requiresAuth: true, roles: ['admin', 'super_user'] }
   },
   {
     path: "/AdminFormComponent",
     name: "AdminFormComponent",
     component: AdminFormComponent,
+    meta: { requiresAuth: true, roles: ['admin', 'super_user'] }
   },
   // {
   //   path: "/AdminFormPivotTable",
@@ -195,41 +203,49 @@ const routes = [
     path: "/AdminFormPlan",
     name: "AdminFormPlan",
     component: AdminFormPlan,
+    meta: { requiresAuth: true, roles: ['admin', 'super_user'] }
   },
   {
     path: "/AdminFormPlanCareer",
     name: "AdminFormPlanCareer",
     component: AdminFormPlanCareer,
+    meta: { requiresAuth: true, roles: ['admin', 'super_user'] }
   },
   {
     path: "/AdminFormQualification",
     name: "AdminFormQualification",
     component: AdminFormQualification,
+    meta: { requiresAuth: true, roles: ['admin', 'super_user'] }
   },
   {
     path: "/AdminFormSelfAssessment",
     name: "AdminFormSelfAssessment",
     component: AdminFormSelfAssessment,
+    meta: { requiresAuth: true, roles: ['admin', 'super_user'] }
   },
   {
     path: "/AdminFormNotification",
     name: "AdminFormNotification",
     component: AdminFormNotification,
+    meta: { requiresAuth: true, roles: ['admin', 'super_user'] }
   },
   {
     path: "/AdminLoginPage",
     name: "AdminLoginPage",
     component: AdminLoginPage,
+    meta: { requiresAuth: false }
   },
   {
     path: "/AdminLogoutPage",
     name: "AdminLogoutPage",
     component: AdminLogoutPage,
+    meta: { requiresAuth: false }
   },
   {
     path: "/AdminRegistrationPage",
     name: "AdminRegistrationPage",
     component: AdminRegistrationPage,
+    meta: { requiresAuth: false }
   },
   // {
   //   path: "/ImportExcel",
@@ -241,11 +257,13 @@ const routes = [
     path: "/SuserFormRegistration",
     name: "SuserFormRegistration",
     component: SuserFormRegistration,
+    meta: { requiresAuth: true, roles: ['super_user'] }
   },
   {
     path: "/SuserFormComponent",
     name: "SuserFormComponent",
     component: SuserFormComponent,
+    meta: { requiresAuth: true, roles: ['super_user'] }
   },
   // {
   //   path: "/SuserFormPivotTable",
@@ -261,26 +279,31 @@ const routes = [
     path: "/SuserFormPlan",
     name: "SuserFormPlan",
     component: SuserFormPlan,
+    meta: { requiresAuth: true, roles: ['super_user'] }
   },
   {
     path: "/SuserFormPlanCareer",
     name: "SuserFormPlanCareer",
     component: SuserFormPlanCareer,
+    meta: { requiresAuth: true, roles: ['super_user'] }
   },
   {
     path: "/SuserFormQualification",
     name: "SuserFormQualification",
     component: SuserFormQualification,
+    meta: { requiresAuth: true, roles: ['super_user'] }
   },
   {
     path: "/SuserFormSelfAssessment",
     name: "SuserFormSelfAssessment",
     component: SuserFormSelfAssessment,
+    meta: { requiresAuth: true, roles: ['super_user'] }
   },
   {
     path: "/SuserFormNotification",
     name: "SuserFormNotification",
     component: SuserFormNotification,
+    meta: { requiresAuth: true, roles: ['super_user'] }
   },
   // sub admin education
   {

@@ -1,11 +1,11 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-page-container class="bg-grey-2">
-      <q-page padding class="items-center justify-center" style="background: linear-gradient(#74c588, #0ad13c)">
+      <q-page padding class="items-center justify-center bg-grey-2" style="min-height: 100vh;">
         <div class="full-width">
           <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
             <q-card flat class="bg-white text-black">
-              <q-card-section class="bg-blue-14">
+              <q-card-section class="bg-primary">
                 <h4 class="text-h5 text-white q-my-xs text-center">
                   {{ title }}
                 </h4>
@@ -16,7 +16,7 @@
                     <!-- รายชื่อ -->
                     <div class="row">
                       <div class="col-md-12 col-xs-12 q-pa-xs">
-                        <q-select use-input @filter="filterMember" color="blue-3" v-model="member"
+                        <q-select use-input @filter="filterMember" color="primary" v-model="member"
                           :options="members.options" label="ชื่อ-สกุล *" stack-label
                           @update:model-value="(val) => onMemberNames(val)">
                           <template v-slot:prepend>
@@ -62,7 +62,7 @@
                     <div class="row">
                       <!-- แผนอาชีพ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
-                        <q-select use-input @filter="filterPlan_career" color="blue-3" v-model="plan_career"
+                        <q-select use-input @filter="filterPlan_career" color="primary" v-model="plan_career"
                           :options="plan_careers.options" label="อาชีพเป้าหมาย *" stack-label @update:model-value="(plan_career_id) => onQa_plan_career(plan_career_id)
                           ">
                           <template v-slot:prepend>
@@ -106,7 +106,7 @@
                       </div>
                       <!-- คุณสมบัติ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
-                        <q-select use-input @filter="filterQa_plan_career" color="blue-3" v-model="qa_plan_career"
+                        <q-select use-input @filter="filterQa_plan_career" color="primary" v-model="qa_plan_career"
                           :options="qa_plan_careers.options" label="คุณสมบัติ/ทักษะ *" stack-label @update:model-value="(qa_plan_career) => onQaualification(qa_plan_career)
                           ">
                           <template v-slot:prepend>
@@ -150,7 +150,7 @@
                     <!-- ระดับความสำคัญ/ค่าเป้าหมาย -->
                     <div class="row">
                       <div class="col-md-12 col-xs-12 q-pa-xs">
-                        <q-input type="textarea" color="blue-3" standout bottom-slots
+                        <q-input type="textarea" color="primary" standout="bg-primary text-white" bottom-slots
                           v-model="qa_plan_career_description" label="ความสำคัญ/เป้าหมาย" clearable autogrow
                           :disable="true">
                           <template v-slot:prepend>
@@ -166,7 +166,7 @@
                     <div class="row">
                       <!-- การพัฒนา -->
                       <div class="col-md-4 col-xs-12 q-pa-xs">
-                        <q-select @filter="filterDevelopment" use-input color="green" v-model="development_id"
+                        <q-select @filter="filterDevelopment" use-input color="primary" v-model="development_id"
                           :options="development.options" label="การพัฒนา *" emit-value map-options>
                           <template v-slot:prepend>
                             <q-icon name="post_add" />
@@ -193,7 +193,7 @@
                       </div>
                       <!-- เรื่อง -->
                       <div class="col-md-8 col-xs-12 q-pa-xs">
-                        <q-input standout bottom-slots v-model="plan.plan_title" label="เรื่อง *" clearable>
+                        <q-input standout="bg-primary text-white" bottom-slots v-model="plan.plan_title" label="เรื่อง *" clearable>
                           <template v-slot:prepend>
                             <q-icon name="list_alt" />
                           </template>
@@ -206,7 +206,7 @@
                     <div class="row">
                       <!-- ช่องทาง -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
-                        <q-input standout bottom-slots v-model="plan.plan_channel" label="ช่องทาง *" clearable>
+                        <q-input standout="bg-primary text-white" bottom-slots v-model="plan.plan_channel" label="ช่องทาง *" clearable>
                           <template v-slot:prepend>
                             <q-icon name="play_lesson" />
                           </template>
@@ -217,7 +217,7 @@
                       </div>
                       <!-- ความสำคัญ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
-                        <q-select @filter="filterImportance" use-input color="green" v-model="importance_id"
+                        <q-select @filter="filterImportance" use-input color="primary" v-model="importance_id"
                           :options="importance.options" label="ความสำคัญ *" emit-value map-options>
                           <template v-slot:prepend>
                             <q-icon name="saved_search" />
@@ -307,7 +307,7 @@
                         <div class="q-pa-xs">
                           <q-table title="ข้อมูลการพัฒนาตนเอง" :rows="plans1" :columns="columns" row-key="id"
                             :filter="filter" :loading="loading" :visible-columns="visibleColumns" separator="cell"
-                            table-header-style="height: 65px; " table-header-class="bg-blue-5"
+                            table-header-style="height: 65px; " table-header-class="bg-primary text-white"
                             :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home"
                             icon-last-page="all_inclusive" icon-next-page="arrow_right" icon-prev-page="arrow_left"
                             :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
@@ -1101,7 +1101,8 @@ export default {
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
-    background-color: #c1f4cd
+    background-color: $primary
+    color: white
   thead tr th
     position: sticky
     z-index: 1

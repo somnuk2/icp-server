@@ -2,11 +2,11 @@
   <q-layout view="hHh Lpr lFf">
     <q-page-container class="bg-grey-2">
       <div @keyup="nextItem">
-        <q-page padding class="row items-center justify-center" style="background: linear-gradient(#74c588, #0ad13c)">
+        <q-page padding class="row items-center justify-center bg-grey-2" style="min-height: 100vh;">
           <div class="row full-width">
             <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
               <q-card flat class="bg-white text-black">
-                <q-card-section class="bg-blue-14">
+                <q-card-section class="bg-primary">
                   <h4 class="text-h5 text-white q-my-xs text-center">
                     {{ title }}
                   </h4>

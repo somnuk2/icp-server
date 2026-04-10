@@ -1,11 +1,11 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-page-container class="bg-grey-2">
-      <q-page padding class="items-center justify-center" style="background: linear-gradient(#74c588, #0ad13c)">
+      <q-page padding class="items-center justify-center bg-grey-2" style="min-height: 100vh;">
         <div class="full-width">
           <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
             <q-card flat class="bg-white text-black">
-              <q-card-section class="bg-blue-14">
+              <q-card-section class="bg-primary">
                 <h4 class="text-h5 text-white q-my-xs text-center">
                   {{ title }}
                 </h4>
@@ -124,8 +124,14 @@
                                       </q-item-section>
 
                                       <q-item-section side top>
-                                        <q-btn push color="positive" icon="add_circle" label="เพิ่มลงแผน"
-                                          @click="acceptAiRecommendation(rec)" />
+                                        <div class="row q-gutter-x-sm">
+                                          <q-btn flat round color="red-4" icon="close" size="sm"
+                                            @click="aiRecommendations = aiRecommendations.filter(r => r !== rec)">
+                                            <q-tooltip>ลบข้อแนะนำนี้</q-tooltip>
+                                          </q-btn>
+                                          <q-btn unelevated color="positive" icon="add_check" label="ยอมรับและเพิ่มลงแผน"
+                                            @click="acceptAiRecommendation(rec)" />
+                                        </div>
                                       </q-item-section>
                                     </q-item>
                                   </q-list>
@@ -157,7 +163,7 @@
                 <div class="row q-mt-lg">
                   <div class="col-12">
                     <q-card flat bordered>
-                      <q-card-section class="bg-blue-1 text-blue-9 row items-center justify-between">
+                      <q-card-section class="bg-primary text-white row items-center justify-between">
                         <div class="text-h6"><q-icon name="account_tree" /> แผนการพัฒนาตนเอง (โครงสร้างต้นไม้)</div>
                         <div class="row q-gutter-sm items-center">
                           <q-input dense filled debounce="300" v-model="treeFilter" placeholder="ค้นหาในโครงสร้างต้นไม้"
@@ -244,7 +250,7 @@
       <!-- Manual Form Dialog -->
       <q-dialog v-model="showManualFormDialog" persistent>
         <q-card style="min-width: 600px; max-width: 90vw">
-          <q-card-section class="bg-blue-14 text-white">
+          <q-card-section class="bg-primary text-white">
             <div class="text-h6">{{ isEdit ? "แก้ไขข้อมูล" : "เพิ่มข้อมูลแผนใหม่" }}</div>
           </q-card-section>
 
@@ -253,7 +259,7 @@
               <!-- อาชีพเป้าหมาย + คุณสมบัติ-->
               <div class="row">
                 <div class="col-md-6 col-xs-12 q-pa-xs">
-                  <q-select @filter="filterPlanCareer" use-input color="green" v-model="plan_career_id"
+                  <q-select @filter="filterPlanCareer" use-input color="primary" v-model="plan_career_id"
                     :options="plan_career.options" label="อาชีพเป้าหมาย *" emit-value map-options
                     :loading="loadingPlanCareer" data-testid="select-target-career">
                     <template v-slot:prepend>
@@ -281,7 +287,7 @@
                 </div>
 
                 <div class="col-md-6 col-xs-12 q-pa-xs">
-                  <q-select @filter="filterQaPlanCareer" use-input color="green" v-model="qa_plan_career_id"
+                  <q-select @filter="filterQaPlanCareer" use-input color="primary" v-model="qa_plan_career_id"
                     :options="qa_plan_career.options" label="คุณสมบัติที่ต้องการ *" emit-value map-options
                     :disable="!plan_career_id" :loading="loadingQaPlanCareer" data-testid="select-target-qualification">
                     <template v-slot:prepend>
@@ -312,7 +318,7 @@
               <!-- การพัฒนา + เรื่อง -->
               <div class="row">
                 <div class="col-md-4 col-xs-12 q-pa-xs">
-                  <q-select @filter="filterDevelopment" use-input color="green" v-model="development_id"
+                  <q-select @filter="filterDevelopment" use-input color="primary" v-model="development_id"
                     :options="development.options" label="การพัฒนา *" emit-value map-options
                     :loading="loadingDevelopment" data-testid="select-development-type">
                     <template v-slot:prepend>
@@ -335,7 +341,7 @@
                 </div>
 
                 <div class="col-md-8 col-xs-12 q-pa-xs">
-                  <q-input standout bottom-slots v-model="plan.plan_title" label="เรื่อง *" clearable
+                  <q-input standout="bg-primary text-white" bottom-slots v-model="plan.plan_title" label="เรื่อง *" clearable
                     data-testid="input-plan-title">
                     <template v-slot:prepend>
                       <q-icon name="list_alt" />
@@ -350,7 +356,7 @@
               <!-- ช่องทาง -->
               <div class="row">
                 <div class="col-md-12 col-xs-12 q-pa-xs">
-                  <q-input standout bottom-slots v-model="plan.plan_channel" label="ช่องทาง *" clearable>
+                  <q-input standout="bg-primary text-white" bottom-slots v-model="plan.plan_channel" label="ช่องทาง *" clearable>
                     <template v-slot:prepend>
                       <q-icon name="play_lesson" />
                     </template>
@@ -401,7 +407,7 @@
               <!-- ความสำคัญ -->
               <div class="row">
                 <div class="col-md-12 col-xs-12 q-pa-xs">
-                  <q-select @filter="filterImportance" use-input color="green" v-model="importance_id"
+                  <q-select @filter="filterImportance" use-input color="primary" v-model="importance_id"
                     :options="importance.options" label="ความสำคัญ *" emit-value map-options
                     :loading="loadingImportance" data-testid="select-importance">
                     <template v-slot:prepend>
@@ -1701,6 +1707,10 @@ async function acceptAiRecommendation(rec) {
   try {
     await axios.post(`${urls.rest_api}/plans`, payload);
     $q.notify({ type: "positive", message: `เพิ่มแผน "${payload.plan_title}" สำเร็จ` });
+    
+    // ✅ Remove from recommendations list
+    aiRecommendations.value = aiRecommendations.value.filter(r => r !== rec);
+    
     await fetchTableData(); // ✅ refresh
   } catch (e) {
     notifyError("บันทึกไม่สำเร็จ", e);

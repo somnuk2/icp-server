@@ -1,11 +1,11 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-page-container class="bg-grey-2">
-      <q-page padding class="items-center justify-center" style="background: linear-gradient(#74c588, #0ad13c)">
+      <q-page padding class="items-center justify-center bg-grey-2" style="min-height: 100vh;">
         <div class="full-width">
           <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
             <q-card flat class="bg-white text-black">
-              <q-card-section class="bg-blue-14">
+              <q-card-section class="bg-primary">
                 <h4 class="text-h5 text-white q-my-xs text-center">
                   {{ title }}
                 </h4>
@@ -16,7 +16,7 @@
                     <!-- รายชื่อ -->
                     <div class="row">
                       <div class="col-md-12 col-xs-12 q-pa-xs">
-                        <q-select use-input @filter="filterMember" color="blue-3" v-model="member"
+                        <q-select use-input @filter="filterMember" color="primary" v-model="member"
                           :options="members.options" label="ชื่อ-สกุล *" stack-label
                           @update:model-value="(val) => onMemberNames(val)">
                           <template v-slot:prepend>
@@ -62,7 +62,7 @@
                     <div class="row">
                       <!-- แผนอาชีพ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
-                        <q-select use-input @filter="filterPlan_career" color="blue-3" v-model="plan_career"
+                        <q-select use-input @filter="filterPlan_career" color="primary" v-model="plan_career"
                           :options="plan_careers.options" label="อาชีพเป้าหมาย *" stack-label
                           @update:model-value="onPlan_career(plan_career)">
                           <template v-slot:prepend>
@@ -106,7 +106,7 @@
                       </div>
                       <!-- กลุ่มอาชีพ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
-                        <q-input standout bottom-slots filled v-model="ca_group_name" label="กลุ่มอาชีพ" clearable>
+                        <q-input standout="bg-primary text-white" bottom-slots filled v-model="ca_group_name" label="กลุ่มอาชีพ" clearable>
                           <template v-slot:prepend>
                             <q-icon name="school" />
                           </template>
@@ -117,7 +117,7 @@
                       </div>
                       <!-- คุณสมบัติ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
-                        <q-select use-input @filter="filterQualification" color="blue-3" v-model="qualification"
+                        <q-select use-input @filter="filterQualification" color="primary" v-model="qualification"
                           :options="qualifications.options" label="คุณสมบัติ/ทักษะ *" stack-label
                           @update:model-value="onQaualification(qualification)">
                           <template v-slot:prepend>
@@ -159,7 +159,7 @@
                       </div>
                       <!-- กลุ่มคุณสมบัติ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
-                        <q-input standout bottom-slots filled v-model="qualification_group_name" label="กลุ่มคุณสมบัติ"
+                        <q-input standout="bg-primary text-white" bottom-slots filled v-model="qualification_group_name" label="กลุ่มคุณสมบัติ"
                           clearable>
                           <template v-slot:prepend>
                             <q-icon name="school" />
@@ -174,7 +174,7 @@
                     <div class="row">
                       <!-- ค่าเป้าหมาย -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
-                        <q-select @filter="filterTarget" use-input color="blue-3" v-model="target.options.value"
+                        <q-select @filter="filterTarget" use-input color="primary" v-model="target.options.value"
                           :options="target.options" label="ค่าเป้าหมาย *" emit-value map-options>
                           <template v-slot:prepend>
                             <q-icon name="flag_circle" />
@@ -202,7 +202,7 @@
                       </div>
                       <!-- ระดับความสำคัญ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
-                        <q-select @filter="filterLevel" use-input color="blue-3" v-model="level.options.value"
+                        <q-select @filter="filterLevel" use-input color="primary" v-model="level.options.value"
                           :options="level.options" label="ระดับความสำคัญ *" emit-value map-options>
                           <template v-slot:prepend>
                             <q-icon name="running_with_errors" />
@@ -255,7 +255,7 @@
                         <div class="q-pa-xs">
                           <q-table title="ข้อมูลคุณสมบัติ/ทักษะ" :rows="qualifications1" :columns="columns"
                             row-key="skill" :filter="filter" :loading="loading" :visible-columns="visibleColumns"
-                            separator="cell" table-header-style="height: 65px; " table-header-class="bg-blue-5"
+                            separator="cell" table-header-style="height: 65px; " table-header-class="bg-primary text-white"
                             :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home"
                             icon-last-page="all_inclusive" icon-next-page="arrow_right" icon-prev-page="arrow_left"
                             :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {

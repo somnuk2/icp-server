@@ -2,11 +2,11 @@
   <q-layout view="hHh Lpr lFf">
     <q-page-container class="bg-grey-2">
       <div>
-        <q-page padding class="items-center justify-center" style="background: linear-gradient(#74c588, #0ad13c)">
+        <q-page padding class="items-center justify-center bg-grey-2">
           <div class="full-width">
             <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
               <q-card flat class="bg-white text-black">
-                <q-card-section class="bg-blue-14">
+                <q-card-section class="bg-primary">
                   <h4 class="text-h5 text-white q-my-xs text-center">
                     {{ title }}
                   </h4>
@@ -17,7 +17,7 @@
                       <!-- ค่าเป้าหมาย -->
                       <div class="row">
                         <div class="col-md-9 col-xs-12 q-pa-xs">
-                          <q-input color="white" bg-color="blue-5" standout bottom-slots v-model="individual.target_name"
+                          <q-input standout="bg-primary text-white" bottom-slots v-model="individual.target_name"
                             label="เป้าหมาย *" clearable :rules="[
                               (val) =>
                                 (val && val.length > 0) || 'ต้องใส่เป้าหมาย',
@@ -31,7 +31,7 @@
                           </q-input>
                         </div>
                         <div class="col-md-3 col-xs-12 q-pa-xs">
-                          <q-input color="white" bg-color="blue-5" standout bottom-slots v-model="individual.target_value"
+                          <q-input standout="bg-primary text-white" bottom-slots v-model="individual.target_value"
                             label="ค่าเป้าหมาย *" :rules="[
                               (val) =>
                                 (val !== null && val !== '') ||
@@ -65,7 +65,7 @@
                     <div class="q-pa-xs">
                       <q-table title="ข้อมูลค่าเป้าหมาย" :rows="individuals1" :columns="columns" row-key="target_id"
                         :filter="filter" :loading="loading" :visible-columns="visibleColumns" separator="cell"
-                        table-header-style="height: 65px; " table-header-class="bg-blue-5"
+                        table-header-style="height: 65px; " table-header-class="bg-primary text-white"
                         :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home" icon-last-page="all_inclusive"
                         icon-next-page="arrow_right" icon-prev-page="arrow_left" :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                           return `หน้า : ${endRowIndex}/${totalRowsNumber}`
@@ -314,22 +314,8 @@ export default {
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
-    background-color: #c1f4cd
-  thead tr th
-    position: sticky
-    z-index: 1
-  thead tr:first-child th
-    top: 0
-  &.q-table--loading thead tr:last-child th
-    top: 48px
-</style>
-<style lang="sass">
-.my-sticky-header-table
-  height: 310px
-  .q-table__top,
-  .q-table__bottom,
-  thead tr:first-child th
-    background-color: #c1f4cd
+    background-color: $primary
+    color: white
   thead tr th
     position: sticky
     z-index: 1

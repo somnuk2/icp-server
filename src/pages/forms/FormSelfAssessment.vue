@@ -1,11 +1,11 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-page-container class="bg-grey-2">
-      <q-page padding class="items-center justify-center" style="background: linear-gradient(#74c588, #0ad13c)">
+      <q-page padding class="items-center justify-center bg-grey-2" style="min-height: 100vh;">
         <div class="full-width">
           <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
             <q-card flat class="bg-white text-black">
-              <q-card-section class="bg-blue-14">
+              <q-card-section class="bg-primary">
                 <h4 class="text-h5 text-white q-my-xs text-center">
                   {{ title }}
                 </h4>
@@ -68,7 +68,7 @@
                               <div class="q-mb-md q-pa-sm bg-white rounded-borders shadow-1 border-dashed">
                                 <div class="row items-center q-gutter-x-sm">
                                   <div class="text-subtitle2 text-weight-bold">ผลการประเมินทักษะ:</div>
-                                  <q-select dense outlined style="min-width: 200px"
+                                  <q-select dense standout="bg-primary text-white" style="min-width: 200px" color="primary"
                                     v-model="qualAssessmentScores[qual.qa_plan_career_id]" :options="performOptionsAll"
                                     emit-value map-options label="เลือกผลประเมิน" class="col" />
                                   <q-btn unelevated color="deep-purple-7" icon="bolt" label="AI ช่วยประเมิน" size="sm"
@@ -111,9 +111,11 @@
                                             }}</q-item-label>
                                         </q-item-section>
                                         <q-item-section side>
-                                          <q-btn flat round size="xs" :icon="ev.isEditing ? 'check' : 'edit'"
-                                            :color="ev.isEditing ? 'positive' : 'grey-6'"
-                                            @click="ev.isEditing = !ev.isEditing" />
+                                            <q-btn flat round size="xs" :icon="ev.isEditing ? 'check' : 'edit'"
+                                              :color="ev.isEditing ? 'positive' : 'grey-6'"
+                                              @click="ev.isEditing = !ev.isEditing" />
+                                            <q-btn flat round size="xs" icon="close" color="red-4"
+                                              @click="planEvidences[plan.plan_id].splice(idx, 1)" />
                                         </q-item-section>
                                       </q-item>
                                     </q-list>
@@ -154,7 +156,7 @@
               <!-- Manual Form Dialog -->
               <q-dialog v-model="showManualFormDialog" persistent data-testid="dialog-self-assessment">
                 <q-card style="min-width: 600px; max-width: 90vw;">
-                  <q-card-section class="bg-blue-14 text-white">
+                  <q-card-section class="bg-primary text-white">
                     <div class="text-h6">{{ isEdit ? 'แก้ไขข้อมูล' : 'เพิ่มข้อมูลการประเมิน' }}</div>
                   </q-card-section>
 
@@ -231,9 +233,8 @@
                           </q-input>
                         </div>
 
-                        <!-- ประเมินตนเอง -->
                         <div class="col-md-6 col-xs-12 q-pa-xs">
-                          <q-select @filter="filterPerform" use-input color="green" v-model="perform_id"
+                          <q-select @filter="filterPerform" use-input color="primary" v-model="perform_id" standout="bg-primary text-white"
                             :options="perform.options" label="ผลการพัฒนาตนเอง *" emit-value map-options
                             data-testid="select-perform">
                             <template v-slot:prepend><q-icon name="flag_circle" /></template>
@@ -262,7 +263,7 @@
                             <q-table title="ข้อมูลผลงาน" :rows="safeReferences1" :columns="references"
                               row-key="reference_id" :filter="filter_reference" :loading="loading"
                               :visible-columns="visibleColumnsReference" separator="cell"
-                              table-header-style="height: 65px;" table-header-class="bg-blue-5"
+                              table-header-style="height: 65px;" table-header-class="bg-primary text-white"
                               :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home"
                               icon-last-page="all_inclusive" icon-next-page="arrow_right" icon-prev-page="arrow_left"
                               :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => `หน้า : ${endRowIndex}/${totalRowsNumber}`">

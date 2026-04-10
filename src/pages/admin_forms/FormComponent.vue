@@ -7,7 +7,7 @@
             <div class="col-12">
               <q-card flat class="bg-white text-black form-card form-card-full">
                 <!-- HEADER -->
-                <q-card-section class="bg-blue-14">
+                <q-card-section class="bg-primary">
                   <h4 class="text-h5 text-white q-my-xs text-center">
                     {{ title }}
                   </h4>
@@ -21,14 +21,14 @@
                       <div class="col-12">
                         <q-expansion-item group="main-form" icon="person"
                           label="ข้อมูลส่วนตัว (ผู้ดูแลระบบ) - คลิกเพื่อ ย่อ/ขยาย"
-                          header-class="text-white text-subtitle1 bg-blue-9" class="shadow-1 overflow-hidden"
+                          header-class="text-white text-subtitle1 bg-primary" class="shadow-1 overflow-hidden"
                           style="border-radius: 8px" default-opened>
                           <q-card>
                             <q-card-section class="q-gutter-md">
                               <!-- รายชื่อ -->
                               <div class="row">
                                 <div class="col-12 q-pa-xs">
-                                  <q-select ref="name" use-input @filter="filterMember" color="blue-3" v-model="member"
+                                  <q-select ref="name" use-input @filter="filterMember" color="primary" v-model="member"
                                     :options="members.options" label="ชื่อ-สกุล *" stack-label>
                                     <template v-slot:prepend>
                                       <q-icon name="school" />
@@ -87,7 +87,7 @@
                               <!-- สถาบันการศึกษา + คณะ -->
                               <div class="row">
                                 <div class="col-md-6 col-xs-12 q-pa-xs">
-                                  <q-select use-input @filter="filterInstitute" color="blue-3" v-model="institute"
+                                  <q-select use-input @filter="filterInstitute" color="primary" v-model="institute"
                                     :options="institutes.options" label="สถาบันการศึกษา *" stack-label
                                     @update:model-value="(val) => onInstituteValueChange(val)">
                                     <template v-slot:prepend><q-icon name="school" /></template>
@@ -109,7 +109,7 @@
                                 </div>
 
                                 <div class="col-md-6 col-xs-12 q-pa-xs">
-                                  <q-select use-input @filter="filterFaculty" color="blue-3" v-model="faculty"
+                                  <q-select use-input @filter="filterFaculty" color="primary" v-model="faculty"
                                     :options="facultys.options" label="คณะ *" stack-label
                                     @update:model-value="(val) => onFacultyValueChange(val)">
                                     <template v-slot:prepend><q-icon name="school" /></template>
@@ -134,7 +134,7 @@
                               <!-- ระดับการศึกษา + สาขาวิชา -->
                               <div class="row">
                                 <div class="col-md-6 col-xs-12 q-pa-xs">
-                                  <q-select use-input @filter="filterDegree" color="blue-3" v-model="degree"
+                                  <q-select use-input @filter="filterDegree" color="primary" v-model="degree"
                                     :options="degrees.options" label="ระดับการศึกษา *" stack-label
                                     @update:model-value="(val) => onDegreeValueChange(val)">
                                     <template v-slot:prepend><q-icon name="school" /></template>
@@ -156,7 +156,7 @@
                                 </div>
 
                                 <div class="col-md-6 col-xs-12 q-pa-xs">
-                                  <q-select use-input @filter="filterDepartment" color="blue-3" v-model="department"
+                                  <q-select use-input @filter="filterDepartment" color="primary" v-model="department"
                                     :options="departments.options" label="สาขาวิชา *" stack-label
                                     @update:model-value="(val) => onDepartmentValueChange(val)">
                                     <template v-slot:prepend><q-icon name="school" /></template>
@@ -212,7 +212,7 @@
                                 </div>
 
                                 <div class="col-md-8 col-xs-12 q-pa-xs">
-                                  <q-select use-input @filter="filterDisability" color="blue-3" v-model="disability"
+                                  <q-select use-input @filter="filterDisability" color="primary" v-model="disability"
                                     :options="disabilitys.options" label="เลือกประเภทความพิการ" stack-label
                                     @update:model-value="(val) => onDisabilityValueChange(val)"
                                     :disable="individual.is_disability == '1' ? false : true">
@@ -249,7 +249,7 @@
                               <!-- โครงการ + ผู้ดูแลกลุ่ม -->
                               <div class="row">
                                 <div class="col-md-6 col-xs-12 q-pa-xs">
-                                  <q-select use-input @filter="filterProject" color="blue-3" v-model="project"
+                                  <q-select use-input @filter="filterProject" color="primary" v-model="project"
                                     :options="projects.options" label="โครงการ" stack-label
                                     @update:model-value="(val) => onProjectValueChange(val)">
                                     <template v-slot:prepend><q-icon name="assignment_turned_in" /></template>
@@ -271,7 +271,7 @@
                                 </div>
 
                                 <div class="col-md-6 col-xs-12 q-pa-xs">
-                                  <q-select use-input @filter="filterAdvisor" color="blue-3" v-model="advisor"
+                                  <q-select use-input @filter="filterAdvisor" color="primary" v-model="advisor"
                                     :options="advisors.options" label="ผู้ดูแลกลุ่ม" stack-label
                                     @update:model-value="(val) => onProjectValueChange(val)">
                                     <template v-slot:prepend><q-icon name="assignment_turned_in" /></template>
@@ -303,7 +303,7 @@
                       <div class="col-12">
                         <q-expansion-item group="extra-info" icon="info"
                           label="ข้อมูลพื้นฐานเพิ่มเติม (คลิกเพื่อ ย่อ/ขยาย)"
-                          header-class="text-primary text-subtitle1 bg-blue-1" class="shadow-1 overflow-hidden"
+                          header-class="text-white text-subtitle1 bg-primary" class="shadow-1 overflow-hidden"
                           style="border-radius: 8px">
                           <q-card>
                             <q-card-section class="row q-col-gutter-sm">
@@ -380,7 +380,7 @@
                     <q-table ref="tb" :title="`ข้อมูลส่วนตัว (${individuals1.length} รายการ)`" :rows="individuals1"
                       :columns="columns" row-key="individual_id" :filter="filter" :loading="loading" separator="cell"
                       wrap-cells flat bordered class="my-sticky-header-table" table-header-style="height: 65px;"
-                      table-header-class="bg-blue-2 text-black text-weight-bold"
+                      table-header-class="bg-primary text-white text-weight-bold"
                       :rows-per-page-options="[10, 20, 30, 50, 100, 0]" v-model:pagination="pagination"
                       icon-first-page="first_page" icon-last-page="last_page" icon-next-page="navigate_next"
                       icon-prev-page="navigate_before" :pagination-label="getPaginationLabel"
@@ -1161,7 +1161,7 @@ export default {
 
 <style lang="sass">
 .page-bg
-  background: linear-gradient(#74c588, #0ad13c)
+  background: #f5f5f5
 
 .page-full
   min-height: 100vh
@@ -1226,12 +1226,12 @@ export default {
     position: sticky
     top: 0
     z-index: 5
-    background: #BBDEFB !important
-    color: black
+    background: $primary !important
+    color: white
     font-weight: 700
 
   .q-table tbody tr:hover
-    background: #f5f5f5
+    background: #E3F2FD
 
   .q-table tbody td
     padding: 8px

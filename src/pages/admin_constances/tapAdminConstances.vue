@@ -3,9 +3,9 @@
     <q-tabs
       v-model="tab"
       dense
-      class="bg-blue-2 text-purple"
+      class="bg-grey-2 text-primary"
       active-color="primary"
-      indicator-color="blue-7"
+      indicator-color="primary"
       align="justify"
     >
       <q-tab name="project" icon="description" label="โตรงการ" />

@@ -1,11 +1,11 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-page-container class="bg-grey-2">
-      <q-page padding class="items-center justify-center" style="background: linear-gradient(#74c588, #0ad13c)">
+      <q-page padding class="items-center justify-center bg-grey-2" style="min-height: 100vh;">
         <div class="full-width">
           <div class="col-md-10 offset-md-1 col-xs-12 q-pa-xs">
             <q-card flat class="bg-white text-black">
-              <q-card-section class="bg-blue-14">
+              <q-card-section class="bg-primary">
                 <h4 class="text-h5 text-white q-my-xs text-center">{{ title }}</h4>
               </q-card-section>
 
@@ -32,7 +32,7 @@
                     <!-- รายชื่อ -->
                     <div class="row">
                       <div class="col-md-12 col-xs-12 q-pa-xs">
-                        <q-select use-input @filter="filterMember" color="blue-3" v-model="member"
+                        <q-select use-input @filter="filterMember" color="primary" v-model="member"
                           :options="members.options" label="ชื่อ-สกุล *" stack-label
                           @update:model-value="onMemberNames">
                           <template v-slot:prepend><q-icon name="school" /></template>
@@ -56,7 +56,7 @@
                     <!-- อาชีพ + คุณสมบัติ -->
                     <div class="row">
                       <div class="col-md-6 col-xs-12 q-pa-xs">
-                        <q-select use-input @filter="filterPlan_career" color="blue-3" v-model="plan_career"
+                        <q-select use-input @filter="filterPlan_career" color="primary" v-model="plan_career"
                           :options="plan_careers.options" label="อาชีพเป้าหมาย *" stack-label
                           @update:model-value="onQa_plan_career">
                           <template v-slot:prepend><q-icon name="work" /></template>
@@ -77,7 +77,7 @@
                       </div>
 
                       <div class="col-md-6 col-xs-12 q-pa-xs">
-                        <q-select use-input @filter="filterQa_plan_career" color="blue-3" v-model="qa_plan_career"
+                        <q-select use-input @filter="filterQa_plan_career" color="primary" v-model="qa_plan_career"
                           :options="qa_plan_careers.options" label="คุณสมบัติ/ทักษะ *" stack-label
                           @update:model-value="onDescription">
                           <template v-slot:prepend><q-icon name="checklist" /></template>
@@ -101,7 +101,7 @@
                     <!-- ความสำคัญ/เป้าหมาย -->
                     <div class="row">
                       <div class="col-md-12 col-xs-12 q-pa-xs">
-                        <q-input type="textarea" color="blue-3" standout bottom-slots
+                        <q-input type="textarea" color="primary" standout="bg-primary text-white" bottom-slots
                           v-model="qa_plan_career_description" label="ความสำคัญ/เป้าหมาย" clearable autogrow>
                           <template v-slot:prepend><q-icon name="play_lesson" /></template>
                           <template v-slot:append><q-icon name="favorite" /></template>
@@ -129,7 +129,7 @@
                       </div>
 
                       <div class="col-md-6 col-xs-12 q-pa-xs">
-                        <q-select use-input @filter="filterPerform" color="green" v-model="perform_id"
+                        <q-select use-input @filter="filterPerform" color="primary" v-model="perform_id"
                           :options="perform.options" label="ผลการพัฒนาตนเอง" emit-value map-options>
                           <template v-slot:prepend><q-icon name="flag_circle" /></template>
                           <template v-if="perform_id" v-slot:append>
@@ -204,8 +204,8 @@
                     =========================== -->
                     <div class="row q-col-gutter-sm q-mb-md">
                       <div class="col-12">
-                        <q-card flat bordered class="bg-blue-1">
-                          <q-item class="bg-blue-2">
+                        <q-card flat bordered class="bg-grey-1">
+                          <q-item class="bg-grey-2">
                             <q-item-section avatar><q-icon name="manage_search" color="primary"
                                 size="md" /></q-item-section>
                             <q-item-section>

@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh Lpr lFf">
-    <q-page-container style="background: linear-gradient(#74c588, #0ad13c); min-height: 100vh;">
+    <q-page-container style="background: linear-gradient(135deg, #74c588 0%, #0ad13c 100%); min-height: 100vh;">
       <q-page class="q-pa-none">
 
         <div class="bg-blue-14 q-py-md shadow-2 full-width">
@@ -110,15 +110,15 @@
 
 <style lang="sass">
 .content-area
-  background-color: #c8e6c9
+  background-color: rgba(255, 255, 255, 0.85)
   min-height: calc(100vh - 80px)
 
 .custom-green-table
-  border-radius: 4px
+  border-radius: 8px
 
   thead tr th
-    background-color: #bbdefb !important
-    color: black
+    background-color: #2e7d32 !important
+    color: white
     position: sticky
     top: 0
     z-index: 1
@@ -128,7 +128,7 @@
     color: white !important
 
     &:nth-child(even)
-      background-color: #43a047 !important
+      background-color: #388e3c !important
 
     .q-td
       border-color: rgba(255, 255, 255, 0.2) !important

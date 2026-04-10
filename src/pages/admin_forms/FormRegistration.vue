@@ -1,11 +1,11 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-page-container class="bg-grey-2">
-      <q-page padding class="items-center justify-center" style="background: linear-gradient(#74c588, #0ad13c)">
+      <q-page padding class="items-center justify-center bg-grey-2" style="min-height: 100vh;">
         <div class="full-width">
           <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
             <q-card flat class="bg-white text-black">
-              <q-card-section class="bg-blue-14">
+              <q-card-section class="bg-primary">
                 <h4 class="text-h5 text-white q-my-xs text-center">
                   {{ title }}
                 </h4>
@@ -17,7 +17,7 @@
                     <div class="row">
                       <!-- ชื่อ-สกุล -->
                       <div class="col-md-12 col-xs-12 q-pa-xs">
-                        <q-input color="white" bg-color="blue-5" standout bottom-slots v-model="member.full_name"
+                        <q-input color="primary" standout="bg-primary text-white" bottom-slots v-model="member.full_name"
                           label="ชื่อ-สกุล *" clearable :rules="[
                             (val) =>
                               (val && val.length > 0) || 'ต้องใส่ชื่อ-สกุล',
@@ -35,7 +35,7 @@
                     <div class="row">
                       <!-- บทบาทของผู้ใช้ระบบ +อีเมล + ยืนยัน-->
                       <div class="col-md-4 col-xs-12 q-pa-xs">
-                        <q-select color="blue-3" v-model="member_role" :options="member_roles.options" label="บทบาท *"
+                        <q-select color="primary" v-model="member_role" :options="member_roles.options" label="บทบาท *"
                           stack-label>
                           <template v-slot:prepend>
                             <q-icon name="school" />
@@ -53,7 +53,7 @@
                       </div>
                       <!-- อีเมล -->
                       <div class="col-md-5 col-xs-12 q-pa-xs">
-                        <q-input color="white" bg-color="blue-5" standout bottom-slots v-model="member.email"
+                        <q-input color="primary" standout="bg-primary text-white" bottom-slots v-model="member.email"
                           label="อีเมล *" clearable type="email" lazy-rules
                           :rules="[this.required, this.isEmail, this.short]">
                           <template v-slot:prepend>
@@ -116,7 +116,7 @@
                       <div class="col-md-12 col-xs-12 q-ma-xs">
                         <div class="q-pa-xs">
                           <div class="row items-center q-gutter-sm q-mb-md">
-                            <q-toggle color="blue" label="ผู้ดูแลระบบ" v-model="admin" val="admin"
+                            <q-toggle color="primary" label="ผู้ดูแลระบบ" v-model="admin" val="admin"
                               @update:model-value="getUpdate()" />
                             <q-toggle color="green" label="ผู้แลกลุ่ม" v-model="suser" val="suser"
                               @update:model-value="getUpdate()" />
@@ -126,7 +126,7 @@
                           <q-table title="ข้อมูลสมาชิค" :rows="members1" :columns="columns" virtual-scroll
                             v-model:pagination="pagination" row-key="name" :filter="filter" :loading="loading"
                             :visible-columns="visibleColumns" separator="cell" table-header-style="height: 65px; "
-                            table-header-class="bg-blue-5" :rows-per-page-options="[30, 50, 100, 0]"
+                            table-header-class="bg-primary text-white" :rows-per-page-options="[30, 50, 100, 0]"
                             icon-first-page="home" icon-last-page="all_inclusive" icon-next-page="arrow_right"
                             icon-prev-page="arrow_left" :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                               return `หน้า : ${endRowIndex}/${totalRowsNumber}`

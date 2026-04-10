@@ -1,6 +1,6 @@
 <template>
   <q-card style="min-width: 80vw; max-width: 95vw;">
-    <q-card-section class="bg-blue-14 row items-center q-pb-none">
+    <q-card-section class="bg-primary row items-center q-pb-none">
       <div class="text-h6 text-white">{{ title }}</div>
       <q-space />
       <q-btn icon="close" flat round dense v-close-popup text-color="white" />
@@ -11,7 +11,7 @@
         <q-form @submit.prevent="submitForm()" @reset="resetForm()" method="post" class="q-gutter-md">
           <!-- สถาบัน -->
           <div class="col-md-12 col-xs-12 q-pa-xs">
-            <q-input color="white" bg-color="blue-5" standout bottom-slots v-model="individual.institute_name"
+            <q-input standout="bg-primary text-white" bottom-slots v-model="individual.institute_name"
               label="สถาบันการศึกษา *" clearable :rules="[
                 (val) => (val && val.length > 0) || 'ต้องใส่สถาบันการศึกษา',
               ]">
@@ -37,7 +37,7 @@
         <div class="col-md-12 col-xs-12 q-pa-xs">
           <q-table title="ข้อมูลสถาบัน" :rows="individuals1" :columns="columns" row-key="name" :filter="filter"
             :loading="loading" :visible-columns="visibleColumns" separator="cell" table-header-style="height: 65px; "
-            table-header-class="bg-blue-5" :rows-per-page-options="[10, 20, 50, 0]" icon-first-page="home"
+            table-header-class="bg-primary text-white" :rows-per-page-options="[10, 20, 50, 0]" icon-first-page="home"
             icon-last-page="all_inclusive" icon-next-page="arrow_right" icon-prev-page="arrow_left">
             <template v-slot:top-right="props">
               <q-input borderless dense debounce="300" v-model="filter" placeholder="ค้นหาข้อมูลสถาบัน">

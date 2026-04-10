@@ -1,11 +1,11 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-page-container class="bg-grey-2">
-      <q-page padding class="items-center justify-center page-bg">
+      <q-page padding class="items-center justify-center bg-grey-2" style="min-height: 100vh;">
         <div class="full-width">
           <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
             <q-card flat class="bg-white text-black">
-              <q-card-section class="bg-blue-14">
+              <q-card-section class="bg-primary">
                 <h4 class="text-h5 text-white q-my-xs text-center">{{ title }}</h4>
               </q-card-section>
 
@@ -101,9 +101,9 @@
                                           }}</q-item-label>
                                       </div>
                                       <div class="col-grow column q-gutter-y-xs" v-else>
-                                        <q-input dense outlined v-model="rec.qualification_name" label="ชื่อทักษะ"
+                                        <q-input standout="bg-primary text-white" dense v-model="rec.qualification_name" label="ชื่อทักษะ"
                                           autofocus />
-                                        <q-select dense outlined v-model="rec.qualification_group_name"
+                                        <q-select standout="bg-primary text-white" dense v-model="rec.qualification_group_name"
                                           :options="qualificationGroupOptionsAll" label="กลุ่มทักษะ" />
                                       </div>
                                       <div class="row q-gutter-xs">
@@ -235,7 +235,7 @@
       <!-- Manual Form Dialog -->
       <q-dialog v-model="showManualFormDialog" persistent>
         <q-card style="min-width: 600px; max-width: 90vw;">
-          <q-card-section class="bg-blue-14 text-white">
+          <q-card-section class="bg-primary text-white">
             <div class="text-h6">{{ isEdit ? 'แก้ไขข้อมูล' : 'เพิ่มข้อมูลคุณสมบัติ' }}</div>
           </q-card-section>
           <q-card-section>
@@ -245,7 +245,7 @@
                 <!-- อาชีพเป้าหมาย (จากแผน) -->
                 <div class="col-md-6 col-xs-12">
                   <q-select v-model="planCareerModel" :options="planCareerOptions" label="อาชีพเป้าหมาย *" use-input
-                    input-debounce="0" dense outlined options-dense @filter="filterPlanCareer"
+                    input-debounce="0" dense outlined options-dense @filter="filterPlanCareer" color="primary"
                     @update:model-value="onPlanCareerChange" :rules="[(v) => !!v || 'กรุณาเลือกอาชีพเป้าหมาย']"
                     data-testid="select-target-career">
                     <template #prepend><q-icon name="work_history" /></template>
@@ -275,7 +275,7 @@
                     <div class="col">
                       <q-select for="qualification-select-id" v-model="qualificationModel"
                         :options="qualificationOptions" label="คุณสมบัติที่ต้องการ *" use-input input-debounce="0" dense
-                        outlined options-dense @filter="filterQualification" @new-value="onNewQualification"
+                        outlined options-dense @filter="filterQualification" @new-value="onNewQualification" color="primary"
                         @update:model-value="onQualificationChange" :rules="[(v) => !!v || 'กรุณาเลือก/เพิ่มคุณสมบัติ']"
                         data-testid="select-qualification-name">
                         <template #prepend><q-icon name="fact_check" /></template>
@@ -294,7 +294,7 @@
                 <div class="col-md-6 col-xs-12">
                   <q-select for="qualification-group-select-id" v-model="qualificationGroupName"
                     :options="qualificationGroupOptions" label="กลุ่มคุณสมบัติ" use-input input-debounce="0" dense
-                    outlined options-dense @filter="filterQualificationGroup" data-testid="select-qualification-group">
+                    outlined options-dense @filter="filterQualificationGroup" color="primary" data-testid="select-qualification-group">
                     <template #prepend><q-icon name="category" /></template>
                   </q-select>
                 </div>
@@ -302,7 +302,7 @@
                 <!-- ค่าเป้าหมาย -->
                 <div class="col-md-6 col-xs-12">
                   <q-select for="target-select-id" v-model="targetModel" :options="targetOptions" label="ค่าเป้าหมาย *"
-                    emit-value map-options dense outlined options-dense :rules="[(v) => !!v || 'กรุณาเลือกค่าเป้าหมาย']"
+                    emit-value map-options dense outlined options-dense :rules="[(v) => !!v || 'กรุณาเลือกค่าเป้าหมาย']" color="primary"
                     data-testid="select-target-value">
                     <template #prepend><q-icon name="flag_circle" /></template>
                   </q-select>
@@ -312,7 +312,7 @@
                 <div class="col-md-6 col-xs-12">
                   <q-select for="level-select-id" v-model="levelModel" :options="levelOptions" label="ระดับความสำคัญ *"
                     emit-value map-options dense outlined options-dense
-                    :rules="[(v) => !!v || 'กรุณาเลือกระดับความสำคัญ']" data-testid="select-level">
+                    :rules="[(v) => !!v || 'กรุณาเลือกระดับความสำคัญ']" color="primary" data-testid="select-level">
                     <template #prepend><q-icon name="running_with_errors" /></template>
                   </q-select>
                 </div>
@@ -1335,6 +1335,10 @@ async function acceptAiRecommendation(rec, careerNameInGroup) {
   try {
     await axios.post(`${urls.rest_api}/qa-plan-careers`, payload);
     $q.notify({ type: "positive", message: `เพิ่ม "${qualName}" สำเร็จ` });
+
+    // ✅ Remove from suggestions
+    aiRecommendations.value = aiRecommendations.value.filter(r => r !== rec);
+
     await fetchTableData();
   } catch (e) {
     console.error(e);
@@ -1345,7 +1349,8 @@ async function acceptAiRecommendation(rec, careerNameInGroup) {
 
 <style lang="sass">
 .page-bg
-  background: linear-gradient(#74c588, #0ad13c)
+  background: linear-gradient(135deg, #74c588 0%, #0ad13c 100%)
+  min-height: 100vh
 
 .form-wrapper
   max-width: 1100px

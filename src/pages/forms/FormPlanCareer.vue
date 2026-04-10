@@ -1,11 +1,11 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-page-container class="bg-grey-2">
-      <q-page padding class="items-center justify-center page-bg">
+      <q-page padding class="items-center justify-center bg-grey-2" style="min-height: 100vh;">
         <div class="full-width">
           <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
             <q-card flat class="bg-white text-black">
-              <q-card-section class="bg-blue-14">
+              <q-card-section class="bg-primary">
                 <h4 class="text-h5 text-white q-my-xs text-center">{{ title }}</h4>
               </q-card-section>
 
@@ -61,9 +61,13 @@
                               <q-tooltip>แก้ไขวันเริ่มแผนก่อนเพิ่ม</q-tooltip>
                             </q-btn>
 
-                            <q-btn icon="add" round color="primary" size="sm" @click="acceptAiRecommendation(rec)">
-                              <q-tooltip>เพิ่มอาชีพนี้ในแผน</q-tooltip>
-                            </q-btn>
+                             <q-btn icon="close" round color="red-4" size="sm" @click="aiRecommendations = aiRecommendations.filter(r => r !== rec)">
+                               <q-tooltip>ลบข้อแนะนำนี้</q-tooltip>
+                             </q-btn>
+ 
+                             <q-btn icon="add" round color="primary" size="sm" @click="acceptAiRecommendation(rec)">
+                               <q-tooltip>เพิ่มอาชีพนี้ในแผน</q-tooltip>
+                             </q-btn>
                           </div>
                         </q-item-section>
                       </q-item>
@@ -79,7 +83,7 @@
                 <div class="row q-mb-lg">
                   <div class="col-12">
                     <q-card flat bordered>
-                      <q-card-section class="bg-blue-1 text-blue-9 row items-center justify-between">
+                      <q-card-section class="bg-primary text-white row items-center justify-between">
                         <div class="text-h6"><q-icon name="account_tree" /> โครงสร้างอาชีพเป้าหมาย</div>
                         <div class="row q-gutter-sm items-center">
                           <q-input dense filled debounce="300" v-model="filter" placeholder="ค้นหาอาชีพ"
@@ -191,7 +195,7 @@
       <!-- Manual Form Dialog -->
       <q-dialog v-model="showManualFormDialog" persistent>
         <q-card style="min-width: 600px; max-width: 90vw;">
-          <q-card-section class="bg-blue-14 text-white">
+          <q-card-section class="bg-primary text-white">
             <div class="text-h6">เพิ่ม/แก้ไข อาชีพเป้าหมาย</div>
           </q-card-section>
           <q-card-section>
@@ -226,7 +230,7 @@
                     <template #prepend><q-icon name="school" /></template>
                   </q-select>
 
-                  <q-input v-else standout bottom-slots filled v-model="plan_career.ca_group_name" label="กลุ่มอาชีพ"
+                  <q-input v-else standout="bg-primary text-white" color="primary" v-model="plan_career.ca_group_name" label="กลุ่มอาชีพ"
                     clearable readonly>
                     <template #prepend><q-icon name="school" /></template>
                     <template #append><q-icon name="favorite" /></template>
@@ -1244,6 +1248,12 @@ async function acceptAiRecommendation(rec) {
     });
 
     $q.notify({ type: "positive", message: `เพิ่ม "${careerName}" สำเร็จ` });
+
+    // ✅ Remove from recommendations list
+    aiRecommendations.value = aiRecommendations.value.filter(
+      (r) => normalizeCareerName(r.career_name) !== normalizeCareerName(careerName)
+    );
+
     await getUpdate(plan_career.member_id);
   } catch (e) {
     console.error(e);
@@ -1271,7 +1281,8 @@ onMounted(async () => {
 
 <style lang="sass">
 .page-bg
-  background: linear-gradient(#74c588, #0ad13c)
+  background: linear-gradient(135deg, #74c588 0%, #0ad13c 100%)
+  min-height: 100vh
 
 .q-table__title
   font-size: 1.2rem
