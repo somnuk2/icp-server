@@ -279,31 +279,31 @@ const routes = [
     path: "/SuserFormPlan",
     name: "SuserFormPlan",
     component: SuserFormPlan,
-    meta: { requiresAuth: true, roles: ['super_user'] }
+    meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   },
   {
     path: "/SuserFormPlanCareer",
     name: "SuserFormPlanCareer",
     component: SuserFormPlanCareer,
-    meta: { requiresAuth: true, roles: ['super_user'] }
+    meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   },
   {
     path: "/SuserFormQualification",
     name: "SuserFormQualification",
     component: SuserFormQualification,
-    meta: { requiresAuth: true, roles: ['super_user'] }
+    meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   },
   {
     path: "/SuserFormSelfAssessment",
     name: "SuserFormSelfAssessment",
     component: SuserFormSelfAssessment,
-    meta: { requiresAuth: true, roles: ['super_user'] }
+    meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   },
   {
     path: "/SuserFormNotification",
     name: "SuserFormNotification",
     component: SuserFormNotification,
-    meta: { requiresAuth: true, roles: ['super_user'] }
+    meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   },
   // sub admin education
   {
