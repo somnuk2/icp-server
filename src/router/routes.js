@@ -109,37 +109,37 @@ const routes = [
     path: "/FormRegistration",
     name: "FormRegistration",
     component: FormRegistration,
-    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user'] }
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/FormComponent",
     name: "FormComponent",
     component: FormComponent,
-    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user'] }
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/FormPlan",
     name: "FormPlan",
     component: FormPlan,
-    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user'] }
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/FormPlanCareer",
     name: "FormPlanCareer",
     component: FormPlanCareer,
-    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user'] }
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/FormQualification",
     name: "FormQualification",
     component: FormQualification,
-    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user'] }
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/FormSelfAssessment",
     name: "FormSelfAssessment",
     component: FormSelfAssessment,
-    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user'] }
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/LoginPage",
@@ -168,26 +168,26 @@ const routes = [
     path: "/FormNotification",
     name: "FormNotification",
     component: FormNotification,
-    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user'] }
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/FormDashboard",
     name: "FormDashboard",
     component: FormDashboard,
-    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user'] }
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user', 'superuser', 'suser'] }
   },
   // Admin forms
   {
     path: "/AdminFormRegistration",
     name: "AdminFormRegistration",
     component: AdminFormRegistration,
-    meta: { requiresAuth: true, roles: ['admin', 'super_user'] }
+    meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/AdminFormComponent",
     name: "AdminFormComponent",
     component: AdminFormComponent,
-    meta: { requiresAuth: true, roles: ['admin', 'super_user'] }
+    meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   },
   // {
   //   path: "/AdminFormPivotTable",
@@ -203,31 +203,31 @@ const routes = [
     path: "/AdminFormPlan",
     name: "AdminFormPlan",
     component: AdminFormPlan,
-    meta: { requiresAuth: true, roles: ['admin', 'super_user'] }
+    meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/AdminFormPlanCareer",
     name: "AdminFormPlanCareer",
     component: AdminFormPlanCareer,
-    meta: { requiresAuth: true, roles: ['admin', 'super_user'] }
+    meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/AdminFormQualification",
     name: "AdminFormQualification",
     component: AdminFormQualification,
-    meta: { requiresAuth: true, roles: ['admin', 'super_user'] }
+    meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/AdminFormSelfAssessment",
     name: "AdminFormSelfAssessment",
     component: AdminFormSelfAssessment,
-    meta: { requiresAuth: true, roles: ['admin', 'super_user'] }
+    meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/AdminFormNotification",
     name: "AdminFormNotification",
     component: AdminFormNotification,
-    meta: { requiresAuth: true, roles: ['admin', 'super_user'] }
+    meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/AdminLoginPage",
@@ -257,13 +257,13 @@ const routes = [
     path: "/SuserFormRegistration",
     name: "SuserFormRegistration",
     component: SuserFormRegistration,
-    meta: { requiresAuth: true, roles: ['super_user'] }
+    meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   },
   {
     path: "/SuserFormComponent",
     name: "SuserFormComponent",
     component: SuserFormComponent,
-    meta: { requiresAuth: true, roles: ['super_user'] }
+    meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   },
   // {
   //   path: "/SuserFormPivotTable",

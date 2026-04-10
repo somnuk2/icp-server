@@ -68,11 +68,24 @@ export default {
   },
   methods: {
     confirm() {
+      // 1. ล้างค่าใน Vuex Store
       this.$store.commit("setMyAuthenticate", false);
       this.$store.commit("setMyMember_id", 0);
       this.$store.commit("setMyName", "");
       this.$store.commit("setMyStatus", "");
-      // this.$router.replace({ name: "home" });
+
+      // 2. ล้างค่าใน localStorage (สำคัญมาก)
+      localStorage.removeItem("token");
+      localStorage.removeItem("status");
+      localStorage.removeItem("name");
+      localStorage.removeItem("member_id");
+      
+      // 3. ล้าง API Key ใน sessionStorage (ถ้ามี)
+      sessionStorage.removeItem("gemini_api_key");
+
+      console.log('✅ Logout Successful: All session data cleared.');
+      // 4. เปลี่ยนหน้าไปยังหน้าแรกหรือหน้า Login
+      this.$router.replace({ name: 'LoginPage' });
     },
     cancel() {
       // this.$router.replace({ name: "home" });
