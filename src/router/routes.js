@@ -405,42 +405,49 @@ const routes = [
   //   path: "/tapRegistration",
   //   name: "tapRegistration",
   //   component: tapRegistration,
+  //   meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   // },
   // //tap Individual
   // {
   //   path: "/tapIndividual",
   //   name: "tapIndividual",
   //   component: tapIndividual,
+  //   meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   // },
   // // tap plan career
   // {
   //   path: "/tapPlan_career",
   //   name: "tapPlan_career",
   //   component: tapPlan_career,
+  //   meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   // },
   // //tap qualification
   // {
   //   path: "/tapQualification",
   //   name: "tapQualification",
   //   component: tapQualification,
+  //   meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   // },
   // //tap plan
   // {
   //   path: "/tapPlan",
   //   name: "tapPlan",
   //   component: tapPlan,
+  //   meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   // },
   // //tap self assessment
   // {
   //   path: "/tapSelf_assessment",
   //   name: "tapSelf_assessment",
   //   component: tapSelf_assessment,
+  //   meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   // },
   // //tap Notification
   // {
   //   path: "/tapNotification",
   //   name: "tapNotification",
   //   component: tapNotification,
+  //   meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   // },
   // //----------------------------------
   // // tap Registration
@@ -448,42 +455,49 @@ const routes = [
   //   path: "/tapRegistration_",
   //   name: "tapRegistration_",
   //   component: tapRegistration_,
+  //   meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   // },
   // //tap Individual
   // {
   //   path: "/tapIndividual_",
   //   name: "tapIndividual_",
   //   component: tapIndividual_,
+  //   meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   // },
   // // tap plan career
   // {
   //   path: "/tapPlan_career_",
   //   name: "tapPlan_career_",
   //   component: tapPlan_career_,
+  //   meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   // },
   // //tap qualification
   // {
   //   path: "/tapQualification_",
   //   name: "tapQualification_",
   //   component: tapQualification_,
+  //   meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   // },
   // //tap plan
   // {
   //   path: "/tapPlan_",
   //   name: "tapPlan_",
   //   component: tapPlan_,
+  //   meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   // },
   // //tap self assessment
   // {
   //   path: "/tapSelf_assessment_",
   //   name: "tapSelf_assessment_",
   //   component: tapSelf_assessment_,
+  //   meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   // },
   // //tap Notification
   // {
   //   path: "/tapNotification_",
   //   name: "tapNotification_",
   //   component: tapNotification_,
+  //   meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   // },
 ];
 

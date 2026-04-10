@@ -253,6 +253,7 @@
                                 bg-color="white">
                                 <template v-slot:append><q-icon name="search" /></template>
                               </q-input>
+                              <q-btn flat icon-right="archive" label="ส่งออก Excel" color="primary" @click="exportTable" />
                               <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
                                 @click="props.toggleFullscreen" />
                             </div>
@@ -286,6 +287,8 @@
 import axios from "axios";
 import { useQuasar } from "quasar";
 import { getRestApiUrl } from "../../utils/apiConfig.js";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 
 export default {
   name: "FormSelfAssessmentAdmin",
@@ -771,6 +774,48 @@ export default {
 
       this.references1 = [];
       this.filter_reference = "";
+    },
+
+    async exportTable() {
+      try {
+        this.$q.loading.show({ message: 'กำลังเตรียมไฟล์ Excel...' });
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('รายงานการประเมินตนเอง');
+
+        // กำหนด Header
+        const columns = this.main_columns.filter(c => c.name !== 'actions');
+        worksheet.columns = columns.map(c => ({
+          header: c.label,
+          key: c.name,
+          width: 20
+        }));
+
+        // เติมข้อมูล
+        this.selfAssessments1.forEach(row => {
+          const data = {};
+          columns.forEach(c => {
+            data[c.name] = row[c.name];
+          });
+          worksheet.addRow(data);
+        });
+
+        // ตกแต่ง Header
+        worksheet.getRow(1).font = { bold: true };
+        worksheet.getRow(1).fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFE0E0E0' }
+        };
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        saveAs(new Blob([buffer]), `Self_Assessment_Report_${Date.now()}.xlsx`);
+        this.$q.notify({ color: 'positive', message: 'ส่งออกไฟล์สำเร็จ', icon: 'check' });
+      } catch (e) {
+        console.error("Export error:", e);
+        this.$q.notify({ color: 'negative', message: 'ไม่สามารถส่งออกไฟล์ได้' });
+      } finally {
+        this.$q.loading.hide();
+      }
     },
   },
 
