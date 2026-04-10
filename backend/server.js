@@ -98,10 +98,8 @@ app.use('/api/dashboard', dashboardRoutes)
 app.use('/api/reports', reportsRoutes)
 app.use('/api', constantsRoutes)
 
-// ─── AI Chat Service (Gemini & Ollama Fallback) ─────────────────────────────
+// ─── AI Chat Service (Gemini) ─────────────────────────────
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY
-const AI_MODE = process.env.AI_MODE || 'ollama' // 'gemini' or 'ollama'
-const MODEL_NAME = process.env.AI_MODEL_NAME || 'qwen2:1.5b'
 
 app.post('/api/chat', async (req, res) => {
   try {
