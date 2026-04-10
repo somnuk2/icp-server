@@ -102,6 +102,11 @@ export default {
       }
     },
     async checkMember() {
+      // ล้างค่าเก่าทิ้งก่อนเริ่ม Login ใหม่ทุกครั้ง
+      localStorage.clear();
+      sessionStorage.clear();
+      delete axios.defaults.headers.common['Authorization'];
+
       try {
         const response = await axios.post(`${this.apiUrl}/auth/login`, {
           email: this.input.username.trim(),

@@ -1,11 +1,12 @@
 import { boot } from 'quasar/wrappers'
+import axios from 'axios'
 
 export default boot(({ router, store }) => {
   router.beforeEach((to, from, next) => {
-    // 1. ดึงเข้าข้อมูลจาก localStorage และทำให้เป็นตัวพิมพ์เล็กทั้งหมดเพื่อป้องกัน Case Sensitive
+    // 1. ดึงเข้าข้อมูลจาก localStorage
     const token = localStorage.getItem("token")?.trim();
     const rawRole = localStorage.getItem("status")?.trim() || "";
-    const userRole = rawRole.toLowerCase(); // แปลงเป็นตัวเล็ก (เช่น Admin -> admin)
+    const userRole = rawRole.toLowerCase();
 
     let isAuthenticated = false;
 
@@ -17,45 +18,39 @@ export default boot(({ router, store }) => {
       // กู้คืนเข้า Store
       if (store && typeof store.commit === 'function') {
         store.commit("setMyAuthenticate", true);
-        store.commit("setMyStatus", rawRole); // ใช้ค่าดั้งเดิมเก็บเข้า Store
+        store.commit("setMyStatus", rawRole);
         store.commit("setMyName", localStorage.getItem("name") || "");
         store.commit("setMyMember_id", localStorage.getItem("member_id") || "");
       }
     }
 
-    // 🛰️ LOG สำหรับตรวจสอบหน้างาน (สำคัญมาก)
-    console.log(`[AuthGuard] Target: ${to.path} | Auth: ${isAuthenticated} | RoleFromDB: ${rawRole}`);
+    // 🛰️ ล้าง Header เก่าทิ้งถ้าไม่ได้ Auth (ป้องกัน Session ค้าง)
+    if (!isAuthenticated) {
+       delete axios.defaults.headers.common['Authorization'];
+    } else {
+       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
 
     // 3. กฎการเข้าถึง
     
-    // หน้า LoginPage: ถ้าเข้าสู่ระบบแล้ว ไม่ต้องเข้าหน้านี้
-    if (to.name === 'LoginPage' && isAuthenticated) {
+    // หน้า Login: ถ้า Login อยู่แล้ว ให้ไปหน้าแรกเลย
+    if ((to.name === 'LoginPage' || to.name === 'AdminLoginPage') && isAuthenticated) {
       return next({ name: 'IndexPage' });
     }
 
-    // หน้าที่ต้องใช้สิทธิพิเศษ
     if (to.meta.requiresAuth === true) {
-       // ก) ถ้ายังไม่ได้ Login
        if (!isAuthenticated) {
-         console.warn('Redirecting to Login: Not Authenticated');
          return next({ name: 'LoginPage' });
        }
 
-       // ข) ถ้ามีกำหนด Roles ไว้
        if (to.meta.roles) {
-         // ตรวจสอบทั้งแบบตัวเล็ก ตัวใหญ่ และเผื่อกรณีค่าเป็นตัวเลข
          const allowedRoles = to.meta.roles.map(r => r.toLowerCase());
-         const isAllowed = allowedRoles.includes(userRole);
-
-         if (!isAllowed) {
-           console.error(`Access Denied: Your role '${rawRole}' is not in allowed list [${to.meta.roles}]`);
-           // ถ้าเป็น User ธรรมดาแต่อยากเข้าหน้า Admin ให้ส่งไปหน้าแรก
+         if (!allowedRoles.includes(userRole)) {
            return next({ name: 'IndexPage' });
          }
        }
     }
 
-    // ผ่านทุกเงื่อนไข
     next();
   });
 })

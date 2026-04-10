@@ -40,21 +40,6 @@
                           <q-icon name="email" />
                         </template>
                       </q-input>
-                      <!-- <q-input
-                        ref="username"
-                        v-if="register"
-                        square
-                        clearable
-                        v-model="username"
-                        lazy-rules
-                        :rules="[this.required, this.short]"
-                        type="username"
-                        label="ผู้ใช้"
-                      >
-                        <template v-slot:prepend>
-                          <q-icon name="person" />
-                        </template>
-                      </q-input> -->
                       <q-input
                         ref="password"
                         square
@@ -64,28 +49,6 @@
                         lazy-rules
                         :rules="[this.required, this.short]"
                         label="รหัสผ่าน:"
-                      >
-                        <template v-slot:prepend>
-                          <q-icon name="lock" />
-                        </template>
-                        <template v-slot:append>
-                          <q-icon
-                            :name="visibilityIcon"
-                            @click="switchVisibility"
-                            class="cursor-pointer"
-                          />
-                        </template>
-                      </q-input>
-                      <q-input
-                        ref="repassword"
-                        v-if="register"
-                        square
-                        clearable
-                        v-model="repassword"
-                        :type="passwordFieldType"
-                        lazy-rules
-                        :rules="[this.required, this.short, this.diffPassword]"
-                        label="ใส่รหัสผ่านซ้ำ"
                       >
                         <template v-slot:prepend>
                           <q-icon name="lock" />
@@ -179,52 +142,49 @@ export default {
         console.log("A username and password must be present");
       }
     },
-    checkMember() {
-      console.log(" ตรวจสอบข้อมูลสมาชิค ");
-      var self = this;
-      axios
-        .post(`${this.apiUrl}/auth/login`, {
+    async checkMember() {
+      // 1. Fresh Start: ล้างค่าเก่าทั้งหมดก่อน Login ใหม่
+      localStorage.clear();
+      sessionStorage.clear();
+      delete axios.defaults.headers.common['Authorization'];
+
+      const self = this;
+      try {
+        const res = await axios.post(`${this.apiUrl}/auth/login`, {
           email: this.input.username.trim(),
           password: this.input.password.trim(),
-        })
-        .then(function (res) {
-          console.log("data:", res.data);
-          const { token, member_id, full_name, role } = res.data;
-          if (token) {
-            localStorage.setItem("token", token);
-            self.storeCommit(member_id, full_name, role);
-          } else {
-            console.log("The username and / or password is incorrect");
-            self.$q
-              .dialog({
-                title: "เตือน",
-                message: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
-                persistent: true,
-              })
-              .onOk(() => {
-                self.input.username = "";
-                self.input.password = "";
-              });
-          }
-        })
-        .catch(function (error) {
-          console.log("Login failed:", error);
-          self.$q
-            .dialog({
-              title: "เตือน",
-              message: error.response?.data?.error || "ชื่อผู้ใช้/รหัสผ่านไม่ถูกต้อง",
-              persistent: true,
-            })
-            .onOk(() => {
-              self.input.username = "";
-              self.input.password = "";
-            });
+        });
+
+        console.log("data:", res.data);
+        const { token, member_id, full_name, role } = res.data;
+
+        if (token) {
+          // บันทึกข้อมูลลงเครื่อง
+          localStorage.setItem("token", token);
+          localStorage.setItem("status", role);
+          localStorage.setItem("name", full_name);
+          localStorage.setItem("member_id", member_id);
+          
+          self.storeCommit(member_id, full_name, role);
+        } else {
+          this.showErrorDialog();
+        }
+      } catch (error) {
+        console.error("Login failed:", error);
+        this.showErrorDialog(error.response?.data?.error);
+      }
+    },
+    showErrorDialog(message = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง") {
+        this.$q.dialog({
+          title: "เตือน",
+          message: message,
+          persistent: true,
+        }).onOk(() => {
+          this.input.username = "";
+          this.input.password = "";
         });
     },
     storeCommit(member_id, full_name, status) {
-      console.log("login:", member_id);
-      console.log("login:", full_name);
-      console.log("login:", status);
       if (member_id != 0 && full_name != "" && status != "") {
         this.myAuthenticate = true;
         this.$store.commit("setMyAuthenticate", this.myAuthenticate);
@@ -237,10 +197,6 @@ export default {
     required(val) {
       return (val && val.length > 0) || "ช่องที่ต้องกรอก";
     },
-    diffPassword(val) {
-      const val2 = this.password;
-      return (val && val === val2) || "รหัสผ่านไม่ตรงกัน!";
-    },
     short(val) {
       return (val && val.length > 3) || "ค่าสั้นเกินไป";
     },
@@ -249,34 +205,14 @@ export default {
         /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
       return emailPattern.test(val) || "กรุณาใส่อีเมลที่ถูกต้อง";
     },
-
-    switchTypeForm() {
-      this.register = !this.register;
-      this.title = this.register ? "ผู้ใช้ใหม่" : "การอนุญาต";
-      this.btnLabel = this.register ? "การลงทะเบียน" : "ทางเข้า";
-    },
     switchVisibility() {
       this.visibility = !this.visibility;
       this.passwordFieldType = this.visibility ? "text" : "password";
       this.visibilityIcon = this.visibility ? "visibility_off" : "visibility";
     },
-    onSubmit() {
-      console.log("click submit");
-    },
-    onReset() {
-      this.name = null;
-      this.password = null;
-    },
-    onRegister() {
-      this.$router.replace({ name: "RegistrationPage" });
-    },
-    OnCancel() {
-      this.$router.replace({ name: "home" });
-    },
     createState() {
       this.$store.commit("setMyAuthenticate", false);
       this.$store.commit("setMyMember_id", 0);
-      this.$store.commit("setMyEmployee_id", 0);
       this.$store.commit("setMyName", "");
       this.$store.commit("setMyStatus", "");
     },
@@ -286,11 +222,8 @@ export default {
   },
   created() {
     this.apiUrl = getRestApiUrl(this.$store);
-    // Clear state on login page load
-    this.$store.commit("setMyAuthenticate", false);
-    this.$store.commit("setMyMember_id", 0);
-    this.$store.commit("setMyName", "");
-    this.$store.commit("setMyStatus", "");
+    // ล้างสถานะเบื้องต้นเมื่อเข้าหน้านี้
+    this.createState();
     localStorage.removeItem("token");
   },
 };
