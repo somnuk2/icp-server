@@ -287,6 +287,10 @@
                     <div class="row">
                       <div class="col-md-12 col-xs-12 q-pa-xs">
                         <div class="q-pa-xs">
+                          <q-table title="ข้อมูลคุณสมบัติ/ทักษะ" :rows="qualifications1" :columns="columns"
+                            row-key="qa_plan_career_id" :filter="filter" :loading="loading"
+                            :visible-columns="visibleColumns" separator="cell" class="my-sticky-header-table"
+                            :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home"
                             icon-last-page="all_inclusive" icon-next-page="arrow_right" icon-prev-page="arrow_left"
                             :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                               return `หน้า : ${endRowIndex}/${totalRowsNumber}`
