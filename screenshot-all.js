@@ -56,7 +56,6 @@ const USER_ROUTES = [
   { label: '05b_form_plan_excel', path: '/FormPlan', menuText: 'การพัฒนาตนเอง', clickBtn: 'ส่งออก excel', title: 'User: พัฒนาตนเอง - Export Excel' },
   { label: '06_form_self_assessment', path: '/FormSelfAssessment', menuText: 'การประเมินตนเอง', title: 'ประเมินตนเอง (FormSelfAssessment)' },
   { label: '06b_form_self_assessment_excel', path: '/FormSelfAssessment', menuText: 'การประเมินตนเอง', clickBtn: 'ส่งออก excel', title: 'User: ประเมินตนเอง - Export Excel' },
-  { label: '07_form_notification', path: '/FormNotification', menuText: 'การแจ้งเตือน', title: 'การแจ้งเตือน (FormNotification)' },
   { label: '08_form_dashboard', path: '/FormDashboard', menuText: 'Dashboard การวิเคราะห์', title: 'Dashboard (FormDashboard)' },
 ];
 
@@ -75,7 +74,6 @@ const ADMIN_ROUTES = [
   { label: '08b_admin_plan_excel', path: '/AdminFormPlan', menuText: 'จัดการพัฒนาตนเอง', clickBtn: 'ส่งออก excel', title: 'Admin: พัฒนาตนเอง - Export Excel' },
   { label: '09_admin_self_assessment', path: '/AdminFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', title: 'Admin: ประเมินตนเอง' },
   { label: '09b_admin_self_assessment_excel', path: '/AdminFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', clickBtn: 'ส่งออก excel', title: 'Admin: ประเมินตนเอง - Export Excel' },
-  { label: '10_admin_notification', path: '/AdminFormNotification', menuText: 'การแจ้งเตือน', title: 'Admin: การแจ้งเตือน' },
 ];
 
 const SUSER_ROUTES = [
@@ -94,7 +92,6 @@ const SUSER_ROUTES = [
   { label: '08_suser_self_assessment', path: '/SuserFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', title: 'SuperUser: ประเมินตนเอง' },
   { label: '08b_suser_self_assessment_excel', path: '/SuserFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', clickBtn: 'ส่งออก excel', title: 'SuperUser: ประเมินตนเอง - Excel Report' },
   { label: '08c_suser_self_assessment_file', path: '/SuserFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', clickBtn: 'ส่งออก excel', title: 'SuperUser: ประเมินตนเอง - Export File' },
-  { label: '09_suser_notification', path: '/SuserFormNotification', menuText: 'การแจ้งเตือน', title: 'SuperUser: การแจ้งเตือน' },
 ];
 
 // ===== ล็อกอินผ่าน API =====
