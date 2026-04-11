@@ -70,7 +70,7 @@ import tapPlan_career from "pages/admin_forms/plan_career_reports/tapPlan_career
 import tapQualification from "pages/admin_forms/qualification_reports/tapQualification.vue";
 import tapPlan from "pages/admin_forms/plan_reports/tapPlan.vue";
 import tapSelf_assessment from "pages/admin_forms/self_assessment_reports/tapSelf_assessment.vue";
-import tapNotification from "pages/admin_forms/Notification_reports/tapNotification.vue";
+// import tapNotification from "pages/admin_forms/Notification_reports/tapNotification.vue";
 // super_user_forms
 import tapRegistration_ from "pages/super_user_forms/registration_reports/tapRegistration.vue";
 import tapIndividual_ from "pages/super_user_forms/individual_reports/tapIndividual.vue";
@@ -78,7 +78,7 @@ import tapPlan_career_ from "pages/super_user_forms/plan_career_reports/tapPlan_
 import tapQualification_ from "pages/super_user_forms/qualification_reports/tapQualification.vue";
 import tapPlan_ from "pages/super_user_forms/plan_reports/tapPlan.vue";
 import tapSelf_assessment_ from "pages/super_user_forms/self_assessment_reports/tapSelf_assessment.vue";
-import tapNotification_ from "pages/super_user_forms/Notification_reports/tapNotification.vue";
+// import tapNotification_ from "pages/super_user_forms/Notification_reports/tapNotification.vue";
 
 const routes = [
   {
