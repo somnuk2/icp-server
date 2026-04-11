@@ -313,54 +313,46 @@
                             :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                               return `หน้า : ${endRowIndex}/${totalRowsNumber}`
                             }">
-                            <template v-slot:top-right="props">
-                              <div class="row">
-                                <div class="col-md-3 col-xs-6 q-pa-xs">
-                                  <q-input borderless dense debounce="300" v-model="filter"
-                                    placeholder="ค้นหาการพัฒนาตนเอง">
-                                    <template v-slot:append>
-                                      <q-icon name="search" />
-                                    </template>
-                                  </q-input>
-                                </div>
-                                <!-- ส่งออก excel -->
-                                <div class="col-md-3 col-xs-6 q-pa-xs">
-                                  <q-input borderless dense debounce="300" v-model="file_export"
-                                    placeholder="ชื่อไฟล์นำออก" outlined>
-                                    <template v-slot:append>
-                                      <q-icon name="save" />
-                                    </template>
-                                  </q-input>
-                                </div>
-                                <!-- Year Selection for Export -->
-                                <div class="col-md-2 col-xs-4 q-pa-xs">
-                                  <q-select outlined dense v-model="selectedYear" :options="yearOptions"
-                                    label="ปีที่ประเมิน" clearable @filter="filterYears" use-input input-debounce="0">
-                                    <template v-slot:no-option>
-                                      <q-item>
-                                        <q-item-section class="text-grey">
-                                          ไม่พบข้อมูลปี
-                                        </q-item-section>
-                                      </q-item>
-                                    </template>
-                                  </q-select>
-                                </div>
-                                <div class="col-md-1 col-xs-2 q-pa-xs">
-                                  <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
-                                </div>
-                                <div class="col-md-2 col-xs-5 q-pa-xs">
-                                  <q-select v-model="visibleColumns" multiple outlined dense options-dense
-                                    :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
-                                    option-value="name" options-cover style="min-width: 150px" />
-                                </div>
-                                <div class="col-md-1 col-xs-2 q-pa-xs">
-                                  <q-btn flat round dense :icon="props.inFullscreen
-                                    ? 'fullscreen_exit'
-                                    : 'fullscreen'
-                                    " @click="props.toggleFullscreen" class="q-ml-md" />
-                                </div>
-                              </div>
-                            </template>
+                             <template v-slot:top-right="props">
+                               <div class="row q-gutter-sm items-center">
+                                 <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาการพัฒนา..."
+                                   outlined bg-color="white">
+                                   <template v-slot:append>
+                                     <q-icon name="search" />
+                                   </template>
+                                 </q-input>
+
+                                 <!-- ส่งออก excel -->
+                                 <q-input dense debounce="300" v-model="file_export" placeholder="ชื่อไฟล์นำออก"
+                                   outlined bg-color="white" style="width: 150px;">
+                                   <template v-slot:append>
+                                     <q-icon name="save" />
+                                   </template>
+                                 </q-input>
+
+                                 <!-- Year Selection for Export -->
+                                 <q-select outlined dense v-model="selectedYear" :options="yearOptions"
+                                   label="ปีที่ประเมิน" clearable @filter="filterYears" use-input input-debounce="0"
+                                   bg-color="white" style="width: 120px;">
+                                   <template v-slot:no-option>
+                                     <q-item>
+                                       <q-item-section class="text-grey">
+                                         ไม่พบข้อมูลปี
+                                       </q-item-section>
+                                     </q-item>
+                                   </template>
+                                 </q-select>
+
+                                 <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
+
+                                 <q-select v-model="visibleColumns" multiple outlined dense options-dense
+                                   :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
+                                   option-value="name" options-cover style="min-width: 150px" bg-color="white" />
+
+                                 <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+                                   @click="props.toggleFullscreen" />
+                               </div>
+                             </template>
                             <template v-slot:body-cell-actions="props">
                               <q-td :props="props">
                                 <q-btn color="blue" label="แก้ไข" @click="onEdit(props.row.plan_id)" no-caps></q-btn>

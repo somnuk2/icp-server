@@ -266,38 +266,29 @@
                                 label="ลบทั้งหมดที่เลือก" @click="deleteSelected" />
                             </template>
                             <template v-slot:top-right="props">
-                              <div class="row">
-                                <div class="col-md-4 col-xs-5 q-pa-xs">
-                                  <q-input borderless dense debounce="300" v-model="filter"
-                                    placeholder="ค้นหาคุณสมบัติ">
-                                    <template v-slot:append>
-                                      <q-icon name="search" />
-                                    </template>
-                                  </q-input>
-                                </div>
+                              <div class="row q-gutter-sm items-center">
+                                <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาคุณสมบัติ..."
+                                  outlined bg-color="white">
+                                  <template v-slot:append>
+                                    <q-icon name="search" />
+                                  </template>
+                                </q-input>
+
                                 <!-- ส่งออก excel -->
-                                <div class="col-md-3 col-xs-6 q-pa-xs">
-                                  <q-input borderless dense debounce="300" v-model="file_export"
-                                    placeholder="ชื่อไฟล์นำออก" outlined>
-                                    <template v-slot:append>
-                                      <q-icon name="save" />
-                                    </template>
-                                  </q-input>
-                                </div>
-                                <div class="col-md-1 col-xs-2 q-pa-xs">
-                                  <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
-                                </div>
-                                <div class="col-md-3 col-xs-5 q-pa-xs">
-                                  <q-select v-model="visibleColumns" multiple outlined dense options-dense
-                                    :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
-                                    option-value="name" options-cover style="min-width: 150px" />
-                                </div>
-                                <div class="col-md-1 col-xs-2 q-pa-xs">
-                                  <q-btn flat round dense :icon="props.inFullscreen
-                                    ? 'fullscreen_exit'
-                                    : 'fullscreen'
-                                    " @click="props.toggleFullscreen" class="q-ml-md" />
-                                </div>
+                                <q-input dense debounce="300" v-model="file_export" placeholder="ชื่อไฟล์นำออก"
+                                  outlined bg-color="white" style="width: 150px;">
+                                  <template v-slot:append>
+                                    <q-icon name="save" />
+                                  </template>
+                                </q-input>
+                                <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
+
+                                <q-select v-model="visibleColumns" multiple outlined dense options-dense
+                                  :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
+                                  option-value="name" options-cover style="min-width: 150px" bg-color="white" />
+
+                                <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+                                  @click="props.toggleFullscreen" />
                               </div>
                             </template>
                             <template v-slot:body-cell-actions="props">

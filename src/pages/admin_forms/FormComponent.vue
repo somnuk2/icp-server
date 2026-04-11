@@ -407,29 +407,24 @@
 
                       <!-- Top-right -->
                       <template v-slot:top-right="props">
-                        <div class="row items-center">
-                          <div class="q-pr-sm">
-                            <q-input borderless dense debounce="300" v-model="filter" placeholder="ค้นหาข้อมูลส่วนตัว">
-                              <template v-slot:append><q-icon name="search" /></template>
-                            </q-input>
-                          </div>
+                        <div class="row q-gutter-sm items-center">
+                          <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาข้อมูลส่วนตัว..." outlined
+                            bg-color="white">
+                            <template v-slot:append><q-icon name="search" /></template>
+                          </q-input>
 
                           <!-- Export -->
-                          <div class="row q-pr-sm items-center">
-                            <q-input borderless dense debounce="300" v-model="file_export" placeholder="ชื่อไฟล์นำออก"
-                              outlined class="q-mr-xs" style="width: 150px;">
-                              <template v-slot:append>
-                                <q-icon name="save" />
-                              </template>
-                            </q-input>
-                            <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
-                          </div>
+                          <q-input dense debounce="300" v-model="file_export" placeholder="ชื่อไฟล์นำออก" outlined
+                            bg-color="white" style="width: 150px;">
+                            <template v-slot:append>
+                              <q-icon name="save" />
+                            </template>
+                          </q-input>
+                          <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
 
-                          <div class="q-pr-sm">
-                            <q-select v-model="visibleColumns" multiple outlined dense options-dense
-                              :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
-                              option-value="name" options-cover style="min-width: 160px" />
-                          </div>
+                          <q-select v-model="visibleColumns" multiple outlined dense options-dense
+                            :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
+                            option-value="name" options-cover style="min-width: 160px" bg-color="white" />
 
                           <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
                             @click="props.toggleFullscreen" />
