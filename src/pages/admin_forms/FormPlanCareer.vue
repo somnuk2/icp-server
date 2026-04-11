@@ -162,7 +162,7 @@
                                   </q-input>
                                 </div>
                                 <div class="col-md-1 col-xs-2 q-pa-xs">
-                                  <q-btn flat icon-right="archive" label="ส่งออก excel" @click="exportTable()" />
+                                  <q-btn flat color="green-7" icon="download" label="ส่งออก excel" @click="exportTable()" />
                                 </div>
                                 <div class="col-md-3 col-xs-5 q-pa-xs">
                                   <q-select v-model="visibleColumns" multiple outlined dense options-dense

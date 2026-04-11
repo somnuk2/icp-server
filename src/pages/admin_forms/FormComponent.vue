@@ -422,7 +422,7 @@
                                 <q-icon name="save" />
                               </template>
                             </q-input>
-                            <q-btn flat icon-right="archive" label="ส่งออก excel" @click="exportTable()" />
+                            <q-btn flat color="green-7" icon="download" label="ส่งออก excel" @click="exportTable()" />
                           </div>
 
                           <div class="q-pr-sm">

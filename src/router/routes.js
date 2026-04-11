@@ -27,7 +27,6 @@ import AdminFormQualification from "pages/admin_forms/FormQualification.vue";
 import AdminFormSelfAssessment from "pages/admin_forms/FormSelfAssessment.vue";
 import AdminFormRegistration from "pages/admin_forms/FormRegistration.vue";
 import AdminFormNotification from "pages/admin_forms/FormNotification.vue";
-import ImportExcel from "pages/admin_forms/ImportExcel.vue";
 // registration
 import AdminLoginPage from "src/pages/admin_registration/LoginPage.vue";
 import AdminLogoutPage from "pages/admin_registration/LogoutPage.vue";
@@ -247,11 +246,6 @@ const routes = [
     component: AdminRegistrationPage,
     meta: { requiresAuth: false }
   },
-  // {
-  //   path: "/ImportExcel",
-  //   name: "ImportExcel",
-  //   component: ImportExcel,
-  // },
   // Super user forms
   {
     path: "/SuserFormRegistration",

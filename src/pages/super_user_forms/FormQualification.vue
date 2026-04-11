@@ -276,8 +276,7 @@
                               </div>
                               <!-- Export Button -->
                               <div class="col-md-6 col-xs-12 text-center">
-                                <q-btn color="green-9" icon="file_present" label="ส่งออก excel"
-                                  @click="exportTable()" class="full-width q-py-xs" unelevated />
+                                <q-btn flat color="green-7" icon="download" label="ส่งออก excel" @click="exportTable()" class="full-width q-py-xs" unelevated />
                               </div>
                             </div>
                           </q-card-section>

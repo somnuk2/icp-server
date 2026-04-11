@@ -76,8 +76,6 @@ const ADMIN_ROUTES = [
   { label: '09_admin_self_assessment', path: '/AdminFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', title: 'Admin: ประเมินตนเอง' },
   { label: '09b_admin_self_assessment_excel', path: '/AdminFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', clickBtn: 'ส่งออก excel', title: 'Admin: ประเมินตนเอง - Export Excel' },
   { label: '10_admin_notification', path: '/AdminFormNotification', menuText: 'การแจ้งเตือน', title: 'Admin: การแจ้งเตือน' },
-  { label: '11_admin_import_excel', path: '/ImportExcel', menuText: 'นำเข้าข้อมูลจาก Excel', title: 'Admin: นำเข้าข้อมูล' },
-  { label: '11b_admin_import_excel_export', path: '/ImportExcel', menuText: 'นำเข้าข้อมูลจาก Excel', clickBtn: 'ส่งออก excel', title: 'Admin: ส่งออก excel (ImportExcel)' },
 ];
 
 const SUSER_ROUTES = [

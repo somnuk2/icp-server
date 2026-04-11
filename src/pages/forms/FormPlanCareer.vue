@@ -94,7 +94,7 @@
                             style="width: 150px">
                             <template v-slot:append><q-icon name="save" /></template>
                           </q-input>
-                          <q-btn flat icon="archive" label="ส่งออก excel" @click="exportTable" />
+                          <q-btn flat color="green-7" icon="download" label="ส่งออก excel" @click="exportTable" />
                           <q-checkbox v-model="isSelectAll" label="เลือกทั้งหมด" color="primary" class="q-mx-sm"
                             @update:model-value="toggleSelectAll" />
                           <q-btn v-if="tickedCareers.length > 0" color="red" icon="delete_sweep" label="ลบที่เลือก"
@@ -153,7 +153,7 @@
 
                           <q-input borderless dense v-model="file_export" placeholder="ชื่อไฟล์ CSV" />
 
-                          <q-btn flat icon="archive" label="ส่งออก excel" @click="exportTable()" />
+                          <q-btn flat color="green-7" icon="download" label="ส่งออก excel" @click="exportTable()" />
 
                           <q-select v-model="visibleColumns" multiple dense options-dense outlined
                             :options="columnsForVisibleSelect" option-value="name" option-label="label" emit-value
