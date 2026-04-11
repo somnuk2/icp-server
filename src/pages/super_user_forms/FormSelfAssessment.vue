@@ -309,11 +309,7 @@
                           to="/SuserFormPlan">
                           <q-tooltip class="bg-accent">กลับฟอร์มการพัฒนาตนเอง</q-tooltip>
                         </q-btn>
-                        <!-- ไปรายงานการประเมินตนเอง -->
-                        <q-btn color="primary" label="ไปฟอร์มการแจ้งเตือน" no-caps flat icon="skip_next"
-                          to="/SuserFormNotification">
-                          <q-tooltip class="bg-accent">ไปฟอร์มการแจ้งเตือน</q-tooltip>
-                        </q-btn>
+                        <!-- ไปฟอร์มการแจ้งเตือน (ถูกนำออกแล้ว) -->
                       </div>
                     </div>
                     <!-- ส่วนการกรองข้อมูล (Filter Section) -->
@@ -991,7 +987,8 @@ export default {
     },
 
     async exportTableRef() {
-      if (!this.selfAssessments1 || this.selfAssessments1.length === 0) {
+      const exportData = this.selected.length > 0 ? this.selected : this.selfAssessments1;
+      if (!exportData || exportData.length === 0) {
         this.$q.notify({ color: 'orange', message: 'ไม่พบข้อมูลเพื่อส่งออก', icon: 'warning' });
         return;
       }
@@ -1023,7 +1020,7 @@ export default {
         });
 
         const grouped = {};
-        this.selfAssessments1.forEach(sa => {
+        exportData.forEach(sa => {
           const key = sa.full_name;
           if (!grouped[key]) grouped[key] = {};
           if (!grouped[key][sa.qualification_name]) grouped[key][sa.qualification_name] = [];

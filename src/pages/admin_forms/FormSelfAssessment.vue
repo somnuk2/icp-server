@@ -194,8 +194,15 @@
                         <q-btn :label="btnLabel" type="submit" color="primary" icon="save" class="q-mr-sm" />
                         <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-mr-sm" icon="clear" />
                         <q-btn icon="logout" label="ออก" color="primary" flat class="q-mr-sm" to="/" />
+                        <!-- กลับฟอร์มแผนการพัฒนาตนเอง -->
+                        <q-btn color="primary" no-caps flat icon="skip_previous" label="กลับฟอร์มแผนการพัฒนาตนเอง"
+                          to="/AdminFormPlan">
+                          <q-tooltip class="bg-accent">กลับฟอร์มแผนการพัฒนาตนเอง</q-tooltip>
+                        </q-btn>
+                        <!-- ไปฟอร์มการแจ้งผล (ถูกนำออกแล้ว) -->
                       </div>
                     </div>
+
 
                     <q-separator spaced />
 

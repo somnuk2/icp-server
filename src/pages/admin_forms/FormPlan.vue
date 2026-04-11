@@ -584,7 +584,7 @@ export default {
       // Filter by selected year
       let exportData = rows;
       if (this.selectedYear) {
-        exportData = this.plans1.filter(row => {
+        exportData = rows.filter(row => {
           if (!row.plan_start_date) return false;
           // Assuming plan_start_date is in DD/MM/YYYY format or YYYY-MM-DD
           // Adjust parsing logic based on your actual data format
@@ -1054,6 +1054,57 @@ export default {
       update(() => {
         const needle = val.toLowerCase();
         this.yearOptions = this.originalYearOptions.filter(v => v.toLowerCase().indexOf(needle) > -1);
+      });
+    },
+    deleteSelected() {
+      if (this.selected.length === 0) return;
+
+      this.$q.dialog({
+        title: "ยืนยันการลบหลายรายการ",
+        message: `คุณต้องการลบข้อมูลที่เลือกทั้งหมด ${this.selected.length} รายการหรือไม่?\n(ระบบจะข้ามรายการที่มีข้อมูลหลักฐานเชื่อมโยงอยู่)`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก...", spinnerColor: "red" });
+        let successCount = 0;
+        let failCount = 0;
+        try {
+          for (const item of this.selected) {
+            try {
+              // Check dependencies first
+              const resCheck = await axios.post(`${getRestApiUrl(this.$store)}/plans/check-dependencies`, {
+                plan_id: item.plan_id,
+                type: 'single'
+              });
+
+              if (!resCheck.data.has_dependencies) {
+                await axios.delete(`${getRestApiUrl(this.$store)}/plans/${item.plan_id}`);
+                successCount++;
+              } else {
+                failCount++;
+              }
+            } catch (err) {
+              console.error(`Failed to delete ID ${item.plan_id}:`, err);
+              failCount++;
+            }
+          }
+
+          if (successCount > 0) {
+            this.$q.notify({ message: `ลบสำเร็จ ${successCount} รายการ`, color: "positive", icon: "check_circle" });
+          }
+          if (failCount > 0) {
+            this.$q.notify({ message: `ไม่สามารถลบได้ ${failCount} รายการเนื่องจากมีข้อมูลเชื่อมโยง`, color: "warning", icon: "warning" });
+          }
+
+          this.selected = [];
+          this.resetForm();
+          await this.getUpdate();
+        } catch (error) {
+          console.error(error);
+          this.$q.notify({ message: "เกิดข้อผิดพลาดในการลบข้อมูล", color: "negative", icon: "error" });
+        } finally {
+          this.$q.loading.hide();
+        }
       });
     },
   },

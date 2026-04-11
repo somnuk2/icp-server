@@ -315,6 +315,13 @@ export default {
         label: row.qualification_group_name,
       };
     },
+    deleteUser(id, name) {
+      this.$q.dialog({
+        title: "ยืนยัน",
+        message: `คุณต้องการลบ [${name}] หรือไม่ ?`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
         try {
           await axios.delete(`${this.url_api}/${id}`);
           this.$q.notify({ color: "positive", message: "ลบข้อมูลเสร็จสิ้น" });

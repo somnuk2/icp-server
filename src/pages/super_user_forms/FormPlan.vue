@@ -769,7 +769,7 @@ export default {
     async getUpdate() {
       this.loading = true;
       try {
-        const res = await axios.get(`${getRestApiUrl(this.$store)}/plans?member_id=${this.$store.getters.myMember_id}`);
+        const res = await axios.get(`${getRestApiUrl(this.$store)}/plans`);
         this.plans1 = Array.isArray(res.data) ? res.data : [];
       } catch (error) {
         this.$q.notify({ message: "Error: " + error.message, color: "negative", icon: "error" });

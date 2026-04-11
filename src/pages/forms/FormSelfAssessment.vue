@@ -375,10 +375,7 @@
                   to="/FormPlan">
                   <q-tooltip class="bg-accent">กลับฟอร์มการพัฒนาตนเอง</q-tooltip>
                 </q-btn>
-                <q-btn color="primary" label="ไปฟอร์มรายงานการพัฒนาตนเอง" no-caps flat icon="skip_next"
-                  to="/FormReport">
-                  <q-tooltip class="bg-accent">ไปฟอร์มรายงานการพัฒนาตนเอง</q-tooltip>
-                </q-btn>
+                <!-- ไปฟอร์มรายงาน (ไม่มี route /FormReport ในระบบ) -->
               </div>
 
               <!-- ตารางการประเมินตนเอง -->

@@ -132,15 +132,25 @@
                               return `หน้า : ${endRowIndex}/${totalRowsNumber}`
                             }">
                             <template v-slot:top-right="props">
-                              <q-input borderless dense debounce="300" v-model="filter" placeholder="ค้นหาสมาชิค">
-                                <template v-slot:append>
-                                  <q-icon name="search" />
-                                </template>
-                              </q-input>
-                              <q-btn flat round dense :icon="props.inFullscreen
-                                ? 'fullscreen_exit'
-                                : 'fullscreen'
-                                " @click="props.toggleFullscreen" class="q-ml-md" />
+                              <div class="row q-gutter-sm items-center">
+                                <q-input borderless dense debounce="300" v-model="filter" placeholder="ค้นหาสมาชิค">
+                                  <template v-slot:append>
+                                    <q-icon name="search" />
+                                  </template>
+                                </q-input>
+                                <q-input borderless dense debounce="300" v-model="file_export" placeholder="ชื่อไฟล์นำออก"
+                                  outlined bg-color="white">
+                                  <template v-slot:append>
+                                    <q-icon name="save" />
+                                  </template>
+                                </q-input>
+                                <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
+                                <q-select v-model="visibleColumns" multiple outlined dense options-dense
+                                  :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
+                                  option-value="name" options-cover style="min-width: 150px" bg-color="white" />
+                                <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+                                  @click="props.toggleFullscreen" />
+                              </div>
                             </template>
                             <template v-slot:body-cell-actions="props">
                               <q-td :props="props">
@@ -172,7 +182,8 @@
 import axios from "axios";
 import { useQuasar } from "quasar";
 import { ref } from "vue";
-import { exportFile } from "quasar";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 // ส่งออกไฟล์ excel
 function wrapCsvValue(val, formatFn, row) {
   let formatted = formatFn !== void 0 ? formatFn(val, row) : val;
@@ -291,8 +302,73 @@ export default {
   },
   components: {},
   methods: {
-    exportTable() {
-      // implementation remains similar or simplify using quasar exportFile
+    async exportTable() {
+      const rows = this.members1;
+      if (!rows || rows.length === 0) {
+        this.$q.notify({ color: 'orange', message: 'ไม่พบข้อมูล', icon: 'warning' });
+        return;
+      }
+      this.$q.loading.show({ message: 'กำลังสร้างไฟล์ Excel...' });
+      try {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Members');
+
+        const headerFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1565C0' } };
+        const headerFont = { name: 'Sarabun', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+        const dataFont = { name: 'Sarabun', size: 10 };
+        const border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+
+        // Title
+        worksheet.mergeCells('A1:F1');
+        const titleCell = worksheet.getCell('A1');
+        titleCell.value = `รายงานข้อมูลสมาชิก (Admin) - ${new Date().toLocaleDateString('th-TH')}`;
+        titleCell.font = { name: 'Sarabun', size: 14, bold: true };
+        titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+        worksheet.getRow(1).height = 36;
+
+        // Header
+        const headerRow = worksheet.getRow(2);
+        headerRow.values = ['ชื่อ-สกุล', 'อีเมลย์', 'รหัสผ่าน', 'บทบาท', 'ยืนยันอีเมลย์'];
+        headerRow.height = 28;
+        headerRow.eachCell((cell) => {
+          cell.fill = headerFill;
+          cell.font = headerFont;
+          cell.alignment = { vertical: 'middle', horizontal: 'center' };
+          cell.border = border;
+        });
+
+        // Data
+        rows.forEach((row, idx) => {
+          const r = worksheet.addRow([
+            row.full_name || '-',
+            row.email || '-',
+            row.password || '-',
+            row.status || '-',
+            row.is_verified == 1 ? 'ยืนยัน' : 'ยังไม่ยืนยัน',
+          ]);
+          r.eachCell((cell) => {
+            cell.font = dataFont;
+            cell.border = border;
+            cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+            if (idx % 2 === 1) cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2F2F2' } };
+          });
+        });
+
+        worksheet.columns = [
+          { key: 'A', width: 28 }, { key: 'B', width: 28 }, { key: 'C', width: 20 },
+          { key: 'D', width: 15 }, { key: 'E', width: 15 },
+        ];
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const filename = (this.file_export || 'Members_Admin_Report').replace(/\.xlsx$/i, '') + '.xlsx';
+        saveAs(new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), filename);
+        this.$q.notify({ color: 'positive', message: 'ส่งออกไฟล์ Excel เรียบร้อยแล้ว', icon: 'check' });
+      } catch (error) {
+        console.error('Export error:', error);
+        this.$q.notify({ color: 'negative', message: 'ส่งออกไม่สำเร็จ: ' + error.message, icon: 'error' });
+      } finally {
+        this.$q.loading.hide();
+      }
     },
     submitForm() {
       if (!this.isEdit) {

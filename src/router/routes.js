@@ -12,7 +12,7 @@ import FormSelfAssessment from "pages/forms/FormSelfAssessment.vue";
 // import FormReference from "pages/forms/FormReference.vue";
 // import FormReport from "pages/forms/FormReport.vue";
 import FormRegistration from "pages/forms/FormRegistration.vue";
-import FormNotification from "pages/forms/FormNotification.vue";
+// import FormNotification from "pages/forms/FormNotification.vue"; // ถูกนำออกจากเมนูและ routes
 import FormDashboard from "pages/forms/FormDashboard.vue";
 // registration
 import LoginPage from "src/pages/registration/LoginPage.vue";
@@ -26,7 +26,7 @@ import AdminFormPlanCareer from "pages/admin_forms/FormPlanCareer.vue";
 import AdminFormQualification from "pages/admin_forms/FormQualification.vue";
 import AdminFormSelfAssessment from "pages/admin_forms/FormSelfAssessment.vue";
 import AdminFormRegistration from "pages/admin_forms/FormRegistration.vue";
-import AdminFormNotification from "pages/admin_forms/FormNotification.vue";
+// import AdminFormNotification from "pages/admin_forms/FormNotification.vue"; // ถูกนำออกจากเมนูและ routes
 // registration
 import AdminLoginPage from "src/pages/admin_registration/LoginPage.vue";
 import AdminLogoutPage from "pages/admin_registration/LogoutPage.vue";
@@ -39,7 +39,7 @@ import SuserFormPlanCareer from "pages/super_user_forms/FormPlanCareer.vue";
 import SuserFormQualification from "pages/super_user_forms/FormQualification.vue";
 import SuserFormSelfAssessment from "pages/super_user_forms/FormSelfAssessment.vue";
 import SuserFormRegistration from "pages/super_user_forms/FormRegistration.vue";
-import SuserFormNotification from "pages/super_user_forms/FormNotification.vue";
+// import SuserFormNotification from "pages/super_user_forms/FormNotification.vue"; // ถูกนำออกจากเมนูและ routes
 
 //sub admin forms
 import instituteForm from "pages/sub_admin_forms/instituteForm.vue";
@@ -163,12 +163,13 @@ const routes = [
   //   name: "FormReference",
   //   component: FormReference,
   // },
-  {
-    path: "/FormNotification",
-    name: "FormNotification",
-    component: FormNotification,
-    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user', 'superuser', 'suser'] }
-  },
+  // FormNotification ถูกนำออกจาก routes แล้ว
+  // {
+  //   path: "/FormNotification",
+  //   name: "FormNotification",
+  //   component: FormNotification,
+  //   meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user', 'superuser', 'suser'] }
+  // },
   {
     path: "/FormDashboard",
     name: "FormDashboard",
@@ -222,12 +223,13 @@ const routes = [
     component: AdminFormSelfAssessment,
     meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   },
-  {
-    path: "/AdminFormNotification",
-    name: "AdminFormNotification",
-    component: AdminFormNotification,
-    meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
-  },
+  // AdminFormNotification ถูกนำออกจาก routes แล้ว
+  // {
+  //   path: "/AdminFormNotification",
+  //   name: "AdminFormNotification",
+  //   component: AdminFormNotification,
+  //   meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
+  // },
   {
     path: "/AdminLoginPage",
     name: "AdminLoginPage",
@@ -293,12 +295,13 @@ const routes = [
     component: SuserFormSelfAssessment,
     meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   },
-  {
-    path: "/SuserFormNotification",
-    name: "SuserFormNotification",
-    component: SuserFormNotification,
-    meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
-  },
+  // SuserFormNotification ถูกนำออกจาก routes แล้ว
+  // {
+  //   path: "/SuserFormNotification",
+  //   name: "SuserFormNotification",
+  //   component: SuserFormNotification,
+  //   meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
+  // },
   // sub admin education
   {
     path: "/instituteForm",

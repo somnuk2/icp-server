@@ -99,7 +99,14 @@
                       <div class="col-md-12 col-xs-12 q-ma-xs">
                         <div class="q-pa-xs">
                           <!-- ผู้ดูแลระบบ + ที่ปรึกษา + ผู้ใช้ระบบ -->
-
+                          <div class="row items-center q-gutter-sm q-mb-sm">
+                            <q-toggle color="primary" label="ผู้ดูแลระบบ" v-model="admin" val="admin"
+                              @update:model-value="getUpdate()" />
+                            <q-toggle color="green" label="ผู้ดูแลกลุ่ม" v-model="suser" val="suser"
+                              @update:model-value="getUpdate()" />
+                            <q-toggle color="red" label="ผู้ใช้ระบบ" v-model="user" val="user"
+                              @update:model-value="getUpdate()" />
+                          </div>
                           <q-table title="ข้อมูลสมาชิก" :rows="members1" :columns="columns" row-key="member_id"
                             :filter="filter" :loading="loading" :visible-columns="visibleColumns" separator="cell"
                             selection="multiple" v-model:selected="selected"
@@ -195,6 +202,9 @@ export default {
       register: true,
       filter: ref(""),
       loading: ref(false),
+      admin: ref(true),
+      suser: ref(true),
+      user: ref(true),
       member: {
         member_id: "", full_name: "", email: "", password: "", repassword: "", status: "user", is_verified: "0",
       },
@@ -285,7 +295,13 @@ export default {
       this.loading = true;
       try {
         const res = await axios.get(`${getRestApiUrl(this.$store)}/members`);
-        this.members1 = Array.isArray(res.data) ? res.data : [];
+        const data = Array.isArray(res.data) ? res.data : [];
+        // Filter based on toggles
+        const allowedRoles = [];
+        if (this.admin) allowedRoles.push('admin');
+        if (this.suser) allowedRoles.push('suser');
+        if (this.user) allowedRoles.push('user');
+        this.members1 = allowedRoles.length > 0 ? data.filter(m => allowedRoles.includes(m.status)) : data;
       } catch (error) { console.error(error); }
       finally { this.loading = false; }
     },

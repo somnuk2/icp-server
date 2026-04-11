@@ -261,12 +261,11 @@
                             :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                               return `หน้า : ${endRowIndex}/${totalRowsNumber}`
                             }" selection="multiple" v-model:selected="selectedRows">
-                            <template v-slot:top-left>
-                              <q-btn :disable="selectedRows.length === 0" color="red" icon="delete_sweep"
-                                label="ลบทั้งหมดที่เลือก" @click="deleteSelected" />
-                            </template>
                             <template v-slot:top-right="props">
                               <div class="row q-gutter-sm items-center">
+                                <q-btn v-if="selectedRows.length > 0" flat color="red" icon="delete"
+                                  :label="`ลบที่เลือก (${selectedRows.length})`" @click="deleteSelected" />
+
                                 <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาคุณสมบัติ..."
                                   outlined bg-color="white">
                                   <template v-slot:append>
@@ -850,7 +849,7 @@ export default {
               await axios.post(`${getRestApiUrl(this.$store)}/qa-plan-careers/bulk-delete`, {
                 qa_plan_career_ids: selectedIds,
               });
-              this.$q.notify({ type: "positive", message: "ลบข้อมูลสำเร็จ" });
+              this.$q.notify({ type: "positive", message: `ลบสำเร็จ ${selectedIds.length} รายการ` });
               this.selectedRows = [];
               this.getUpdateQualification();
             } catch (error) {
