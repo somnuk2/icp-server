@@ -69,7 +69,7 @@
                 <q-input dense outlined v-model="file_export" placeholder="ชื่อไฟล์นำออก" bg-color="white"
                   style="width: 150px" />
 
-                <q-btn flat icon="archive" label="ส่งออก excel" @click="exportTable" />
+                <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable" />
 
                 <q-select v-model="visibleColumns" multiple outlined dense options-dense emit-value map-options
                   :options="columns" option-value="name" options-cover style="min-width: 150px" bg-color="white" />

@@ -284,7 +284,7 @@
                                   </div>
 
                                   <div class="col-md-4 col-xs-4 q-pa-xs">
-                                    <q-btn flat color="green-7" icon="download" label="ส่งออก excel" @click="exportTable()" />
+                                    <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
                                   </div>
 
                                   <div class="col-md-4 col-xs-4 q-pa-xs">
@@ -407,7 +407,7 @@
                             <template v-slot:prepend><q-icon name="calendar_today" /></template>
                           </q-select>
 
-                          <q-btn flat color="green-7" icon="download" label="ส่งออก excel" @click="exportTable()" />
+                          <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
 
                           <q-checkbox v-model="isAllSelected" label="เลือกทั้งหมด" color="primary"
                             @update:model-value="toggleSelectAll" class="q-mx-sm" />

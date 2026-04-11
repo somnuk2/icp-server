@@ -253,7 +253,7 @@
                                 bg-color="white">
                                 <template v-slot:append><q-icon name="search" /></template>
                               </q-input>
-                              <q-btn flat color="green-7" icon="download" label="ส่งออก excel" @click="exportTable" />
+                              <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable" />
                               <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
                                 @click="props.toggleFullscreen" />
                             </div>

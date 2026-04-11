@@ -242,7 +242,7 @@
                                   </q-input>
                                 </div>
                                 <div class="col-md-3 col-xs-4 q-pa-xs">
-                                  <q-btn flat color="green-7" icon="download" label="ส่งออก excel" @click="exportTable()" />
+                                  <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
                                 </div>
                                 <!-- ปุ่มเพิ่มแหล่งอ้างอิง -->
                                 <div class="col-md-2 col-xs-4 q-pa-xs">
@@ -384,8 +384,8 @@
                               </div>
                               <!-- Export Button -->
                               <div class="col-md-3 col-xs-12 text-center">
-                                <q-btn flat color="green-7" icon="download" label="ส่งออก excel"
-                                  @click="exportTableRef()" class="full-width q-py-xs" unelevated />
+                                <q-btn flat color="black" icon="download" label="ส่งออก excel"
+                                  @click="exportTableRef()" class="full-width q-py-xs" />
                               </div>
                               <div class="col-md-4 col-xs-12">
                                 <div class="bg-white q-pa-sm rounded-borders text-caption text-grey-8"
