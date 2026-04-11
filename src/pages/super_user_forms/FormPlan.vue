@@ -352,6 +352,7 @@
                         <div class="q-pa-xs">
                           <q-table title="ข้อมูลการพัฒนาตนเอง" :rows="filteredPlans" :columns="main_columns" row-key="plan_id"
                             :filter="filter" :loading="loading" :visible-columns="visibleColumnsPlan" separator="cell"
+                            selection="multiple" v-model:selected="selected"
                             table-header-style="height: 65px; " table-header-class="bg-blue-5"
                             :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home"
                             icon-last-page="all_inclusive" icon-next-page="arrow_right" icon-prev-page="arrow_left"
@@ -359,26 +360,21 @@
                               return `หน้า : ${endRowIndex}/${totalRowsNumber}`
                             }">
                             <template v-slot:top-right="props">
-                              <div class="row">
-                                <div class="col-md-5 col-xs-5 q-pa-xs">
-                                  <q-input borderless dense debounce="300" v-model="filter"
+                              <div class="row q-gutter-sm items-center">
+                                <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
+                                  :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+
+                                <q-input borderless dense debounce="300" v-model="filter"
                                     placeholder="ค้นหาการพัฒนาตนเอง">
                                     <template v-slot:append>
                                       <q-icon name="search" />
                                     </template>
                                   </q-input>
-                                </div>
-                                <div class="col-md-5 col-xs-5 q-pa-xs">
                                   <q-select v-model="visibleColumnsPlan" multiple outlined dense options-dense
                                     :display-value="$q.lang.table.columns" emit-value map-options :options="main_columns"
-                                    option-value="name" options-cover style="min-width: 150px" />
-                                </div>
-                                <div class="col-md-2 col-xs-2 q-pa-xs">
-                                  <q-btn flat round dense :icon="props.inFullscreen
-                                    ? 'fullscreen_exit'
-                                    : 'fullscreen'
-                                    " @click="props.toggleFullscreen" class="q-ml-md" />
-                                </div>
+                                    option-value="name" options-cover style="min-width: 150px" bg-color="white" />
+                                  <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+                                    @click="props.toggleFullscreen" />
                               </div>
                             </template>
                             <template v-slot:body-cell-actions="props">
@@ -476,6 +472,7 @@ export default {
       years_: { options: [] },
       year: ref({ label: "", value: "" }),
       filterConditions: { year: "" },
+      selected: ref([]),
       $q: useQuasar(),
     };
   },
@@ -499,7 +496,7 @@ export default {
 
   methods: {
     async exportTable() {
-      const exportData = this.filteredPlans;
+      const exportData = this.selected.length > 0 ? this.selected : this.filteredPlans;
       if (!exportData || exportData.length === 0) {
         this.$q.notify({ color: 'orange', message: 'ไม่พบข้อมูลในตาราง กรุณาค้นหาหรือกรองข้อมูลก่อนส่งออก', icon: 'warning' });
         return;
@@ -697,6 +694,7 @@ export default {
             try {
               await axios.delete(`${getRestApiUrl(this.$store)}/plans/${id}`);
               this.$q.notify({ message: "ลบสำเร็จ", color: "positive" });
+              this.selected = this.selected.filter(item => item.plan_id !== id);
               await this.getUpdate();
             } catch (error) {
               this.$q.notify({ message: "Error: " + error.message, color: "negative", icon: "error" });
@@ -706,6 +704,58 @@ export default {
         console.error("Dependency check failed:", error);
         this.$q.notify({ type: "negative", message: "ตรวจสอบข้อมูลที่เกี่ยวข้องไม่สำเร็จ" });
       }
+    },
+
+    deleteSelected() {
+      if (this.selected.length === 0) return;
+
+      this.$q.dialog({
+        title: "ยืนยันการลบหลายรายการ",
+        message: `คุณต้องการลบข้อมูลที่เลือกทั้งหมด ${this.selected.length} รายการหรือไม่?\n(ระบบจะข้ามรายการที่มีข้อมูลหลักฐานเชื่อมโยงอยู่)`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก...", spinnerColor: "red" });
+        let successCount = 0;
+        let failCount = 0;
+        try {
+          for (const item of this.selected) {
+            try {
+              // Check dependencies first
+              const resCheck = await axios.post(`${getRestApiUrl(this.$store)}/plans/check-dependencies`, {
+                plan_id: item.plan_id,
+                type: 'single'
+              });
+
+              if (!resCheck.data.has_dependencies) {
+                await axios.delete(`${getRestApiUrl(this.$store)}/plans/${item.plan_id}`);
+                successCount++;
+              } else {
+                failCount++;
+              }
+            } catch (err) {
+              console.error(`Failed to delete ID ${item.plan_id}:`, err);
+              failCount++;
+            }
+          }
+
+          if (successCount > 0) {
+            this.$q.notify({ message: `ลบสำเร็จ ${successCount} รายการ`, color: "positive", icon: "check_circle" });
+          }
+          if (failCount > 0) {
+            this.$q.notify({ message: `ไม่สามารถลบได้ ${failCount} รายการเนื่องจากมีข้อมูลเชื่อมโยง`, color: "warning", icon: "warning" });
+          }
+
+          this.selected = [];
+          this.resetForm();
+          await this.getUpdate();
+        } catch (error) {
+          console.error(error);
+          this.$q.notify({ message: "เกิดข้อผิดพลาดในการลบข้อมูล", color: "negative", icon: "error" });
+        } finally {
+          this.$q.loading.hide();
+        }
+      });
     },
 
     onNext() {

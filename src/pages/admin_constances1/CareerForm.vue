@@ -81,14 +81,19 @@
                 <div class="row">
                   <div class="col-md-12 col-xs-12 q-pa-xs">
                     <div class="q-pa-xs">
-                      <q-table title="อาชีพ" :rows="individuals1" :columns="columns" row-key="career_id" :filter="filter"
-                        :loading="loading" separator="cell" table-header-style="height: 65px; " table-header-class="bg-blue-5" :rows-per-page-options="[30, 50, 100, 0]"
-                            icon-first-page="home" icon-last-page="all_inclusive" icon-next-page="arrow_right"
-                            icon-prev-page="arrow_left" :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
-                              return `หน้า : ${endRowIndex}/${totalRowsNumber}`
-                            }">
+                      <q-table :rows="individuals1" :columns="columns" row-key="career_id" :filter="filter"
+                      selection="multiple" v-model:selected="selected"
+                      :loading="loading" :visible-columns="visibleColumns" separator="cell"
+                      table-header-style="height: 65px; " table-header-class="bg-primary text-white"
+                      :rows-per-page-options="[10, 20, 30, 50, 100, 0]" icon-first-page="home"
+                      icon-last-page="all_inclusive" icon-next-page="arrow_right" icon-prev-page="arrow_left"
+                      :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
+                        return `หน้า : ${endRowIndex}/${totalRowsNumber}`
+                      }">
                         <template v-slot:top-right="props">
                           <div class="row q-gutter-sm items-center">
+                            <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
+                              :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
                             <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาอาชีพ..." outlined
                               bg-color="white">
                               <template v-slot:append>
@@ -210,13 +215,14 @@ export default {
         options: [],
       },
       $q: useQuasar(),
+      selected: ref([]),
     };
   },
 
   methods: {
     exportTable() {
-      const columns = this.columns;
-      const rows = this.individuals1;
+      const columns = this.columns.filter(c => this.visibleColumns.includes(c.name) && c.name !== 'actions');
+      const rows = this.selected.length > 0 ? this.selected : this.individuals1;
       const content = [columns.map((col) => wrapCsvValue(col.label))]
         .concat(
           rows.map((row) =>
@@ -322,23 +328,46 @@ export default {
         label: row.ca_group_name,
       };
     },
-    deleteUser(id, name) {
+    deleteUser(career_id, name) {
       this.$q.dialog({
         title: "ยืนยัน",
-        message: `คุณต้องการลบ [ ${id} - ${name} ] หรือไม่ ?`,
+        message: `คุณต้องการลบ [ ${career_id} - ${name} ] หรือไม่ ?`,
         cancel: true,
         persistent: true,
       }).onOk(async () => {
         try {
-          await axios.delete(`${this.url_api}/${id}`);
+          await axios.delete(`${this.url_api}/${career_id}`);
           this.$q.notify({ color: "positive", message: "ลบข้อมูลเสร็จสิ้น" });
+          this.selected = this.selected.filter(item => item.career_id !== career_id);
           await this.getUpdate();
         } catch (error) {
           console.error(error);
-          this.$q.notify({
-            color: "negative",
-            message: "เกิดข้อผิดพลาดในการลบข้อมูล: " + (error.response?.data?.message || error.message)
-          });
+          this.$q.notify({ color: "negative", message: "ลบข้อมูลไม่สำเร็จ" });
+        }
+      });
+    },
+
+    deleteSelected() {
+      this.$q.dialog({
+        title: "ยืนยันการลบหลายรายการ",
+        message: `คุณต้องการลบข้อมูลที่เลือกทั้งหมด ${this.selected.length} รายการหรือไม่?`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก...", spinnerColor: "red" });
+        try {
+          for (const item of this.selected) {
+            await axios.delete(`${this.url_api}/${item.career_id}`);
+          }
+          this.$q.notify({ message: `ลบข้อมูล ${this.selected.length} รายการสำเร็จ`, color: "positive", icon: "check_circle" });
+          this.selected = [];
+          this.resetForm();
+          await this.getUpdate();
+        } catch (error) {
+          console.error(error);
+          this.$q.notify({ message: "เกิดข้อผิดพลาดในการลบข้อมูลบางรายการ", color: "negative", icon: "error" });
+        } finally {
+          this.$q.loading.hide();
         }
       });
     },

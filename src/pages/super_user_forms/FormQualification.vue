@@ -287,39 +287,30 @@
                     <div class="row">
                       <div class="col-md-12 col-xs-12 q-pa-xs">
                         <div class="q-pa-xs">
-                          <q-table title="ข้อมูลคุณสมบัติ/ทักษะ" :rows="qualifications1" :columns="columns"
-                            row-key="skill" :filter="filter" :loading="loading" :visible-columns="visibleColumns"
-                            separator="cell" table-header-style="height: 65px; " table-header-class="bg-blue-5"
-                            :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home"
                             icon-last-page="all_inclusive" icon-next-page="arrow_right" icon-prev-page="arrow_left"
                             :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                               return `หน้า : ${endRowIndex}/${totalRowsNumber}`
-                            }" selection="multiple" v-model:selected="selectedRows">
+                            }" selection="multiple" v-model:selected="selectedRows"
+                            table-header-style="height: 65px; " table-header-class="bg-primary text-white">
                             <template v-slot:top-left>
-                              <q-btn :disable="selectedRows.length === 0" color="red" icon="delete_sweep"
-                                label="ลบทั้งหมดที่เลือก" @click="deleteSelected" />
+                              <div class="row q-gutter-sm items-center">
+                                <q-btn v-if="selectedRows.length > 0" flat color="red" icon="delete"
+                                  :label="`ลบที่เลือก (${selectedRows.length})`" @click="deleteSelected" />
+                              </div>
                             </template>
                             <template v-slot:top-right="props">
-                              <div class="row">
-                                <div class="col-md-3 col-xs-6 q-pa-xs">
-                                  <q-input borderless dense debounce="300" v-model="filter"
-                                    placeholder="ค้นหาคุณสมบัติ">
-                                    <template v-slot:append>
-                                      <q-icon name="search" />
-                                    </template>
-                                  </q-input>
-                                </div>
-                                <div class="col-md-5 col-xs-5 q-pa-xs">
-                                  <q-select v-model="visibleColumns" multiple outlined dense options-dense
-                                    :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
-                                    option-value="name" options-cover style="min-width: 150px" />
-                                </div>
-                                <div class="col-md-2 col-xs-2 q-pa-xs">
-                                  <q-btn flat round dense :icon="props.inFullscreen
-                                    ? 'fullscreen_exit'
-                                    : 'fullscreen'
-                                    " @click="props.toggleFullscreen" class="q-ml-md" />
-                                </div>
+                              <div class="row q-gutter-sm items-center">
+                                <q-input borderless dense debounce="300" v-model="filter"
+                                  placeholder="ค้นหาคุณสมบัติ">
+                                  <template v-slot:append>
+                                    <q-icon name="search" />
+                                  </template>
+                                </q-input>
+                                <q-select v-model="visibleColumns" multiple outlined dense options-dense
+                                  :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
+                                  option-value="name" options-cover style="min-width: 150px" bg-color="white" />
+                                <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+                                  @click="props.toggleFullscreen" />
                               </div>
                             </template>
                             <template v-slot:body-cell-actions="props">
@@ -433,7 +424,8 @@ export default {
   },
   methods: {
     async exportTable() {
-      if (!this.qualifications1 || this.qualifications1.length === 0) {
+      const rows = this.selectedRows.length > 0 ? this.selectedRows : this.qualifications1;
+      if (!rows || rows.length === 0) {
         this.$q.notify({ color: 'orange', message: 'ไม่พบข้อมูลในตาราง', icon: 'warning' });
         return;
       }
@@ -442,7 +434,7 @@ export default {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Qualifications');
         worksheet.addRow(this.columns.filter(c => c.name !== 'actions').map(c => c.label));
-        this.qualifications1.forEach(row => {
+        rows.forEach(row => {
           worksheet.addRow(this.columns.filter(c => c.name !== 'actions').map(c => row[c.field] || '-'));
         });
         const buffer = await workbook.xlsx.writeBuffer();

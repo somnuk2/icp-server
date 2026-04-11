@@ -557,7 +557,8 @@ export default {
         });
 
         // 3. Data Processing (Group by Member)
-        const sortedRows = [...this.qualifications1].sort((a, b) => (a.full_name || '').localeCompare(b.full_name || ''));
+        const rows = this.selectedRows.length > 0 ? this.selectedRows : this.qualifications1;
+        const sortedRows = [...rows].sort((a, b) => (a.full_name || '').localeCompare(b.full_name || ''));
 
         let currentMember = null;
         let zebra = false;

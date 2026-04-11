@@ -426,8 +426,9 @@
                 <div class="row">
                   <div class="col-md-12 col-xs-12 q-pa-xs">
                     <div class="q-pa-xs">
-                      <q-table ref="tb" title="ข้อมูลส่วนตัว" :rows="individuals1" :columns="columns" row-key="name"
+                      <q-table ref="tb" title="ข้อมูลส่วนตัว" :rows="individuals1" :columns="columns" row-key="individual_id"
                         :filter="filter" :loading="loading" :visible-columns="visibleColumns" separator="cell"
+                        selection="multiple" v-model:selected="selected"
                         table-header-style="height: 65px; " table-header-class="bg-blue-5"
                         :rows-per-page-options="[10, 20, 30, 50, 100, 0]" v-model:pagination="pagination"
                         icon-first-page="home" icon-last-page="all_inclusive" icon-next-page="arrow_right"
@@ -435,6 +436,10 @@
                         <template v-slot:top-left>
                           <div class="row q-gutter-sm items-center">
                             <div class="text-h6">ข้อมูลส่วนตัว</div>
+
+                            <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
+                              :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+
                             <q-chip color="primary" text-color="white" icon="people">
                               {{ individuals1.length }} รายการ
                             </q-chip>
@@ -804,13 +809,15 @@ export default {
         label: "",
         value: "",
       }),
+      selected: ref([]),
       $q: useQuasar(),
     };
   },
 
   methods: {
     async exportTable() {
-      if (!this.individuals1 || this.individuals1.length === 0) {
+      const rows = this.selected.length > 0 ? this.selected : this.individuals1;
+      if (!rows || rows.length === 0) {
         this.$q.notify({ color: 'orange', message: 'ไม่พบข้อมูลในตาราง', icon: 'warning' });
         return;
       }
@@ -820,7 +827,7 @@ export default {
         const worksheet = workbook.addWorksheet('Personal Info');
         const headerRow = worksheet.getRow(1);
         headerRow.values = this.columns.filter(c => c.name !== 'actions').map(c => c.label);
-        this.individuals1.forEach(row => {
+        rows.forEach(row => {
           worksheet.addRow(this.columns.filter(c => c.name !== 'actions').map(c => row[c.field] || '-'));
         });
         const buffer = await workbook.xlsx.writeBuffer();

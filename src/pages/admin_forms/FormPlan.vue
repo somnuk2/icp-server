@@ -305,8 +305,9 @@
                     <div class="row">
                       <div class="col-md-12 col-xs-12 q-pa-xs">
                         <div class="q-pa-xs">
-                          <q-table title="ข้อมูลการพัฒนาตนเอง" :rows="plans1" :columns="columns" row-key="id"
+                          <q-table title="ข้อมูลการพัฒนาตนเอง" :rows="plans1" :columns="columns" row-key="plan_id"
                             :filter="filter" :loading="loading" :visible-columns="visibleColumns" separator="cell"
+                            selection="multiple" v-model:selected="selected"
                             table-header-style="height: 65px; " table-header-class="bg-primary text-white"
                             :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home"
                             icon-last-page="all_inclusive" icon-next-page="arrow_right" icon-prev-page="arrow_left"
@@ -315,6 +316,9 @@
                             }">
                              <template v-slot:top-right="props">
                                <div class="row q-gutter-sm items-center">
+                                 <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
+                                   :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+
                                  <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาการพัฒนา..."
                                    outlined bg-color="white">
                                    <template v-slot:append>
@@ -560,13 +564,15 @@ export default {
         value: "",
         description: "",
       }),
+      selected: ref([]),
     };
   },
   methods: {
     // นำออกไฟล์ excel
     async exportTable() {
+      const rows = this.selected.length > 0 ? this.selected : this.plans1;
       // 0. Validate Data
-      if (!this.plans1 || this.plans1.length === 0) {
+      if (!rows || rows.length === 0) {
         this.$q.notify({
           color: 'orange',
           message: 'ไม่พบข้อมูลในตาราง กรุณาค้นหาหรือกรองข้อมูลก่อนส่งออก',
@@ -576,7 +582,7 @@ export default {
       }
 
       // Filter by selected year
-      let exportData = this.plans1;
+      let exportData = rows;
       if (this.selectedYear) {
         exportData = this.plans1.filter(row => {
           if (!row.plan_start_date) return false;

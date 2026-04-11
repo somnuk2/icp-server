@@ -408,7 +408,7 @@
                         <div class="q-pa-xs">
                           <q-table ref="myTable" title="ประวัติการประเมินตนเอง" :rows="selfAssessments1"
                             :columns="main_columns" row-key="self_assessment_id" :filter="filter" :loading="loading"
-                            v-model:selected="selected" style="min-height: 50vh"
+                            selection="multiple" v-model:selected="selected" style="min-height: 50vh"
                             :visible-columns="visibleColumnsAssessment" separator="cell"
                             table-header-style="height: 65px; " table-header-class="bg-blue-5"
                             :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home"
@@ -418,6 +418,9 @@
                             }">
                             <template v-slot:top-right="props">
                               <div class="row q-gutter-sm items-center">
+                                <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
+                                  :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+
                                 <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาในตาราง..." outlined
                                   bg-color="white">
                                   <template v-slot:append>
@@ -700,14 +703,65 @@ export default {
             try {
               await axios.delete(`${getRestApiUrl(this.$store)}/self-assessments/${id}`);
               this.$q.notify({ message: "ลบสำเร็จ", color: "positive" });
-              this.getUpdate();
-              this.getFilterMonth();
+              this.selected = this.selected.filter(item => item.self_assessment_id !== id);
+              await this.getFilterMonth();
             } catch (error) { this.$q.notify({ message: "Error: " + error.message, color: "negative" }); }
           });
       } catch (error) {
         console.error("Dependency check failed:", error);
         this.$q.notify({ type: "negative", message: "ตรวจสอบข้อมูลที่เกี่ยวข้องไม่สำเร็จ" });
       }
+    },
+    deleteSelected() {
+      if (this.selected.length === 0) return;
+
+      this.$q.dialog({
+        title: "ยืนยันการลบหลายรายการ",
+        message: `คุณต้องการลบข้อมูลที่เลือกทั้งหมด ${this.selected.length} รายการหรือไม่?\n(ระบบจะข้ามรายการที่มีข้อมูลอ้างอิงเชื่อมโยงอยู่)`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก...", spinnerColor: "red" });
+        let successCount = 0;
+        let failCount = 0;
+        try {
+          for (const item of this.selected) {
+            try {
+              // Check dependencies first
+              const resCheck = await axios.post(`${getRestApiUrl(this.$store)}/self-assessments/check-dependencies`, {
+                self_assessment_id: item.self_assessment_id,
+                type: 'single'
+              });
+
+              if (!resCheck.data.has_dependencies) {
+                await axios.delete(`${getRestApiUrl(this.$store)}/self-assessments/${item.self_assessment_id}`);
+                successCount++;
+              } else {
+                failCount++;
+              }
+            } catch (err) {
+              console.error(`Failed to delete ID ${item.self_assessment_id}:`, err);
+              failCount++;
+            }
+          }
+
+          if (successCount > 0) {
+            this.$q.notify({ message: `ลบสำเร็จ ${successCount} รายการ`, color: "positive", icon: "check_circle" });
+          }
+          if (failCount > 0) {
+            this.$q.notify({ message: `ไม่สามารถลบได้ ${failCount} รายการเนื่องจากมีข้อมูลเชื่อมโยง`, color: "warning", icon: "warning" });
+          }
+
+          this.selected = [];
+          this.resetForm();
+          await this.getFilterMonth();
+        } catch (error) {
+          console.error(error);
+          this.$q.notify({ message: "เกิดข้อผิดพลาดในการลบข้อมูล", color: "negative", icon: "error" });
+        } finally {
+          this.$q.loading.hide();
+        }
+      });
     },
     async getMember() {
       try {

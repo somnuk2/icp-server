@@ -379,6 +379,7 @@
                   <div class="table-wrap table-wrap-fill">
                     <q-table ref="tb" :title="`ข้อมูลส่วนตัว (${individuals1.length} รายการ)`" :rows="individuals1"
                       :columns="columns" row-key="individual_id" :filter="filter" :loading="loading" separator="cell"
+                      selection="multiple" v-model:selected="selected"
                       wrap-cells flat bordered class="my-sticky-header-table" table-header-style="height: 65px;"
                       table-header-class="bg-primary text-white text-weight-bold"
                       :rows-per-page-options="[10, 20, 30, 50, 100, 0]" v-model:pagination="pagination"
@@ -408,6 +409,9 @@
                       <!-- Top-right -->
                       <template v-slot:top-right="props">
                         <div class="row q-gutter-sm items-center">
+                          <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
+                            :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+
                           <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาข้อมูลส่วนตัว..." outlined
                             bg-color="white">
                             <template v-slot:append><q-icon name="search" /></template>
@@ -524,25 +528,8 @@ export default {
         rowsPerPage: 10,
       },
 
-      visibleColumns: [
-        "actions",
-        "status",
-        "full_name",
-        "birthday",
-        "telephone",
-        "institute_name",
-        "faculty_name",
-        "degree_name",
-        "department_name",
-        "is_graduate",
-        "date",
-        "year",
-        "is_disability",
-        "disability_name",
-        "dis_description",
-        "project_name",
-        "advisor_name",
-      ],
+      visibleColumns: ref(["actions", "individual_id", "full_name", "id_card", "faculty_name", "degree_name", "department_name", "disability_name"]),
+      selected: ref([]),
 
       columns: [
         { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 120px;", headerStyle: "width: 120px;" },
@@ -603,7 +590,10 @@ export default {
   methods: {
     // นำออกไฟล์ excel
     async exportTable() {
-      if (!this.individuals1 || this.individuals1.length === 0) {
+      const columns = this.columns.filter(c => this.visibleColumns.includes(c.name) && c.name !== 'actions');
+      const rows = this.selected.length > 0 ? this.selected : this.individuals1;
+      
+      if (!rows || rows.length === 0) {
         this.$q.notify({
           color: 'orange',
           message: 'ไม่พบข้อมูลในตาราง',
@@ -907,11 +897,38 @@ export default {
         try {
           await axios.delete(`${this.url_api_individual}/${individual_id}`);
           this.$q.notify({ message: "ลบข้อมูลสำเร็จ", color: "positive", icon: "check_circle" });
+          this.selected = this.selected.filter(item => item.individual_id !== individual_id);
           this.resetForm();
           await this.getUpdate();
         } catch (error) {
           console.error(error);
           this.$q.notify({ message: "เกิดข้อผิดพลาดในการลบข้อมูล", color: "negative", icon: "error" });
+        } finally {
+          this.$q.loading.hide();
+        }
+      });
+    },
+
+    deleteSelected() {
+      this.$q.dialog({
+        title: "ยืนยันการลบหลายรายการ",
+        message: `คุณต้องการลบข้อมูลที่เลือกทั้งหมด ${this.selected.length} รายการหรือไม่?`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก...", spinnerColor: "red" });
+        try {
+          // วนลบข้อมูลทีละรายการ (เนื่องจาก REST API มาตรฐานมักรองรับทีละ ID)
+          for (const item of this.selected) {
+            await axios.delete(`${this.url_api_individual}/${item.individual_id}`);
+          }
+          this.$q.notify({ message: `ลบข้อมูล ${this.selected.length} รายการสำเร็จ`, color: "positive", icon: "check_circle" });
+          this.selected = [];
+          this.resetForm();
+          await this.getUpdate();
+        } catch (error) {
+          console.error(error);
+          this.$q.notify({ message: "เกิดข้อผิดพลาดในการลบข้อมูลบางรายการ", color: "negative", icon: "error" });
         } finally {
           this.$q.loading.hide();
         }

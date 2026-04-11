@@ -245,10 +245,14 @@
                       <div class="col-12 q-pa-xs">
                         <q-table :key="tableKey" title="ประวัติการประเมินตนเอง" :rows="selfAssessments1"
                           :columns="main_columns" row-key="self_assessment_id" :filter="filter" :loading="loading"
+                          selection="multiple" v-model:selected="selected"
                           separator="cell" style="min-height: 55vh" no-data-label="ไม่พบข้อมูล"
                           :rows-per-page-options="[30, 50, 100, 0]">
                           <template v-slot:top-right="props">
                             <div class="row q-gutter-sm items-center">
+                              <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
+                                :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+
                               <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาในตาราง..." outlined
                                 bg-color="white">
                                 <template v-slot:append><q-icon name="search" /></template>
@@ -302,6 +306,7 @@ export default {
       tableKey: 0,
       filter: "",
       filter_reference: "",
+      selected: [],
 
       // history table
       selfAssessments1: [],
@@ -758,6 +763,57 @@ export default {
       }
     },
 
+    async deleteSelected() {
+      if (this.selected.length === 0) return;
+
+      this.$q.dialog({
+        title: "ยืนยันการลบหลายรายการ",
+        message: `คุณต้องการลบข้อมูลที่เลือกทั้งหมด ${this.selected.length} รายการหรือไม่?\n(ระบบจะข้ามรายการที่มีข้อมูลเชื่อมโยงอยู่)`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก...", spinnerColor: "red" });
+        let successCount = 0;
+        let failCount = 0;
+        try {
+          const base = getRestApiUrl(this.$store);
+          for (const item of this.selected) {
+            try {
+              // Check dependencies
+              const resCheck = await axios.post(`${base}/self-assessments/check-dependencies`, {
+                id: item.self_assessment_id,
+              });
+              if (!resCheck.data.has_dependencies) {
+                await axios.delete(`${base}/self-assessments/${item.self_assessment_id}`);
+                successCount++;
+              } else {
+                failCount++;
+              }
+            } catch (err) {
+              console.error(`Failed to delete ID ${item.self_assessment_id}:`, err);
+              failCount++;
+            }
+          }
+
+          if (successCount > 0) {
+            this.$q.notify({ message: `ลบสำเร็จ ${successCount} รายการ`, color: "positive", icon: "check_circle" });
+          }
+          if (failCount > 0) {
+            this.$q.notify({ message: `ไม่สามารถลบได้ ${failCount} รายการเนื่องจากมีข้อมูลเชื่อมโยง`, color: "warning", icon: "warning" });
+          }
+
+          this.selected = [];
+          this.resetForm();
+          await this.loadAll();
+        } catch (error) {
+          console.error(error);
+          this.$q.notify({ message: "เกิดข้อผิดพลาดในการลบข้อมูล", color: "negative", icon: "error" });
+        } finally {
+          this.$q.loading.hide();
+        }
+      });
+    },
+
     resetForm() {
       this.isEdit = false;
       this.isEditRef = false;
@@ -791,7 +847,8 @@ export default {
         }));
 
         // เติมข้อมูล
-        this.selfAssessments1.forEach(row => {
+        const rows = this.selected.length > 0 ? this.selected : this.selfAssessments1;
+        rows.forEach(row => {
           const data = {};
           columns.forEach(c => {
             data[c.name] = row[c.name];

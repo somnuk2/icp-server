@@ -135,21 +135,25 @@
                       <div class="col-md-12 col-xs-12 q-pa-xs">
                         <div class="q-pa-xs">
                           <q-table title="ข้อมูลอาชีพเป้าหมาย" :rows="plan_careers1" :columns="columns"
-                            row-key="Name_Plan_Career" :filter="filter" :loading="loading"
+                            row-key="plan_career_id" :filter="filter" :loading="loading"
+                            selection="multiple" v-model:selected="selected"
                             :visible-columns="visibleColumns" separator="cell" table-header-style="height: 65px; "
                             table-header-class="bg-primary text-white" :rows-per-page-options="[30, 50, 100, 0]"
                             icon-first-page="home" icon-last-page="all_inclusive" icon-next-page="arrow_right"
                             icon-prev-page="arrow_left" :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                               return `หน้า : ${endRowIndex}/${totalRowsNumber}`
                             }">
-                             <template v-slot:top-right="props">
-                               <div class="row q-gutter-sm items-center">
-                                 <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาอาชีพเป้าหมาย..."
-                                   outlined bg-color="white">
-                                   <template v-slot:append>
-                                     <q-icon name="search" />
-                                   </template>
-                                 </q-input>
+                              <template v-slot:top-right="props">
+                                <div class="row q-gutter-sm items-center">
+                                  <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
+                                    :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+
+                                  <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาอาชีพเป้าหมาย..."
+                                    outlined bg-color="white">
+                                    <template v-slot:append>
+                                      <q-icon name="search" />
+                                    </template>
+                                  </q-input>
 
                                  <!-- ส่งออก excel -->
                                  <q-input dense debounce="300" v-model="file_export" placeholder="ชื่อไฟล์นำออก"
@@ -311,12 +315,14 @@ export default {
         value: "",
         description: "",
       }),
+      selected: ref([]),
     };
   },
   methods: {
     // นำออกไฟล์ excel
     async exportTable() {
-      if (!this.plan_careers1 || this.plan_careers1.length === 0) {
+      const rows = this.selected.length > 0 ? this.selected : this.plan_careers1;
+      if (!rows || rows.length === 0) {
         this.$q.notify({
           color: 'orange',
           message: 'ไม่พบข้อมูลในตาราง',
@@ -368,7 +374,7 @@ export default {
         });
 
         // 3. Data Processing (Group by Member)
-        const sortedRows = [...this.plan_careers1].sort((a, b) => (a.full_name || '').localeCompare(b.full_name || ''));
+        const sortedRows = [...rows].sort((a, b) => (a.full_name || '').localeCompare(b.full_name || ''));
 
         let currentMember = null;
         let zebra = false;
@@ -529,6 +535,7 @@ export default {
             try {
               await axios.delete(`${getRestApiUrl(this.$store)}/plan-careers/${plan_career_id}`);
               this.$q.notify({ message: "ลบข้อมูลสำเร็จ", color: "positive" });
+              this.selected = this.selected.filter(item => item.plan_career_id !== plan_career_id);
               await this.getUpdate();
             } catch (error) {
               this.$q.notify({ message: "Error: " + error.message, color: "negative" });
@@ -538,6 +545,59 @@ export default {
         console.error("Dependency check failed:", error);
         this.$q.notify({ type: "negative", message: "ตรวจสอบข้อมูลที่เกี่ยวข้องไม่สำเร็จ" });
       }
+    },
+
+    deleteSelected() {
+      if (this.selected.length === 0) return;
+
+      this.$q.dialog({
+        title: "ยืนยันการลบหลายรายการ",
+        message: `คุณต้องการลบข้อมูลที่เลือกทั้งหมด ${this.selected.length} รายการหรือไม่?\n(ระบบจะข้ามรายการที่มีข้อมูลเชื่อมโยงอยู่)`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก...", spinnerColor: "red" });
+        let successCount = 0;
+        let failCount = 0;
+
+        try {
+          for (const item of this.selected) {
+            try {
+              // Check dependencies first
+              const resCheck = await axios.post(`${getRestApiUrl(this.$store)}/plan-careers/check-dependencies`, {
+                plan_career_id: item.plan_career_id,
+                type: 'single'
+              });
+
+              if (!resCheck.data.has_dependencies) {
+                await axios.delete(`${getRestApiUrl(this.$store)}/plan-careers/${item.plan_career_id}`);
+                successCount++;
+              } else {
+                failCount++;
+              }
+            } catch (err) {
+              console.error(`Failed to delete ID ${item.plan_career_id}:`, err);
+              failCount++;
+            }
+          }
+
+          if (successCount > 0) {
+            this.$q.notify({ message: `ลบสำเร็จ ${successCount} รายการ`, color: "positive", icon: "check_circle" });
+          }
+          if (failCount > 0) {
+            this.$q.notify({ message: `ไม่สามารถลบได้ ${failCount} รายการเนื่องจากมีข้อมูลเชื่อมโยง`, color: "warning", icon: "warning" });
+          }
+
+          this.selected = [];
+          this.resetForm();
+          await this.getUpdate();
+        } catch (error) {
+          console.error(error);
+          this.$q.notify({ message: "เกิดข้อผิดพลาดในการลบข้อมูล", color: "negative", icon: "error" });
+        } finally {
+          this.$q.loading.hide();
+        }
+      });
     },
     async getUpdate() {
       this.loading = true;

@@ -155,34 +155,31 @@
                 <div class="row">
                   <div class="col-md-12 col-xs-12 q-pa-xs">
                     <div class="q-pa-xs">
-                      <q-table title="รายงานการแจ้งเตือน" :rows="notification1" :columns="columns" row-key="name"
+                      <q-table title="รายงานการแจ้งเตือน" :rows="notification1" :columns="columns" row-key="notification_id"
                         :filter="filter" :loading="loading" :visible-columns="visibleColumns" separator="cell"
+                        selection="multiple" v-model:selected="selected"
                         table-header-style="height: 65px; " table-header-class="bg-blue-5"
                         :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home" icon-last-page="all_inclusive"
                         icon-next-page="arrow_right" icon-prev-page="arrow_left" :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                           return `หน้า : ${endRowIndex}/${totalRowsNumber}`
                         }">
                         <template v-slot:top-right="props">
-                          <div class="row">
-                            <div class="col-md-5 col-xs-5 q-pa-xs">
-                              <q-input borderless dense debounce="300" v-model="filter"
+                          <div class="row q-gutter-sm items-center">
+                            <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
+                              :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+
+                            <q-input borderless dense debounce="300" v-model="filter"
                                 placeholder="ค้นหาข้อมูลการแจ้งเตือน">
                                 <template v-slot:append>
                                   <q-icon name="search" />
                                 </template>
                               </q-input>
-                            </div>
-                            <div class="col-md-5 col-xs-5 q-pa-xs">
                               <q-select v-model="visibleColumns" multiple outlined dense options-dense
                                 :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
-                                option-value="name" options-cover style="min-width: 150px" />
-                            </div>
-                            <div class="col-md-2 col-xs-2 q-pa-xs">
-                              <q-btn flat round dense :icon="props.inFullscreen
-                                ? 'fullscreen_exit'
-                                : 'fullscreen'
-                                " @click="props.toggleFullscreen" class="q-ml-md" />
-                            </div>
+                                option-value="name" options-cover style="min-width: 150px" bg-color="white" />
+                              <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+                                @click="props.toggleFullscreen" />
+                              <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
                           </div>
                         </template>
                         <template v-slot:body-cell-actions="props">
@@ -216,7 +213,8 @@
 import axios from "axios";
 import { ref } from "vue";
 import { useQuasar } from "quasar";
-import { exportFile } from "quasar";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 import { date } from "quasar";
 import { getRestApiUrl } from "../../utils/apiConfig";
 
@@ -268,19 +266,31 @@ export default {
       members: { options: [] },
       members_: { options: [] },
       member: ref({ label: "", value: "", description: "" }),
+      selected: ref([]),
     };
   },
   methods: {
     async exportTable() {
-      if (!this.notification1 || this.notification1.length === 0) {
+      const rows = this.selected.length > 0 ? this.selected : this.notification1;
+      if (!rows || rows.length === 0) {
         this.$q.notify({ color: 'orange', message: 'ไม่พบข้อมูล' });
         return;
       }
+      this.$q.loading.show({ message: 'กำลังสร้างไฟล์ Excel...' });
       try {
-        const content = [this.columns.map(c => c.label)].concat(this.notification1.map(row => this.columns.map(c => row[c.field] || ''))).map(e => e.join(",")).join("\n");
-        const status = exportFile('notifications.csv', "\ufeff" + content, 'text/csv');
-        if (status !== true) this.$q.notify({ message: "Browser denied file download...", color: "negative" });
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Notifications');
+        const headerRow = worksheet.getRow(1);
+        headerRow.values = this.columns.filter(c => c.name !== 'actions').map(c => c.label);
+        rows.forEach(row => {
+          worksheet.addRow(this.columns.filter(c => c.name !== 'actions').map(c => row[c.field] || '-'));
+        });
+        const buffer = await workbook.xlsx.writeBuffer();
+        const filename = (this.file_export || "Notifications_Report").replace(/\.xlsx$/i, '') + '.xlsx';
+        saveAs(new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), filename);
+        this.$q.notify({ color: 'positive', message: 'ส่งออกสำเร็จ' });
       } catch (error) { console.error(error); }
+      finally { this.$q.loading.hide(); }
     },
     yearToDay(d_m_y) {
       if (!d_m_y) return "";
@@ -345,9 +355,38 @@ export default {
           try {
             await axios.delete(`${getRestApiUrl(this.$store)}/notifications/${id}`);
             this.$q.notify({ message: "ลบสำเร็จ", color: "positive" });
+            this.selected = this.selected.filter(item => item.notification_id !== id);
             this.getUpdate();
           } catch (error) { this.$q.notify({ message: "Error: " + error.message, color: "negative" }); }
         });
+    },
+
+    deleteSelected() {
+      if (this.selected.length === 0) return;
+
+      this.$q.dialog({
+        title: "ยืนยันการลบหลายรายการ",
+        message: `คุณต้องการลบข้อมูลการแจ้งเตือนที่เลือกทั้งหมด ${this.selected.length} รายการหรือไม่?`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก...", spinnerColor: "red" });
+        try {
+          const restBaseUrl = getRestApiUrl(this.$store);
+          for (const item of this.selected) {
+            await axios.delete(`${restBaseUrl}/notifications/${item.notification_id}`);
+          }
+          this.$q.notify({ message: `ลบการแจ้งเตือน ${this.selected.length} รายการสำเร็จ`, color: "positive", icon: "check_circle" });
+          this.selected = [];
+          this.resetForm();
+          await this.getUpdate();
+        } catch (error) {
+          console.error(error);
+          this.$q.notify({ message: "เกิดข้อผิดพลาดในการลบข้อมูลการแจ้งเตือนบางรายการ", color: "negative", icon: "error" });
+        } finally {
+          this.$q.loading.hide();
+        }
+      });
     },
     async getUpdate() {
       this.loading = true;
