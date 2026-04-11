@@ -13,7 +13,7 @@
             <div class="q-gutter-sm">
               <input type="file" ref="fileInput" style="display: none" accept=".xlsx, .xls" @change="handleFileUpload" />
               <q-btn flat dense icon="upload_file" label="นำเข้า Excel" @click="$refs.fileInput.click()" />
-              <q-btn flat dense icon="download" label="ส่งออก Excel" @click="exportToExcel" />
+              <q-btn flat dense icon="download" label="ส่งออก excel" @click="exportToExcel" />
               <q-btn flat dense icon="delete_sweep" label="ล้างข้อมูล" @click="clearTable" />
             </div>
           </q-card-section>

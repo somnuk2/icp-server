@@ -174,7 +174,7 @@
                             style="width: 150px">
                             <template v-slot:append><q-icon name="save" /></template>
                           </q-input>
-                          <q-btn flat icon="archive" label="ส่งออก Excel (รายงานสรุป)" @click="exportTable" />
+                          <q-btn flat icon="archive" label="ส่งออก excel" @click="exportTable" />
                           <q-checkbox v-if="plans1.length > 0" v-model="isAllSelected" label="เลือกทั้งหมด"
                             @update:model-value="toggleSelectAll" class="q-mx-sm" />
                           <q-btn v-if="tickedPlans.length > 0" color="negative" icon="delete" label="ลบที่เลือก"

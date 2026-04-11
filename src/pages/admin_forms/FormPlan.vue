@@ -346,7 +346,7 @@
                                   </q-select>
                                 </div>
                                 <div class="col-md-1 col-xs-2 q-pa-xs">
-                                  <q-btn flat icon-right="archive" label="ส่งออก" @click="exportTable()" />
+                                  <q-btn flat icon-right="archive" label="ส่งออก excel" @click="exportTable()" />
                                 </div>
                                 <div class="col-md-2 col-xs-5 q-pa-xs">
                                   <q-select v-model="visibleColumns" multiple outlined dense options-dense

@@ -158,7 +158,7 @@
                               #append><q-icon name="search" /></template></q-input>
                           <q-btn v-if="selected.length > 0" color="negative" icon="delete" label="ลบที่เลือก"
                             @click="deleteSelected" dense class="q-px-sm q-ml-sm" />
-                          <q-btn flat icon-right="archive" label="ส่งออก" @click="exportTable" />
+                          <q-btn flat icon-right="archive" label="ส่งออก excel" @click="exportTable" />
                           <q-select v-model="visibleColumns" multiple outlined dense options-dense
                             :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
                             option-value="name" style="min-width: 150px" />

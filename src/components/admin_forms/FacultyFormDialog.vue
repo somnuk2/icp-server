@@ -48,7 +48,7 @@
                                     <q-icon name="search" />
                                 </template>
                             </q-input>
-                            <q-btn flat icon-right="archive" label="ส่งออก" @click="exportTable()" class="q-ml-sm" />
+                            <q-btn flat icon-right="archive" label="ส่งออก excel" @click="exportTable()" class="q-ml-sm" />
                             <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
                                 @click="props.toggleFullscreen" class="q-ml-md" />
                         </template>

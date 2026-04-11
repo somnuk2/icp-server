@@ -72,7 +72,7 @@
                               <q-icon name="save" />
                             </template>
                           </q-input>
-                          <q-btn flat icon-right="archive" label="ส่งออกไฟล์" @click="exportTable()" />
+                          <q-btn flat icon-right="archive" label="ส่งออก excel" @click="exportTable()" />
                           <q-select v-model="visibleColumns" multiple outlined dense options-dense
                             :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
                             option-value="name" options-cover style="min-width: 150px" />

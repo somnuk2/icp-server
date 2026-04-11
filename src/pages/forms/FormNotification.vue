@@ -127,7 +127,7 @@
                                 <q-icon name="save" />
                               </template>
                             </q-input>
-                            <q-btn flat icon-right="archive" label="ส่งออกไฟล์" @click="exportTable()" />
+                            <q-btn flat icon-right="archive" label="ส่งออก excel" @click="exportTable()" />
                             <q-btn flat round dense :icon="props.inFullscreen
                               ? 'fullscreen_exit'
                               : 'fullscreen'

@@ -1,5 +1,5 @@
 /**
- * ICP Project - Screenshot Capture Script v4
+ * ICP Project - Screenshot Capture Script v5
  * ===================================================
  * Strategy:
  *  1. Login ผ่าน API โดยตรง → ได้ Token จริง
@@ -49,13 +49,13 @@ const USER_ROUTES = [
   { label: '01_form_registration', path: '/FormRegistration', menuText: 'การตั้งค่าส่วนตัว', title: 'ข้อมูลส่วนตัว (FormRegistration)' },
   { label: '02_form_component', path: '/FormComponent', menuText: 'กรอกข้อมูลส่วนตัว', title: 'ข้อมูลการศึกษา (FormComponent)' },
   { label: '03_form_plan_career', path: '/FormPlanCareer', menuText: 'กำหนดอาชีพเป้าหมาย', title: 'อาชีพเป้าหมาย (FormPlanCareer)' },
-  { label: '03b_form_plan_career_excel', path: '/FormPlanCareer', menuText: 'กำหนดอาชีพเป้าหมาย', clickBtn: 'ส่งออก Excel (รายงานสรุป)', title: 'User: อาชีพเป้าหมาย - Export Excel' },
+  { label: '03b_form_plan_career_excel', path: '/FormPlanCareer', menuText: 'กำหนดอาชีพเป้าหมาย', clickBtn: 'ส่งออก excel', title: 'User: อาชีพเป้าหมาย - Export Excel' },
   { label: '04_form_qualification', path: '/FormQualification', menuText: 'กำหนดคุณสมบัติ/ทักษะ', title: 'คุณสมบัติ/ทักษะ (FormQualification)' },
-  { label: '04b_form_qualification_excel', path: '/FormQualification', menuText: 'กำหนดคุณสมบัติ/ทักษะ', clickBtn: 'ส่งออก Excel (รายงานสรุป)', title: 'User: คุณสมบัติ/ทักษะ - Export Excel' },
+  { label: '04b_form_qualification_excel', path: '/FormQualification', menuText: 'กำหนดคุณสมบัติ/ทักษะ', clickBtn: 'ส่งออก excel', title: 'User: คุณสมบัติ/ทักษะ - Export Excel' },
   { label: '05_form_plan', path: '/FormPlan', menuText: 'การพัฒนาตนเอง', title: 'พัฒนาตนเอง (FormPlan)' },
-  { label: '05b_form_plan_excel', path: '/FormPlan', menuText: 'การพัฒนาตนเอง', clickBtn: 'ส่งออก Excel (รายงานสรุป)', title: 'User: พัฒนาตนเอง - Export Excel' },
+  { label: '05b_form_plan_excel', path: '/FormPlan', menuText: 'การพัฒนาตนเอง', clickBtn: 'ส่งออก excel', title: 'User: พัฒนาตนเอง - Export Excel' },
   { label: '06_form_self_assessment', path: '/FormSelfAssessment', menuText: 'การประเมินตนเอง', title: 'ประเมินตนเอง (FormSelfAssessment)' },
-  { label: '06b_form_self_assessment_excel', path: '/FormSelfAssessment', menuText: 'การประเมินตนเอง', clickBtn: 'ส่งออก Excel (รายงานสรุป)', title: 'User: ประเมินตนเอง - Export Excel' },
+  { label: '06b_form_self_assessment_excel', path: '/FormSelfAssessment', menuText: 'การประเมินตนเอง', clickBtn: 'ส่งออก excel', title: 'User: ประเมินตนเอง - Export Excel' },
   { label: '07_form_notification', path: '/FormNotification', menuText: 'การแจ้งเตือน', title: 'การแจ้งเตือน (FormNotification)' },
   { label: '08_form_dashboard', path: '/FormDashboard', menuText: 'Dashboard การวิเคราะห์', title: 'Dashboard (FormDashboard)' },
 ];
@@ -66,36 +66,36 @@ const ADMIN_ROUTES = [
   { label: '03_admin_constances', path: '/tapAdminConstances', menuText: 'จัดการค่าคงที่', title: 'Admin: จัดการค่าคงที่' },
   { label: '04_admin_master_career', path: '/tapAdminConstances1', menuText: 'จัดการอาชีพ/คุณสมบัติ/ทักษะ', title: 'Admin: มาสเตอร์อาชีพ' },
   { label: '05_admin_component', path: '/AdminFormComponent', menuText: 'จัดการข้อมูลส่วนตัว', title: 'Admin: ข้อมูลการศึกษา' },
-  { label: '05b_admin_component_excel', path: '/AdminFormComponent', menuText: 'จัดการข้อมูลส่วนตัว', clickBtn: 'ส่งออก', title: 'Admin: ข้อมูลการศึกษา - Export Excel' },
+  { label: '05b_admin_component_excel', path: '/AdminFormComponent', menuText: 'จัดการข้อมูลส่วนตัว', clickBtn: 'ส่งออก excel', title: 'Admin: ข้อมูลการศึกษา - Export Excel' },
   { label: '06_admin_plan_career', path: '/AdminFormPlanCareer', menuText: 'จัดการอาชีพเป้าหมาย', title: 'Admin: อาชีพเป้าหมาย' },
-  { label: '06b_admin_plan_career_excel', path: '/AdminFormPlanCareer', menuText: 'จัดการอาชีพเป้าหมาย', clickBtn: 'ส่งออก', title: 'Admin: อาชีพเป้าหมาย - Export Excel' },
+  { label: '06b_admin_plan_career_excel', path: '/AdminFormPlanCareer', menuText: 'จัดการอาชีพเป้าหมาย', clickBtn: 'ส่งออก excel', title: 'Admin: อาชีพเป้าหมาย - Export Excel' },
   { label: '07_admin_qualification', path: '/AdminFormQualification', menuText: 'จัดการคุณสมบัติ/ทักษะ', title: 'Admin: คุณสมบัติ' },
-  { label: '07b_admin_qualification_excel', path: '/AdminFormQualification', menuText: 'จัดการคุณสมบัติ/ทักษะ', clickBtn: 'ส่งออก', title: 'Admin: คุณสมบัติ - Export Excel' },
+  { label: '07b_admin_qualification_excel', path: '/AdminFormQualification', menuText: 'จัดการคุณสมบัติ/ทักษะ', clickBtn: 'ส่งออก excel', title: 'Admin: คุณสมบัติ - Export Excel' },
   { label: '08_admin_plan', path: '/AdminFormPlan', menuText: 'จัดการพัฒนาตนเอง', title: 'Admin: พัฒนาตนเอง' },
-  { label: '08b_admin_plan_excel', path: '/AdminFormPlan', menuText: 'จัดการพัฒนาตนเอง', clickBtn: 'ส่งออก', title: 'Admin: พัฒนาตนเอง - Export Excel' },
+  { label: '08b_admin_plan_excel', path: '/AdminFormPlan', menuText: 'จัดการพัฒนาตนเอง', clickBtn: 'ส่งออก excel', title: 'Admin: พัฒนาตนเอง - Export Excel' },
   { label: '09_admin_self_assessment', path: '/AdminFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', title: 'Admin: ประเมินตนเอง' },
-  { label: '09b_admin_self_assessment_excel', path: '/AdminFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', clickBtn: 'ส่งออก Excel', title: 'Admin: ประเมินตนเอง - Export Excel' },
+  { label: '09b_admin_self_assessment_excel', path: '/AdminFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', clickBtn: 'ส่งออก excel', title: 'Admin: ประเมินตนเอง - Export Excel' },
   { label: '10_admin_notification', path: '/AdminFormNotification', menuText: 'การแจ้งเตือน', title: 'Admin: การแจ้งเตือน' },
   { label: '11_admin_import_excel', path: '/ImportExcel', menuText: 'นำเข้าข้อมูลจาก Excel', title: 'Admin: นำเข้าข้อมูล' },
-  { label: '11b_admin_import_excel_export', path: '/ImportExcel', menuText: 'นำเข้าข้อมูลจาก Excel', clickBtn: 'ส่งออก Excel', title: 'Admin: ส่งออก Excel (ImportExcel)' },
+  { label: '11b_admin_import_excel_export', path: '/ImportExcel', menuText: 'นำเข้าข้อมูลจาก Excel', clickBtn: 'ส่งออก excel', title: 'Admin: ส่งออก excel (ImportExcel)' },
 ];
 
 const SUSER_ROUTES = [
   { label: '01_suser_registration', path: '/SuserFormRegistration', menuText: 'จัดการลงทะเบียน', title: 'SuperUser: ลงทะเบียน' },
-  { label: '01b_suser_registration_excel', path: '/SuserFormRegistration', menuText: 'จัดการลงทะเบียน', clickBtn: 'ส่งออกไฟล์', title: 'SuperUser: ลงทะเบียน - Export Excel' },
+  { label: '01b_suser_registration_excel', path: '/SuserFormRegistration', menuText: 'จัดการลงทะเบียน', clickBtn: 'ส่งออก excel', title: 'SuperUser: ลงทะเบียน - Export Excel' },
   { label: '02_suser_institute', path: '/s_tapFormInstitute', menuText: 'การจัดการสาขาวิชา', title: 'SuperUser: การจัดการสาขาวิชา' },
   { label: '03_suser_master_career', path: '/tapSuperUserConstances', menuText: 'จัดการอาชีพ/คุณสมบัติ/ทักษะ', title: 'SuperUser: มาสเตอร์อาชีพ' },
   { label: '04_suser_component', path: '/SuserFormComponent', menuText: 'จัดการข้อมูลส่วนตัว', title: 'SuperUser: ข้อมูลการศึกษา' },
-  { label: '04b_suser_component_excel', path: '/SuserFormComponent', menuText: 'จัดการข้อมูลส่วนตัว', clickBtn: 'ส่งออก Excel Report', title: 'SuperUser: ข้อมูลการศึกษา - Export Excel' },
+  { label: '04b_suser_component_excel', path: '/SuserFormComponent', menuText: 'จัดการข้อมูลส่วนตัว', clickBtn: 'ส่งออก excel', title: 'SuperUser: ข้อมูลการศึกษา - Export Excel' },
   { label: '05_suser_plan_career', path: '/SuserFormPlanCareer', menuText: 'จัดการอาชีพเป้าหมาย', title: 'SuperUser: อาชีพเป้าหมาย' },
-  { label: '05b_suser_plan_career_excel', path: '/SuserFormPlanCareer', menuText: 'จัดการอาชีพเป้าหมาย', clickBtn: 'ส่งออก Excel Report', title: 'SuperUser: อาชีพเป้าหมาย - Export Excel' },
+  { label: '05b_suser_plan_career_excel', path: '/SuserFormPlanCareer', menuText: 'จัดการอาชีพเป้าหมาย', clickBtn: 'ส่งออก excel', title: 'SuperUser: อาชีพเป้าหมาย - Export Excel' },
   { label: '06_suser_qualification', path: '/SuserFormQualification', menuText: 'จัดการคุณสมบัติ/ทักษะ', title: 'SuperUser: คุณสมบัติ' },
-  { label: '06b_suser_qualification_excel', path: '/SuserFormQualification', menuText: 'จัดการคุณสมบัติ/ทักษะ', clickBtn: 'ส่งออก Excel Report', title: 'SuperUser: คุณสมบัติ - Export Excel' },
+  { label: '06b_suser_qualification_excel', path: '/SuserFormQualification', menuText: 'จัดการคุณสมบัติ/ทักษะ', clickBtn: 'ส่งออก excel', title: 'SuperUser: คุณสมบัติ - Export Excel' },
   { label: '07_suser_plan', path: '/SuserFormPlan', menuText: 'จัดการพัฒนาตนเอง', title: 'SuperUser: พัฒนาตนเอง' },
-  { label: '07b_suser_plan_excel', path: '/SuserFormPlan', menuText: 'จัดการพัฒนาตนเอง', clickBtn: 'ส่งออก Excel Report', title: 'SuperUser: พัฒนาตนเอง - Export Excel' },
+  { label: '07b_suser_plan_excel', path: '/SuserFormPlan', menuText: 'จัดการพัฒนาตนเอง', clickBtn: 'ส่งออก excel', title: 'SuperUser: พัฒนาตนเอง - Export Excel' },
   { label: '08_suser_self_assessment', path: '/SuserFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', title: 'SuperUser: ประเมินตนเอง' },
-  { label: '08b_suser_self_assessment_excel', path: '/SuserFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', clickBtn: 'ส่งออก Excel Report', title: 'SuperUser: ประเมินตนเอง - Excel Report' },
-  { label: '08c_suser_self_assessment_file', path: '/SuserFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', clickBtn: 'ส่งออกไฟล์', title: 'SuperUser: ประเมินตนเอง - Export File' },
+  { label: '08b_suser_self_assessment_excel', path: '/SuserFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', clickBtn: 'ส่งออก excel', title: 'SuperUser: ประเมินตนเอง - Excel Report' },
+  { label: '08c_suser_self_assessment_file', path: '/SuserFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', clickBtn: 'ส่งออก excel', title: 'SuperUser: ประเมินตนเอง - Export File' },
   { label: '09_suser_notification', path: '/SuserFormNotification', menuText: 'การแจ้งเตือน', title: 'SuperUser: การแจ้งเตือน' },
 ];
 
@@ -256,7 +256,7 @@ async function captureGroup(browser, account, routes, folder) {
 // ===== Main =====
 async function main() {
   console.log('========================================');
-  console.log('🚀 ICP Screenshot Capture Tool v3');
+  console.log('🚀 ICP Screenshot Capture Tool v5');
   console.log(`📡 ${BASE_URL}`);
   console.log('========================================');
 

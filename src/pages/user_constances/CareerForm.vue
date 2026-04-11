@@ -53,7 +53,7 @@
                     </q-input>
                   </div>
                   <div class="col-auto">
-                    <q-btn color="teal-8" icon="download" label="ส่งออก" @click="exportTable" unelevated />
+                    <q-btn color="teal-8" icon="download" label="ส่งออก excel" @click="exportTable" unelevated />
                   </div>
                   <div class="col-auto">
                     <q-select v-model="visibleColumns" multiple outlined dense filled bg-color="white"
