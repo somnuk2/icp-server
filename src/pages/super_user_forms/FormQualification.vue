@@ -694,29 +694,16 @@ export default {
 
 <style lang="sass">
 .my-sticky-header-table
-  height: 450px
-  max-width: 100%
-
+  height: 310px
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
     background-color: #c1f4cd
-    font-weight: bold
-
   thead tr th
     position: sticky
     z-index: 1
-    white-space: normal !important
-    word-wrap: break-word
-
   thead tr:first-child th
     top: 0
-
-  tbody td
-    white-space: normal !important
-    word-wrap: break-word
-    max-width: 200px
-
   &.q-table--loading thead tr:last-child th
     top: 48px
 </style>
