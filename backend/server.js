@@ -1,6 +1,5 @@
 import express from 'express' // Trigger restart
 import cors from 'cors'
-import axios from 'axios'
 import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -140,28 +139,6 @@ app.post('/api/chat', async (req, res) => {
   } catch (err) {
     console.error('❌ AI System Error:', err.message)
     res.status(500).json({ error: 'System Error', details: err.message })
-  }
-})
-
-// ─── PHP Proxy Fallback (ระหว่าง Migration ยังไม่เสร็จ) ──────────────────────
-const XAMPP_PORT = 85
-
-app.all(/^\/icp2022\/.*/, async (req, res) => {
-  try {
-    const phpUrl = `http://localhost:${XAMPP_PORT}${req.originalUrl}`
-    console.log(`📤 [PHP Proxy] → ${phpUrl}`)
-    const response = await axios({ method: req.method, url: phpUrl, data: req.body, responseType: 'text' })
-    let data = response.data.trim()
-    const start = Math.min(
-      data.indexOf('[') >= 0 ? data.indexOf('[') : Infinity,
-      data.indexOf('{') >= 0 ? data.indexOf('{') : Infinity
-    )
-    if (start !== Infinity) {
-      try { return res.json(JSON.parse(data.substring(start))) } catch { }
-    }
-    res.send(data)
-  } catch (err) {
-    res.status(500).json({ error: 'PHP proxy error', message: err.message })
   }
 })
 

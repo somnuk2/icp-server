@@ -42,18 +42,17 @@
 
 ---
 
-## 🏗️ ระยะที่ 4: การลบระบบเก่าและ Cleanup (Final Removal)
+## 🏗️ ระยะที่ 4: การลบระบบเก่าและ Cleanup (Final Removal) - [DONE 100%]
 **เป้าหมาย:** ตัด PHP ออกจากระบบอย่างแท้จริง
-1. **[ ] utils/apiConfig.js:** 
-   - ลบทิ้ง: `getApiBaseUrl`, `getApiUrls`
-   - แก้ไข: ให้เหลือเพียง `getRestApiUrl`
-2. **[ ] backend/server.js:**
+1. **[x] utils/apiConfig.js:** 
+   - ลบทิ้ง: `getApiBaseUrl`, `getApiUrls` (ดำเนินการแล้ว)
+2. **[x] backend/server.js:**
    - ลบทิ้ง: ส่วน `PHP Proxy Fallback` (axios calls ไป Port 85)
    - ลบทิ้ง: `import axios from 'axios'` และ `const XAMPP_PORT = 85`
-3. **[ ] File System:**
+3. **[x] File System:**
    - ลบทิ้ง: โฟลเดอร์ `icp2022-21-06-66` (PHP Legacy Code)
    - ลบทิ้ง: ไฟล์ `.php` ทั้งหมดใน root directory
-4. **[ ] Database:** ยืนยันว่า Node.js ต่อตรงกับ MySQL โดยไม่ผ่าน PHP Script แล้ว
+4. **[x] Database:** ยืนยันว่า Node.js ต่อตรงกับ MySQL โดยไม่ผ่าน PHP Script แล้ว (ดำเนินการแล้ว)
 
 ---
 
