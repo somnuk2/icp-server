@@ -48,6 +48,7 @@ const PUBLIC_ROUTES = [
 const USER_ROUTES = [
   { label: '01_form_registration', path: '/FormRegistration', menuText: 'การตั้งค่าส่วนตัว', title: 'ข้อมูลส่วนตัว (FormRegistration)' },
   { label: '02_form_component', path: '/FormComponent', menuText: 'กรอกข้อมูลส่วนตัว', title: 'ข้อมูลการศึกษา (FormComponent)' },
+  { label: '02b_form_component_excel', path: '/FormComponent', menuText: 'กรอกข้อมูลส่วนตัว', clickBtn: 'ส่งออก excel', title: 'User: ข้อมูลการศึกษา - Export Excel' },
   { label: '03_form_plan_career', path: '/FormPlanCareer', menuText: 'กำหนดอาชีพเป้าหมาย', title: 'อาชีพเป้าหมาย (FormPlanCareer)' },
   { label: '03b_form_plan_career_excel', path: '/FormPlanCareer', menuText: 'กำหนดอาชีพเป้าหมาย', clickBtn: 'ส่งออก excel', title: 'User: อาชีพเป้าหมาย - Export Excel' },
   { label: '04_form_qualification', path: '/FormQualification', menuText: 'กำหนดคุณสมบัติ/ทักษะ', title: 'คุณสมบัติ/ทักษะ (FormQualification)' },
@@ -56,14 +57,20 @@ const USER_ROUTES = [
   { label: '05b_form_plan_excel', path: '/FormPlan', menuText: 'การพัฒนาตนเอง', clickBtn: 'ส่งออก excel', title: 'User: พัฒนาตนเอง - Export Excel' },
   { label: '06_form_self_assessment', path: '/FormSelfAssessment', menuText: 'การประเมินตนเอง', title: 'ประเมินตนเอง (FormSelfAssessment)' },
   { label: '06b_form_self_assessment_excel', path: '/FormSelfAssessment', menuText: 'การประเมินตนเอง', clickBtn: 'ส่งออก excel', title: 'User: ประเมินตนเอง - Export Excel' },
+  { label: '07_user_constances', path: '/tapUserConstances', menuText: 'จัดการอาชีพ/คุณสมบัติ', title: 'User: จัดการอาชีพ/คุณสมบัติ' },
+  { label: '07b_user_constances_excel', path: '/tapUserConstances', menuText: 'จัดการอาชีพ/คุณสมบัติ', clickBtn: 'ส่งออก excel', title: 'User: จัดการอาชีพ/คุณสมบัติ - Export Excel' },
   { label: '08_form_dashboard', path: '/FormDashboard', menuText: 'Dashboard การวิเคราะห์', title: 'Dashboard (FormDashboard)' },
 ];
 
 const ADMIN_ROUTES = [
   { label: '01_admin_registration', path: '/AdminFormRegistration', menuText: 'จัดการลงทะเบียน', title: 'Admin: ลงทะเบียน' },
+  { label: '01b_admin_registration_excel', path: '/AdminFormRegistration', menuText: 'จัดการลงทะเบียน', clickBtn: 'ส่งออก excel', title: 'Admin: ลงทะเบียน - Export Excel' },
   { label: '02_admin_institute', path: '/tapFormInstitute', menuText: 'การจัดการสาขาวิชา', title: 'Admin: การจัดการสาขาวิชา' },
+  { label: '02b_admin_institute_excel', path: '/tapFormInstitute', menuText: 'การจัดการสาขาวิชา', clickBtn: 'ส่งออก excel', title: 'Admin: การจัดการสาขาวิชา - Export Excel' },
   { label: '03_admin_constances', path: '/tapAdminConstances', menuText: 'จัดการค่าคงที่', title: 'Admin: จัดการค่าคงที่' },
+  { label: '03b_admin_constances_excel', path: '/tapAdminConstances', menuText: 'จัดการค่าคงที่', clickBtn: 'ส่งออก excel', title: 'Admin: จัดการค่าคงที่ - Export Excel' },
   { label: '04_admin_master_career', path: '/tapAdminConstances1', menuText: 'จัดการอาชีพ/คุณสมบัติ/ทักษะ', title: 'Admin: มาสเตอร์อาชีพ' },
+  { label: '04b_admin_master_career_excel', path: '/tapAdminConstances1', menuText: 'จัดการอาชีพ/คุณสมบัติ/ทักษะ', clickBtn: 'ส่งออก excel', title: 'Admin: มาสเตอร์อาชีพ - Export Excel' },
   { label: '05_admin_component', path: '/AdminFormComponent', menuText: 'จัดการข้อมูลส่วนตัว', title: 'Admin: ข้อมูลการศึกษา' },
   { label: '05b_admin_component_excel', path: '/AdminFormComponent', menuText: 'จัดการข้อมูลส่วนตัว', clickBtn: 'ส่งออก excel', title: 'Admin: ข้อมูลการศึกษา - Export Excel' },
   { label: '06_admin_plan_career', path: '/AdminFormPlanCareer', menuText: 'จัดการอาชีพเป้าหมาย', title: 'Admin: อาชีพเป้าหมาย' },
@@ -80,9 +87,12 @@ const SUSER_ROUTES = [
   { label: '01_suser_registration', path: '/SuserFormRegistration', menuText: 'จัดการลงทะเบียน', title: 'SuperUser: ลงทะเบียน' },
   { label: '01b_suser_registration_excel', path: '/SuserFormRegistration', menuText: 'จัดการลงทะเบียน', clickBtn: 'ส่งออก excel', title: 'SuperUser: ลงทะเบียน - Export Excel' },
   { label: '02_suser_institute', path: '/s_tapFormInstitute', menuText: 'การจัดการสาขาวิชา', title: 'SuperUser: การจัดการสาขาวิชา' },
+  { label: '02b_suser_institute_excel', path: '/s_tapFormInstitute', menuText: 'การจัดการสาขาวิชา', clickBtn: 'ส่งออก excel', title: 'SuperUser: การจัดการสาขาวิชา - Export Excel' },
   { label: '03_suser_master_career', path: '/tapSuperUserConstances', menuText: 'จัดการอาชีพ/คุณสมบัติ/ทักษะ', title: 'SuperUser: มาสเตอร์อาชีพ' },
+  { label: '03b_suser_master_career_excel', path: '/tapSuperUserConstances', menuText: 'จัดการอาชีพ/คุณสมบัติ/ทักษะ', clickBtn: 'ส่งออก excel', title: 'SuperUser: มาสเตอร์อาชีพ - Export Excel' },
   { label: '04_suser_component', path: '/SuserFormComponent', menuText: 'จัดการข้อมูลส่วนตัว', title: 'SuperUser: ข้อมูลการศึกษา' },
   { label: '04b_suser_component_excel', path: '/SuserFormComponent', menuText: 'จัดการข้อมูลส่วนตัว', clickBtn: 'ส่งออก excel', title: 'SuperUser: ข้อมูลการศึกษา - Export Excel' },
+  { label: '04c_suser_component_multi', path: '/SuserFormComponent', menuText: 'จัดการข้อมูลส่วนตัว', clickCheckbox: true, title: 'SuperUser: ข้อมูลการศึกษา - Multi Select Delete' },
   { label: '05_suser_plan_career', path: '/SuserFormPlanCareer', menuText: 'จัดการอาชีพเป้าหมาย', title: 'SuperUser: อาชีพเป้าหมาย' },
   { label: '05b_suser_plan_career_excel', path: '/SuserFormPlanCareer', menuText: 'จัดการอาชีพเป้าหมาย', clickBtn: 'ส่งออก excel', title: 'SuperUser: อาชีพเป้าหมาย - Export Excel' },
   { label: '06_suser_qualification', path: '/SuserFormQualification', menuText: 'จัดการคุณสมบัติ/ทักษะ', title: 'SuperUser: คุณสมบัติ' },
@@ -91,7 +101,6 @@ const SUSER_ROUTES = [
   { label: '07b_suser_plan_excel', path: '/SuserFormPlan', menuText: 'จัดการพัฒนาตนเอง', clickBtn: 'ส่งออก excel', title: 'SuperUser: พัฒนาตนเอง - Export Excel' },
   { label: '08_suser_self_assessment', path: '/SuserFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', title: 'SuperUser: ประเมินตนเอง' },
   { label: '08b_suser_self_assessment_excel', path: '/SuserFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', clickBtn: 'ส่งออก excel', title: 'SuperUser: ประเมินตนเอง - Excel Report' },
-  { label: '08c_suser_self_assessment_file', path: '/SuserFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', clickBtn: 'ส่งออก excel', title: 'SuperUser: ประเมินตนเอง - Export File' },
 ];
 
 // ===== ล็อกอินผ่าน API =====
@@ -167,6 +176,17 @@ async function screenshotPage(page, route, outDir) {
         await menuItem.click();
         await page.waitForLoadState('networkidle');
         await page.waitForTimeout(WAIT_MS);
+      }
+    }
+
+    // Step 2a: ถ้ามี clickCheckbox ให้คลิก checkbox แรกในตารางเพื่อแสดงปุ่ม Multi-Delete
+    if (route.clickCheckbox) {
+      const checkbox = page.locator('.q-checkbox, input[type="checkbox"]').first();
+      const cbVisible = await checkbox.isVisible().catch(() => false);
+      if (cbVisible) {
+        console.log(`     🖱  Click checkbox to show Bulk Actions`);
+        await checkbox.click();
+        await page.waitForTimeout(1000);
       }
     }
 
