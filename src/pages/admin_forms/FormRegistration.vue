@@ -130,9 +130,12 @@
                             icon-first-page="home" icon-last-page="all_inclusive" icon-next-page="arrow_right"
                             icon-prev-page="arrow_left" :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                               return `หน้า : ${endRowIndex}/${totalRowsNumber}`
-                            }">
+                            }" selection="multiple" v-model:selected="selectedRows">
                             <template v-slot:top-right="props">
                               <div class="row q-gutter-sm items-center">
+                                <q-btn v-if="selectedRows.length > 0" flat color="red" icon="delete"
+                                  :label="`ลบที่เลือก (${selectedRows.length})`" @click="deleteSelected" />
+
                                 <q-input borderless dense debounce="300" v-model="filter" placeholder="ค้นหาสมาชิค">
                                   <template v-slot:append>
                                     <q-icon name="search" />
@@ -216,6 +219,7 @@ export default {
       register: true,
       filter: ref(""),
       loading: ref(false),
+      selectedRows: [],
       member: {
         member_id: this.$store.getters.myMember_id,
         full_name: "",
@@ -303,7 +307,7 @@ export default {
   components: {},
   methods: {
     async exportTable() {
-      const rows = this.members1;
+      const rows = this.selectedRows.length > 0 ? this.selectedRows : this.members1;
       if (!rows || rows.length === 0) {
         this.$q.notify({ color: 'orange', message: 'ไม่พบข้อมูล', icon: 'warning' });
         return;
@@ -493,6 +497,40 @@ export default {
         console.error(error);
         this.$q.notify({ message: "โหลดข้อมูลไม่สำเร็จ", color: "negative" });
       }
+    },
+    async deleteSelected() {
+      if (this.selectedRows.length === 0) return;
+
+      this.$q.dialog({
+        title: "ยืนยันการลบหลายรายการ",
+        message: `คุณต้องการลบสมาชิกที่เลือกทั้งหมด ${this.selectedRows.length} รายการหรือไม่?`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก...", spinnerColor: "red" });
+        let successCount = 0;
+        let failCount = 0;
+        try {
+          for (const item of this.selectedRows) {
+            try {
+              await axios.delete(`${this.apiUrl}/members/${item.member_id}`);
+              successCount++;
+            } catch (err) {
+              console.error(`Failed to delete ID ${item.member_id}:`, err);
+              failCount++;
+            }
+          }
+          this.$q.notify({
+            color: successCount > 0 ? "positive" : "negative",
+            message: `ลบสำเร็จ ${successCount} รายการ${failCount > 0 ? `, ล้มเหลว ${failCount} รายการ` : ""}`,
+            icon: successCount > 0 ? "check" : "error",
+          });
+          this.selectedRows = [];
+          this.getUpdate();
+        } finally {
+          this.$q.loading.hide();
+        }
+      });
     },
     resetForm() {
       this.member.member_id = 0;

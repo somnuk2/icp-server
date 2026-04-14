@@ -61,12 +61,14 @@
             <q-table :rows="individuals1" :columns="columns" row-key="qualification_id" :filter="filter"
               :loading="loading" :visible-columns="visibleColumns" separator="cell"
               class="custom-green-table shadow-2 full-width" :rows-per-page-options="[10, 30, 50, 0]"
-              :pagination-label="(first, end, total) => `หน้า : ${end}/${total}`">
+              :pagination-label="(first, end, total) => `หน้า : ${end}/${total}`" selection="multiple" v-model:selected="selected">
               <template v-slot:top>
                 <div class="full-width row q-col-gutter-sm items-center">
-                  <div class="col-grow">
-                    <q-input dense outlined filled v-model="filter" placeholder="ค้นหาคุณสมบัติ/ทักษะ..."
-                      bg-color="white">
+                  <div class="col-grow row q-gutter-sm items-center">
+                    <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
+                      :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+                    <q-input dense outlined filled v-model="filter" placeholder="ค้นหาคุณสมบัติ/ทักษะ..." bg-color="white"
+                      class="col">
                       <template v-slot:append><q-icon name="search" /></template>
                     </q-input>
                   </div>
@@ -123,9 +125,9 @@
 <script>
 import axios from "axios";
 import { ref } from "vue";
-import { useQuasar } from "quasar";
-import { exportFile } from "quasar";
-import { is } from "quasar";
+import { useQuasar, is } from "quasar";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 import { getRestApiUrl } from "../../utils/apiConfig.js";
 // ส่งออกไฟล์ excel
 function wrapCsvValue(val, formatFn, row) {
@@ -195,38 +197,75 @@ export default {
       qualifications: { options: [] },
       qualification_: ref(null),
       $q: useQuasar(),
+      selected: ref([]),
     };
   },
 
   methods: {
-    exportTable() {
-      const columns = this.columns;
-      const rows = this.individuals1;
-      const content = [columns.map((col) => wrapCsvValue(col.label))]
-        .concat(
-          rows.map((row) =>
-            columns
-              .map((col) =>
-                wrapCsvValue(
-                  typeof col.field === "function"
-                    ? col.field(row)
-                    : row[col.field === void 0 ? col.name : col.field],
-                  col.format,
-                  row
-                )
-              )
-              .join(",")
-          )
-        )
-        .join("\r\n");
+    // นำออกไฟล์ excel
+    async exportTable() {
+      if (!this.individuals1 || this.individuals1.length === 0) {
+        this.$q.notify({ color: 'orange', message: 'ไม่พบข้อมูลในตาราง', icon: 'warning' });
+        return;
+      }
 
-      const status = exportFile(this.file_export || 'qualifications.csv', "\ufeff" + content, {
-        encoding: "utf-8",
-        mimeType: "text/csv;charset=utf-8;",
-      });
+      this.$q.loading.show({ message: 'กำลังสร้างไฟล์ Excel...' });
 
-      if (status !== true) {
-        this.$q.notify({ color: "negative", message: "Browser denied file download..." });
+      try {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Qualifications');
+
+        const headerFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4472C4' } };
+        const zebraFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2F2F2' } };
+        const headerFont = { name: 'Sarabun', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+        const dataFont = { name: 'Sarabun', size: 10 };
+        const border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+
+        worksheet.mergeCells('A1:C1');
+        const mainTitle = worksheet.getCell('A1');
+        mainTitle.value = `รายงานข้อมูลคุณสมบัติ/ทักษะ (User Constance) - ${new Date().toLocaleDateString('th-TH')}`;
+        mainTitle.font = { name: 'Sarabun', size: 16, bold: true };
+        mainTitle.alignment = { horizontal: 'center', vertical: 'middle' };
+        worksheet.getRow(1).height = 40;
+
+        const headerRow = worksheet.getRow(2);
+        headerRow.values = ['รหัส', 'กลุ่มคุณสมบัติ', 'คุณสมบัติ/ทักษะ'];
+        headerRow.height = 30;
+        headerRow.eachCell((cell) => {
+          cell.fill = headerFill;
+          cell.font = headerFont;
+          cell.alignment = { vertical: 'middle', horizontal: 'center' };
+          cell.border = border;
+        });
+
+        const rows = this.selected.length > 0 ? this.selected : this.individuals1;
+        rows.forEach((row, idx) => {
+          const r = worksheet.addRow([
+            row.qualification_id,
+            row.qualification_group_name || '-',
+            row.qualification_name || '-'
+          ]);
+
+          r.eachCell((cell) => {
+            cell.font = dataFont;
+            cell.border = border;
+            cell.alignment = { vertical: 'top', horizontal: 'left', wrapText: true };
+            if (idx % 2 === 1) cell.fill = zebraFill;
+          });
+        });
+
+        worksheet.columns = [{ width: 10 }, { width: 40 }, { width: 40 }];
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const filename = (this.file_export || "Qualifications_Report").replace(/\.xlsx$/i, '') + '.xlsx';
+        saveAs(new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), filename);
+
+        this.$q.notify({ color: 'positive', message: 'ส่งออกไฟล์ Excel เรียบร้อยแล้ว', icon: 'check' });
+      } catch (error) {
+        console.error("Export error:", error);
+        this.$q.notify({ color: 'negative', message: 'ส่งออกไม่สำเร็จ: ' + error.message, icon: 'error' });
+      } finally {
+        this.$q.loading.hide();
       }
     },
     resetForm() {
@@ -316,6 +355,40 @@ export default {
             console.error(error);
             this.$q.notify({ color: "negative", message: "เกิดข้อผิดพลาดในการลบข้อมูล" });
           });
+      });
+    },
+    deleteSelected() {
+      if (this.selected.length === 0) return;
+      this.$q.dialog({
+        title: "ยืนยันการลบหลายรายการ",
+        message: `คุณต้องการลบข้อมูลที่เลือกทั้งหมด ${this.selected.length} รายการหรือไม่?`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก...", spinnerColor: "red" });
+        let successCount = 0;
+        let failCount = 0;
+        try {
+          for (const item of this.selected) {
+            try {
+              await axios.delete(`${this.url_api}/${item.qualification_id}`);
+              successCount++;
+            } catch (err) {
+              console.error(`Failed to delete ID ${item.qualification_id}:`, err);
+              failCount++;
+            }
+          }
+          this.$q.notify({
+            color: successCount > 0 ? "positive" : "negative",
+            message: `ลบสำเร็จ ${successCount} รายการ${failCount > 0 ? `, ล้มเหลว ${failCount} รายการ` : ""}`,
+            icon: successCount > 0 ? "check" : "error",
+          });
+          this.selected = [];
+          this.resetForm();
+          await this.getUpdate();
+        } finally {
+          this.$q.loading.hide();
+        }
       });
     },
     getUpdate() {

@@ -149,13 +149,17 @@
                         :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home" icon-last-page="all_inclusive"
                         icon-next-page="arrow_right" icon-prev-page="arrow_left" :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                           return `หน้า : ${endRowIndex}/${totalRowsNumber}`
-                        }">
+                        }" selection="multiple" v-model:selected="selected">
                         <template v-slot:top-right="props">
-                          <q-input borderless dense debounce="300" v-model="filter" placeholder="ค้นหาข้อมูลสาขาวิชา">
-                            <template v-slot:append>
-                              <q-icon name="search" />
-                            </template>
-                          </q-input>
+                          <div class="row q-gutter-sm items-center">
+                            <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
+                              :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+                            <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาข้อมูลสาขาวิชา..." outlined
+                              bg-color="white">
+                              <template v-slot:append>
+                                <q-icon name="search" />
+                              </template>
+                            </q-input>
                           <!-- ส่งออกไฟล์ -->
                           <q-input borderless dense debounce="300" v-model="file_export" placeholder="ชื่อไฟล์นำออก"
                             outlined>
@@ -213,7 +217,9 @@
 <script>
 import axios from "axios";
 import { ref } from "vue";
-import { useQuasar, exportFile } from "quasar";
+import { useQuasar } from "quasar";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 import { getRestApiUrl } from "src/utils/apiConfig.js";
 import InstituteFormDialog from "src/components/admin_forms/InstituteFormDialog.vue";
 import FacultyFormDialog from "src/components/admin_forms/FacultyFormDialog.vue";
@@ -438,45 +444,75 @@ export default {
         value: "",
       }),
       $q: useQuasar(),
+      selected: ref([]),
     };
   },
 
   methods: {
     // นำออกไฟล์ excel
-    exportTable() {
-      console.log("Export excel");
-      var columns = this.columns;
-      var rows = this.individuals1;
-      // naive encoding to csv format
-      const content = [columns.map((col) => wrapCsvValue(col.label))]
-        .concat(
-          rows.map((row) =>
-            columns
-              .map((col) =>
-                wrapCsvValue(
-                  typeof col.field === "function"
-                    ? col.field(row)
-                    : row[col.field === void 0 ? col.name : col.field],
-                  col.format,
-                  row
-                )
-              )
-              .join(",")
-          )
-        )
-        .join("\r\n");
+    async exportTable() {
+      if (!this.individuals1 || this.individuals1.length === 0) {
+        this.$q.notify({ color: 'orange', message: 'ไม่พบข้อมูลในตาราง', icon: 'warning' });
+        return;
+      }
 
-      const status = exportFile(this.file_export, "\ufeff" + content, {
-        encoding: "utf-8",
-        mimeType: "text/csv;charset=utf-8;",
-      });
+      this.$q.loading.show({ message: 'กำลังสร้างไฟล์ Excel...' });
 
-      if (status !== true) {
-        $q.notify({
-          message: "Browser denied file download...",
-          color: "negative",
-          icon: "warning",
+      try {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Departments');
+
+        const headerFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4472C4' } };
+        const zebraFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2F2F2' } };
+        const headerFont = { name: 'Sarabun', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+        const dataFont = { name: 'Sarabun', size: 10 };
+        const border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+
+        worksheet.mergeCells('A1:C1');
+        const mainTitle = worksheet.getCell('A1');
+        mainTitle.value = `รายงานข้อมูลสาขาวิชา (Admin Constance) - ${new Date().toLocaleDateString('th-TH')}`;
+        mainTitle.font = { name: 'Sarabun', size: 16, bold: true };
+        mainTitle.alignment = { horizontal: 'center', vertical: 'middle' };
+        worksheet.getRow(1).height = 40;
+
+        const headerRow = worksheet.getRow(2);
+        headerRow.values = ['รหัส', 'สถาบัน/คณะ/ระดับ', 'สาขาวิชา'];
+        headerRow.height = 30;
+        headerRow.eachCell((cell) => {
+          cell.fill = headerFill;
+          cell.font = headerFont;
+          cell.alignment = { vertical: 'middle', horizontal: 'center' };
+          cell.border = border;
         });
+
+        const rows = this.selected.length > 0 ? this.selected : this.individuals1;
+        rows.forEach((row, idx) => {
+          const r = worksheet.addRow([
+            row.department_id,
+            `${row.institute_name || ''} / ${row.faculty_name || ''} / ${row.degree_name || ''}`,
+            row.department_name || '-'
+          ]);
+
+          r.eachCell((cell) => {
+            cell.font = dataFont;
+            cell.border = border;
+            cell.alignment = { vertical: 'top', horizontal: 'left', wrapText: true };
+            if (idx % 2 === 1) cell.fill = zebraFill;
+          });
+        });
+
+        worksheet.columns = [{ width: 10 }, { width: 50 }, { width: 40 }];
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const filename = (this.file_export || "Departments_Report").replace(/\.xlsx$/i, '') + '.xlsx';
+        saveAs(new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), filename);
+
+        this.$q.notify({ color: 'positive', message: 'ส่งออกไฟล์ Excel เรียบร้อยแล้ว', icon: 'check' });
+      } catch (error) {
+        console.error("Export error:", error);
+        this.$q.notify({ color: 'negative', message: 'ส่งออกไม่สำเร็จ: ' + error.message, icon: 'error' });
+      } finally {
+        this.$q.loading.hide();
       }
     },
     //---------------------------------------
@@ -564,6 +600,40 @@ export default {
           this.getUpdate();
         } catch (error) {
           this.$q.notify({ message: "Error: " + error.message, color: "negative" });
+        }
+      });
+    },
+    deleteSelected() {
+      if (this.selected.length === 0) return;
+      this.$q.dialog({
+        title: "ยืนยันการลบหลายรายการ",
+        message: `คุณต้องการลบข้อมูลที่เลือกทั้งหมด ${this.selected.length} รายการหรือไม่?`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก...", spinnerColor: "red" });
+        let successCount = 0;
+        let failCount = 0;
+        try {
+          for (const item of this.selected) {
+            try {
+              await axios.delete(`${getRestApiUrl(this.$store)}/departments/${item.department_id}`);
+              successCount++;
+            } catch (err) {
+              console.error(`Failed to delete ID ${item.department_id}:`, err);
+              failCount++;
+            }
+          }
+          this.$q.notify({
+            color: successCount > 0 ? "positive" : "negative",
+            message: `ลบสำเร็จ ${successCount} รายการ${failCount > 0 ? `, ล้มเหลว ${failCount} รายการ` : ""}`,
+            icon: successCount > 0 ? "check" : "error",
+          });
+          this.selected = [];
+          this.resetForm();
+          await this.getUpdate();
+        } finally {
+          this.$q.loading.hide();
         }
       });
     },

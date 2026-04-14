@@ -91,18 +91,22 @@
                 <div class="row">
                   <div class="col-md-12 col-xs-12 q-pa-xs">
                     <div class="q-pa-xs">
-                      <q-table title="ข้อมูลปริญญา" :rows="individuals1" :columns="columns" row-key="name"
+                      <q-table title="ข้อมูลปริญญา" :rows="individuals1" :columns="columns" row-key="degree_id"
                         :filter="filter" :loading="loading" :visible-columns="visibleColumns" separator="cell"
                         table-header-style="height: 65px; " table-header-class="bg-blue-5" :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home" icon-last-page="all_inclusive"
                         icon-next-page="arrow_right" icon-prev-page="arrow_left" :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                           return `หน้า : ${endRowIndex}/${totalRowsNumber}`
                         }">
                         <template v-slot:top-right="props">
-                          <q-input borderless dense debounce="300" v-model="filter" placeholder="ค้นหาข้อมูลปริญญา">
-                            <template v-slot:append>
-                              <q-icon name="search" />
-                            </template>
-                          </q-input>
+                          <div class="row q-gutter-sm items-center">
+                            <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
+                              :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+                            <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาข้อมูลปริญญา..." outlined
+                              bg-color="white">
+                              <template v-slot:append>
+                                <q-icon name="search" />
+                              </template>
+                            </q-input>
                           <!-- ส่งออกไฟล์ -->
                           <q-input borderless dense debounce="300" v-model="file_export" placeholder="ชื่อไฟล์นำออก"
                             outlined>
@@ -147,7 +151,8 @@
 import axios from "axios";
 import { ref } from "vue";
 import { useQuasar } from "quasar";
-import { exportFile } from "quasar";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 import { getRestApiUrl } from "../../utils/apiConfig";
 
 // ส่งออกไฟล์ excel
@@ -215,42 +220,75 @@ export default {
       facultys_: { options: [] },
       faculty: ref({ label: "", value: "" }),
       $q: useQuasar(),
+      selected: ref([]),
     };
   },
 
   methods: {
-    exportTable() {
-      const columns = this.columns;
-      const rows = this.individuals1;
-      const content = [columns.map((col) => wrapCsvValue(col.label))]
-        .concat(
-          rows.map((row) =>
-            columns
-              .map((col) =>
-                wrapCsvValue(
-                  typeof col.field === "function"
-                    ? col.field(row)
-                    : row[col.field === void 0 ? col.name : col.field],
-                  col.format,
-                  row
-                )
-              )
-              .join(",")
-          )
-        )
-        .join("\r\n");
+    // นำออกไฟล์ excel
+    async exportTable() {
+      if (!this.individuals1 || this.individuals1.length === 0) {
+        this.$q.notify({ color: 'orange', message: 'ไม่พบข้อมูลในตาราง', icon: 'warning' });
+        return;
+      }
 
-      const status = exportFile(this.file_export || "degree_report.csv", "\ufeff" + content, {
-        encoding: "utf-8",
-        mimeType: "text/csv;charset=utf-8;",
-      });
+      this.$q.loading.show({ message: 'กำลังสร้างไฟล์ Excel...' });
 
-      if (status !== true) {
-        this.$q.notify({
-          message: "Browser denied file download...",
-          color: "negative",
-          icon: "warning",
+      try {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Degrees');
+
+        const headerFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4472C4' } };
+        const zebraFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2F2F2' } };
+        const headerFont = { name: 'Sarabun', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+        const dataFont = { name: 'Sarabun', size: 10 };
+        const border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+
+        worksheet.mergeCells('A1:C1');
+        const mainTitle = worksheet.getCell('A1');
+        mainTitle.value = `รายงานข้อมูลปริญญา (Super User Constance) - ${new Date().toLocaleDateString('th-TH')}`;
+        mainTitle.font = { name: 'Sarabun', size: 16, bold: true };
+        mainTitle.alignment = { horizontal: 'center', vertical: 'middle' };
+        worksheet.getRow(1).height = 40;
+
+        const headerRow = worksheet.getRow(2);
+        headerRow.values = ['รหัส', 'สถาบัน/คณะ', 'ปริญญา'];
+        headerRow.height = 30;
+        headerRow.eachCell((cell) => {
+          cell.fill = headerFill;
+          cell.font = headerFont;
+          cell.alignment = { vertical: 'middle', horizontal: 'center' };
+          cell.border = border;
         });
+
+        const rows = this.selected.length > 0 ? this.selected : this.individuals1;
+        rows.forEach((row, idx) => {
+          const r = worksheet.addRow([
+            row.degree_id,
+            `${row.institute_name || ''} / ${row.faculty_name || ''}`,
+            row.degree_name || '-'
+          ]);
+
+          r.eachCell((cell) => {
+            cell.font = dataFont;
+            cell.border = border;
+            cell.alignment = { vertical: 'top', horizontal: 'left', wrapText: true };
+            if (idx % 2 === 1) cell.fill = zebraFill;
+          });
+        });
+
+        worksheet.columns = [{ width: 10 }, { width: 50 }, { width: 40 }];
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const filename = (this.file_export || "Degrees_Report").replace(/\.xlsx$/i, '') + '.xlsx';
+        saveAs(new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), filename);
+
+        this.$q.notify({ color: 'positive', message: 'ส่งออกไฟล์ Excel เรียบร้อยแล้ว', icon: 'check' });
+      } catch (error) {
+        console.error("Export error:", error);
+        this.$q.notify({ color: 'negative', message: 'ส่งออกไม่สำเร็จ: ' + error.message, icon: 'error' });
+      } finally {
+        this.$q.loading.hide();
       }
     },
 
@@ -344,6 +382,40 @@ export default {
           await this.getUpdate();
         } catch (error) {
           this.$q.notify({ message: "Error: " + error.message, color: "negative" });
+        }
+      });
+    },
+    deleteSelected() {
+      if (this.selected.length === 0) return;
+      this.$q.dialog({
+        title: "ยืนยันการลบหลายรายการ",
+        message: `คุณต้องการลบข้อมูลที่เลือกทั้งหมด ${this.selected.length} รายการหรือไม่?`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก...", spinnerColor: "red" });
+        let successCount = 0;
+        let failCount = 0;
+        try {
+          for (const item of this.selected) {
+            try {
+              await axios.delete(`${getRestApiUrl(this.$store)}/degrees/${item.degree_id}`);
+              successCount++;
+            } catch (err) {
+              console.error(`Failed to delete ID ${item.degree_id}:`, err);
+              failCount++;
+            }
+          }
+          this.$q.notify({
+            color: successCount > 0 ? "positive" : "negative",
+            message: `ลบสำเร็จ ${successCount} รายการ${failCount > 0 ? `, ล้มเหลว ${failCount} รายการ` : ""}`,
+            icon: successCount > 0 ? "check" : "error",
+          });
+          this.selected = [];
+          this.resetForm();
+          await this.getUpdate();
+        } finally {
+          this.$q.loading.hide();
         }
       });
     },

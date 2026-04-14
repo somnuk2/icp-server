@@ -816,28 +816,67 @@ export default {
 
   methods: {
     async exportTable() {
-      const rows = this.selected.length > 0 ? this.selected : this.individuals1;
-      if (!rows || rows.length === 0) {
+      if (!this.individuals1 || this.individuals1.length === 0) {
         this.$q.notify({ color: 'orange', message: 'ไม่พบข้อมูลในตาราง', icon: 'warning' });
         return;
       }
+
       this.$q.loading.show({ message: 'กำลังสร้างไฟล์ Excel...' });
+
       try {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Personal Info');
-        const headerRow = worksheet.getRow(1);
-        headerRow.values = this.columns.filter(c => c.name !== 'actions').map(c => c.label);
-        rows.forEach(row => {
-          worksheet.addRow(this.columns.filter(c => c.name !== 'actions').map(c => row[c.field] || '-'));
+
+        const headerFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4472C4' } };
+        const zebraFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2F2F2' } };
+        const headerFont = { name: 'Sarabun', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+        const dataFont = { name: 'Sarabun', size: 10 };
+        const border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+
+        worksheet.mergeCells('A1:E1');
+        const mainTitle = worksheet.getCell('A1');
+        mainTitle.value = `รายงานข้อมูลส่วนตัว (Super User Form) - ${new Date().toLocaleDateString('th-TH')}`;
+        mainTitle.font = { name: 'Sarabun', size: 16, bold: true };
+        mainTitle.alignment = { horizontal: 'center', vertical: 'middle' };
+        worksheet.getRow(1).height = 40;
+
+        const filteredCols = this.columns.filter(c => c.name !== 'actions');
+        const headerRow = worksheet.getRow(2);
+        headerRow.values = filteredCols.map(c => c.label);
+        headerRow.height = 30;
+        headerRow.eachCell((cell) => {
+          cell.fill = headerFill;
+          cell.font = headerFont;
+          cell.alignment = { vertical: 'middle', horizontal: 'center' };
+          cell.border = border;
         });
+
+        const rows = this.selected.length > 0 ? this.selected : this.individuals1;
+        rows.forEach((row, idx) => {
+          const r = worksheet.addRow(filteredCols.map(c => {
+            const val = typeof c.field === 'function' ? c.field(row) : row[c.field || c.name];
+            return val !== undefined && val !== null ? val : '-';
+          }));
+          r.eachCell((cell) => {
+            cell.font = dataFont;
+            cell.border = border;
+            cell.alignment = { vertical: 'top', horizontal: 'left', wrapText: true };
+            if (idx % 2 === 1) cell.fill = zebraFill;
+          });
+        });
+
+        worksheet.columns = filteredCols.map(() => ({ width: 25 }));
+
         const buffer = await workbook.xlsx.writeBuffer();
         const filename = (this.file_export || "Personal_Info_Report").replace(/\.xlsx$/i, '') + '.xlsx';
         saveAs(new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), filename);
-        this.$q.loading.hide();
-        this.$q.notify({ color: 'positive', message: 'ส่งออกสำเร็จ' });
+
+        this.$q.notify({ color: 'positive', message: 'ส่งออกไฟล์ Excel เรียบร้อยแล้ว', icon: 'check' });
       } catch (error) {
+        console.error("Export error:", error);
+        this.$q.notify({ color: 'negative', message: 'ส่งออกไม่สำเร็จ: ' + error.message, icon: 'error' });
+      } finally {
         this.$q.loading.hide();
-        this.$q.notify({ color: 'negative', message: 'Error: ' + error.message });
       }
     },
     getPaginationLabel(firstRowIndex, endRowIndex, totalRowsNumber) {
@@ -928,6 +967,39 @@ export default {
             this.$q.notify({ message: "Error: " + error.message, color: "negative" });
           }
         });
+    },
+    deleteSelected() {
+      if (this.selected.length === 0) return;
+      this.$q.dialog({
+        title: "ยืนยันการลบหลายรายการ",
+        message: `คุณต้องการลบข้อมูลที่เลือกทั้งหมด ${this.selected.length} รายการหรือไม่?`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก...", spinnerColor: "red" });
+        let successCount = 0;
+        let failCount = 0;
+        try {
+          for (const item of this.selected) {
+            try {
+              await axios.delete(`${getRestApiUrl(this.$store)}/individuals/${item.individual_id}`);
+              successCount++;
+            } catch (err) {
+              console.error(`Failed to delete ID ${item.individual_id}:`, err);
+              failCount++;
+            }
+          }
+          this.$q.notify({
+            color: successCount > 0 ? "positive" : "negative",
+            message: `ลบสำเร็จ ${successCount} รายการ${failCount > 0 ? `, ล้มเหลว ${failCount} รายการ` : ""}`,
+            icon: successCount > 0 ? "check" : "error",
+          });
+          this.selected = [];
+          await this.getUpdate();
+        } finally {
+          this.$q.loading.hide();
+        }
+      });
     },
     async getUpdate() {
       this.loading = true;

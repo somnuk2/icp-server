@@ -162,28 +162,33 @@
                         :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home" icon-last-page="all_inclusive"
                         icon-next-page="arrow_right" icon-prev-page="arrow_left" :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                           return `หน้า : ${endRowIndex}/${totalRowsNumber}`
-                        }">
+                        }" selection="multiple" v-model:selected="selectedRows">
                         <template v-slot:top-right="props">
-                          <div class="row">
-                            <div class="col-md-5 col-xs-5 q-pa-xs">
-                              <q-input borderless dense debounce="300" v-model="filter"
-                                placeholder="ค้นหาข้อมูลการแจ้งเตือน">
-                                <template v-slot:append>
-                                  <q-icon name="search" />
-                                </template>
-                              </q-input>
-                            </div>
-                            <div class="col-md-5 col-xs-5 q-pa-xs">
-                              <q-select v-model="visibleColumns" multiple outlined dense options-dense
-                                :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
-                                option-value="name" options-cover style="min-width: 150px" />
-                            </div>
-                            <div class="col-md-2 col-xs-2 q-pa-xs">
-                              <q-btn flat round dense :icon="props.inFullscreen
-                                ? 'fullscreen_exit'
-                                : 'fullscreen'
-                                " @click="props.toggleFullscreen" class="q-ml-md" />
-                            </div>
+                          <div class="row q-gutter-sm items-center">
+                            <q-btn v-if="selectedRows.length > 0" flat color="red" icon="delete"
+                              :label="`ลบที่เลือก (${selectedRows.length})`" @click="deleteSelected" />
+
+                            <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาข้อมูลการแจ้งเตือน..."
+                              outlined bg-color="white">
+                              <template v-slot:append>
+                                <q-icon name="search" />
+                              </template>
+                            </q-input>
+
+                            <q-input dense debounce="300" v-model="file_export" placeholder="ชื่อไฟล์นำออก"
+                              outlined bg-color="white" style="width: 150px;">
+                              <template v-slot:append>
+                                <q-icon name="save" />
+                              </template>
+                            </q-input>
+                            <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
+
+                            <q-select v-model="visibleColumns" multiple outlined dense options-dense
+                              :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
+                              option-value="name" options-cover style="min-width: 150px" bg-color="white" />
+
+                            <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+                              @click="props.toggleFullscreen" />
                           </div>
                         </template>
                         <template v-slot:body-cell-actions="props">
@@ -217,8 +222,9 @@
 import axios from "axios";
 import { ref } from "vue";
 import { useQuasar } from "quasar";
-import { exportFile } from "quasar";
 import { date } from "quasar";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 import { getRestApiUrl } from "../../utils/apiConfig";
 
 // ส่งออกไฟล์ excel
@@ -317,6 +323,7 @@ export default {
       ],
       filter: ref(""),
       loading: ref(false),
+      selectedRows: [],
       $q: useQuasar(),
       member_id: this.$store.getters.myMember_id,
       name: this.$store.getters.myName,
@@ -358,40 +365,70 @@ export default {
       var day_to_year = year_to_day.split("/");
       return day_to_year[2] + "/" + day_to_year[1] + "/" + day_to_year[0];
     },
-    exportTable() {
-      console.log("Export excel");
-      var columns = this.columns;
-      var rows = this.notification1;
-      // naive encoding to csv format
-      const content = [columns.map((col) => wrapCsvValue(col.label))]
-        .concat(
-          rows.map((row) =>
-            columns
-              .map((col) =>
-                wrapCsvValue(
-                  typeof col.field === "function"
-                    ? col.field(row)
-                    : row[col.field === void 0 ? col.name : col.field],
-                  col.format,
-                  row
-                )
-              )
-              .join(",")
-          )
-        )
-        .join("\r\n");
+    async exportTable() {
+      if (!this.notification1 || this.notification1.length === 0) {
+        this.$q.notify({ color: 'orange', message: 'ไม่พบข้อมูลในตาราง', icon: 'warning' });
+        return;
+      }
 
-      const status = exportFile(this.file_export, "\ufeff" + content, {
-        encoding: "utf-8",
-        mimeType: "text/csv;charset=utf-8;",
-      });
+      this.$q.loading.show({ message: 'กำลังสร้างไฟล์ Excel...' });
 
-      if (status !== true) {
-        $q.notify({
-          message: "Browser denied file download...",
-          color: "negative",
-          icon: "warning",
+      try {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Notifications');
+
+        const headerFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4472C4' } };
+        const zebraFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2F2F2' } };
+        const headerFont = { name: 'Sarabun', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+        const dataFont = { name: 'Sarabun', size: 10 };
+        const border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+
+        worksheet.mergeCells('A1:D1');
+        const mainTitle = worksheet.getCell('A1');
+        mainTitle.value = `รายงานข้อมูลการแจ้งเตือน (Admin View) - ${new Date().toLocaleDateString('th-TH')}`;
+        mainTitle.font = { name: 'Sarabun', size: 16, bold: true };
+        mainTitle.alignment = { horizontal: 'center', vertical: 'middle' };
+        worksheet.getRow(1).height = 40;
+
+        const headerRow = worksheet.getRow(2);
+        headerRow.values = ['ชื่อ-สกุล', 'ข้อความ', 'วันเริ่มแจ้งเตือน', 'ความถี่'];
+        headerRow.height = 30;
+        headerRow.eachCell((cell) => {
+          cell.fill = headerFill;
+          cell.font = headerFont;
+          cell.alignment = { vertical: 'middle', horizontal: 'center' };
+          cell.border = border;
         });
+
+        const rows = this.selectedRows.length > 0 ? this.selectedRows : this.notification1;
+        rows.forEach((row, idx) => {
+          const r = worksheet.addRow([
+            row.full_name || '-',
+            row.message || '-',
+            row.notification_date || '-',
+            row.frequency_name || '-'
+          ]);
+
+          r.eachCell((cell) => {
+            cell.font = dataFont;
+            cell.border = border;
+            cell.alignment = { vertical: 'top', horizontal: 'left', wrapText: true };
+            if (idx % 2 === 1) cell.fill = zebraFill;
+          });
+        });
+
+        worksheet.columns = [{ width: 25 }, { width: 40 }, { width: 20 }, { width: 15 }];
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const filename = (this.file_export || "Notification_Admin_Report").replace(/\.xlsx$/i, '') + '.xlsx';
+        saveAs(new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), filename);
+
+        this.$q.notify({ color: 'positive', message: 'ส่งออกไฟล์ Excel เรียบร้อยแล้ว', icon: 'check' });
+      } catch (error) {
+        console.error("Export error:", error);
+        this.$q.notify({ color: 'negative', message: 'ส่งออกไม่สำเร็จ: ' + error.message, icon: 'error' });
+      } finally {
+        this.$q.loading.hide();
       }
     },
     resetForm() {
@@ -485,6 +522,40 @@ export default {
         } catch (error) {
           console.error(error);
           this.$q.notify({ message: "เกิดข้อผิดพลาดในการลบข้อมูล", color: "negative", icon: "error" });
+        }
+      });
+    },
+    async deleteSelected() {
+      if (this.selectedRows.length === 0) return;
+
+      this.$q.dialog({
+        title: "ยืนยันการลบหลายรายการ",
+        message: `คุณต้องการลบข้อมูลการแจ้งเตือนที่เลือกทั้งหมด ${this.selectedRows.length} รายการหรือไม่?`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก...", spinnerColor: "red" });
+        let successCount = 0;
+        let failCount = 0;
+        try {
+          for (const item of this.selectedRows) {
+            try {
+              await axios.delete(`${this.url_api_notification}/${item.notification_id}`);
+              successCount++;
+            } catch (err) {
+              console.error(`Failed to delete ID ${item.notification_id}:`, err);
+              failCount++;
+            }
+          }
+          this.$q.notify({
+            color: successCount > 0 ? "positive" : "negative",
+            message: `ลบสำเร็จ ${successCount} รายการ${failCount > 0 ? `, ล้มเหลว ${failCount} รายการ` : ""}`,
+            icon: successCount > 0 ? "check" : "error",
+          });
+          this.selectedRows = [];
+          await this.getUpdate(this.member_id);
+        } finally {
+          this.$q.loading.hide();
         }
       });
     },
