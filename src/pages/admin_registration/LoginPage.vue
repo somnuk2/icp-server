@@ -191,9 +191,9 @@ export default {
       this.$store.commit("setMyName", full_name);
       this.$store.commit("setMyStatus", status);
       
-      // Hard redirect to root
-      const rootPath = window.location.pathname.replace(/\/AdminLoginPage\/?$/, '');
-      window.location.href = window.location.origin + (rootPath || '/');
+      // Hard redirect to root using base variable
+      const baseUrl = process.env.VUE_ROUTER_BASE || "/";
+      window.location.href = window.location.origin + baseUrl;
     },
     required(val) {
       return (val && val.length > 0) || "ช่องที่ต้องกรอก";

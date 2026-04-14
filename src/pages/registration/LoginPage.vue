@@ -139,15 +139,16 @@ export default {
       }
     },
     storeCommit(member_id, full_name, status) {
-      // 1. Commit to local store instance (optional since we reload)
+      // 1. Commit to local store instance
       this.$store.commit("setMyAuthenticate", true);
       this.$store.commit("setMyMember_id", member_id);
       this.$store.commit("setMyName", full_name);
       this.$store.commit("setMyStatus", status);
 
-      // 2. Hard redirect to the root of the app to force a clean reload with new session
-      const rootPath = window.location.pathname.replace(/\/LoginPage\/?$/, '');
-      window.location.href = window.location.origin + (rootPath || '/');
+      // 2. Hard redirect to the app root using Quasar's base environment variable
+      // This prevents 404 by ensuring we land on the correct subdirectory root
+      const baseUrl = process.env.VUE_ROUTER_BASE || "/";
+      window.location.href = window.location.origin + baseUrl;
     },
     required(val) {
       return (val && val.length > 0) || "ช่องที่ต้องกรอก";
