@@ -338,7 +338,8 @@
                         <div class="q-pa-xs">
                           <q-table title="ข้อมูลคุณสมบัติ/ทักษะ" :rows="filteredQualifications" :columns="columns"
                             row-key="qa_plan_career_id" :filter="filter" :loading="loading"
-                            :visible-columns="visibleColumns" separator="cell" class="my-sticky-header-table" flat bordered
+                            :visible-columns="visibleColumns" separator="cell" flat bordered
+                            style="min-height: 50vh"
                             :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home"
                             icon-last-page="all_inclusive" icon-next-page="arrow_right" icon-prev-page="arrow_left"
                             :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {

@@ -171,7 +171,9 @@
                           <q-table title="ข้อมูลสมาชิก" :rows="plan_careers1" :columns="columns"
                             row-key="plan_career_id" :filter="filter" :loading="loading"
                             selection="multiple" v-model:selected="selected"
-                            :visible-columns="visibleColumns" separator="cell" class="my-sticky-header-table" flat bordered table-header-style="height: 65px; "
+                            :visible-columns="visibleColumns" separator="cell" flat bordered 
+                            style="min-height: 50vh"
+                            table-header-style="height: 65px; "
                             table-header-class="bg-blue-5" :rows-per-page-options="[30, 50, 100, 0]"
                             icon-first-page="home" icon-last-page="all_inclusive" icon-next-page="arrow_right"
                             icon-prev-page="arrow_left" :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
