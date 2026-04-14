@@ -112,11 +112,11 @@ export default {
         const { token, member_id, full_name, role } = response.data;
 
         if (token) {
-          // บันทึกข้อมูลลง localStorage
-          localStorage.setItem("token", token);
-          localStorage.setItem("status", role);
-          localStorage.setItem("name", full_name);
-          localStorage.setItem("member_id", String(member_id));
+          // บันทึกข้อมูลลง sessionStorage (ล้างอัตโนมัติเมื่อปิด Browser)
+          sessionStorage.setItem("token", token);
+          sessionStorage.setItem("status", role);
+          sessionStorage.setItem("name", full_name);
+          sessionStorage.setItem("member_id", String(member_id));
 
           // บันทึก API Key ลง sessionStorage (ถ้ามี)
           if (this.input.gemini_api_key) {
@@ -166,11 +166,12 @@ export default {
   },
   created() {
     this.apiUrl = getRestApiUrl(this.$store);
-    // Clear state on login page load
+    // Clear state/session on login page load
     this.$store.commit("setMyAuthenticate", false);
     this.$store.commit("setMyMember_id", 0);
     this.$store.commit("setMyName", "");
     this.$store.commit("setMyStatus", "");
+    sessionStorage.clear(); // ✅ Clear all on login page
     localStorage.removeItem("token");
   },
 };

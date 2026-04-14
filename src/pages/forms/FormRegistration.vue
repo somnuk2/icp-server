@@ -191,7 +191,7 @@ export default {
         "is_verified",
       ]),
       columns: [
-        { name: "actions", align: "center", label: "แก้ไข/ลบ" },
+        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;" },
         {
           name: "full_name",
           align: "left",

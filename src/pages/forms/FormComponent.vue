@@ -378,7 +378,7 @@ export default {
 
     columns() {
       return [
-        { name: "actions", align: "center", label: "แก้ไข/ลบ" },
+        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;" },
         { name: "full_name", align: "left", label: "ชื่อ-สกุล", field: "full_name", sortable: true },
         { name: "birthday", align: "center", label: "วันเกิด", field: "birthday", sortable: true },
         { name: "telephone", align: "center", label: "โทรศัพท์", field: "telephone", sortable: true },

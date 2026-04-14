@@ -307,58 +307,69 @@ const routes = [
     path: "/instituteForm",
     name: "instituteForm",
     component: instituteForm,
+    meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/tapFormInstitute",
     name: "tapFormInstitute",
     component: tapFormInstitute,
+    meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/facultyForm",
     name: "facultyForm",
     component: facultyForm,
+    meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/degreeForm",
     name: "degreeForm",
     component: degreeForm,
+    meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   },
   {
     path: "/departmentForm",
     name: "departmentForm",
     component: departmentForm,
+    meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   },
   // sub_super_user education
   {
     path: "/s_instituteForm",
     name: "s_instituteForm",
     component: s_instituteForm,
+    meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   },
   {
     path: "/s_tapFormInstitute",
     name: "s_tapFormInstitute",
     component: s_tapFormInstitute,
+    meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   },
   {
     path: "/s_facultyForm",
     name: "s_facultyForm",
     component: s_facultyForm,
+    meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   },
   {
     path: "/s_degreeForm",
     name: "s_degreeForm",
     component: s_degreeForm,
+    meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   },
   {
     path: "/s_departmentForm",
     name: "s_departmentForm",
     component: s_departmentForm,
+    meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   },
   // Admin constance
   {
     path: "/tapAdminConstances",
     name: "tapAdminConstances",
     component: tapAdminConstances,
+    meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   },
   ,
   // User constances
@@ -366,6 +377,7 @@ const routes = [
     path: "/tapUserConstances",
     name: "tapUserConstances",
     component: tapUserConstances,
+    meta: { requiresAuth: true, roles: ['user', 'admin', 'super_user', 'superuser', 'suser'] }
   },
   // // User constances
   // {
@@ -378,12 +390,14 @@ const routes = [
     path: "/tapSuperUserConstances",
     name: "tapSuperUserConstances",
     component: tapSuperUserConstances,
+    meta: { requiresAuth: true, roles: ['super_user', 'superuser', 'suser'] }
   },
   // User constances
   {
     path: "/tapAdminConstances1",
     name: "tapAdminGroupConstances",
     component: tapAdminConstances1,
+    meta: { requiresAuth: true, roles: ['admin', 'super_user', 'superuser', 'suser'] }
   },
   // // Super user report
   // {

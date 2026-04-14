@@ -159,11 +159,11 @@ export default {
         const { token, member_id, full_name, role } = res.data;
 
         if (token) {
-          // บันทึกข้อมูลลงเครื่อง
-          localStorage.setItem("token", token);
-          localStorage.setItem("status", role);
-          localStorage.setItem("name", full_name);
-          localStorage.setItem("member_id", member_id);
+          // บันทึกข้อมูลลง sessionStorage (ล้างอัตโนมัติเมื่อปิด Browser)
+          sessionStorage.setItem("token", token);
+          sessionStorage.setItem("status", role);
+          sessionStorage.setItem("name", full_name);
+          sessionStorage.setItem("member_id", member_id);
           
           self.storeCommit(member_id, full_name, role);
         } else {
@@ -224,6 +224,7 @@ export default {
     this.apiUrl = getRestApiUrl(this.$store);
     // ล้างสถานะเบื้องต้นเมื่อเข้าหน้านี้
     this.createState();
+    sessionStorage.clear();
     localStorage.removeItem("token");
   },
 };

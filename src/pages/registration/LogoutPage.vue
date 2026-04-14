@@ -48,11 +48,18 @@ export default {
   },
   methods: {
     confirm() {
+      // 1. Clear all storage
+      sessionStorage.clear();
+      localStorage.clear();
+
+      // 2. Reset Store
       this.$store.commit("setMyAuthenticate", false);
       this.$store.commit("setMyMember_id", 0);
       this.$store.commit("setMyName", "");
       this.$store.commit("setMyStatus", "");
-      // this.$router.replace({ name: "home" });
+
+      // 3. Hard redirect to home to ensure fresh state
+      window.location.href = window.location.origin + window.location.pathname;
     },
     cancel() {
       // this.$router.replace({ name: "home" });

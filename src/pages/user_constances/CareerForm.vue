@@ -138,7 +138,7 @@ export default {
       selected: [],
       visibleColumns: ["actions", "career_name", "ca_group_name"],
       columns: [
-        { name: "actions", align: "center", label: "จัดการ" },
+        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;" },
         { name: "career_name", align: "left", label: "อาชีพ", field: "career_name", sortable: true },
         { name: "ca_group_name", align: "left", label: "กลุ่มอาชีพ", field: "ca_group_name", sortable: true }
       ],
