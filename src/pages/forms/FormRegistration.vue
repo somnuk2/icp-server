@@ -90,9 +90,9 @@
             <template v-slot:body="props">
               <q-tr :props="props" class="table-row-green">
                 <q-td key="actions" :props="props" class="text-center">
-                  <q-btn size="sm" color="blue" label="แก้ไข" class="q-mr-xs" @click="editUser(props.row.member_id)"
+                  <q-btn size="sm" color="blue" label="แก้ไข" icon="edit" class="q-mr-xs" @click="editUser(props.row.member_id)"
                     unelevated />
-                  <q-btn size="sm" color="red" label="ลบ" @click="deleteUser(props.row.member_id, props.row.full_name)"
+                  <q-btn size="sm" color="red" label="ลบ" icon="delete" @click="deleteUser(props.row.member_id, props.row.full_name)"
                     unelevated />
                 </q-td>
                 <q-td v-for="col in props.cols.filter(c => c.name !== 'actions')" :key="col.name" :props="props">

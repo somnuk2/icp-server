@@ -310,9 +310,9 @@
                               </template>
 
                               <template v-slot:body-cell-actions="props">
-                                <q-td :props="props">
-                                  <q-btn icon="mode_edit" label="แก้ไข" @click="editItem(props.row)" />
-                                  <q-btn icon="delete" label="ลบ" @click="deleteItem(props.row)" />
+                                <q-td :props="props" class="text-center">
+                                  <q-btn size="sm" color="blue" icon="mode_edit" label="แก้ไข" class="q-mr-xs" @click="editItem(props.row)" />
+                                  <q-btn size="sm" color="red" icon="delete" label="ลบ" @click="deleteItem(props.row)" />
                                 </q-td>
                               </template>
                             </q-table>

@@ -151,7 +151,7 @@
                     <q-table title="ข้อมูลส่วนตัว" :rows="safeIndividuals" :columns="columns" row-key="individual_id"
                       :filter="filter" :loading="loading" :visible-columns="visibleColumns" separator="cell"
                       selection="multiple" v-model:selected="selected" class="my-custom-table shadow-1 border-radius-8"
-                      table-header-class="bg-blue-2 text-black">
+                      table-header-class="bg-blue-3 text-black">
                       <template #top-right="props">
                         <div class="row q-col-gutter-xs items-center">
                           <q-input borderless dense debounce="300" v-model="filter" placeholder="ค้นหา..."><template
@@ -168,10 +168,10 @@
                       </template>
 
                       <template #body-cell-actions="props">
-                        <q-td :props="props" class="q-gutter-x-xs">
-                          <q-btn flat round color="white" icon="edit" size="sm"
+                        <q-td :props="props" class="text-center">
+                          <q-btn size="sm" color="blue" label="แก้ไข" icon="edit" class="q-mr-xs"
                             @click="editUser(props.row.individual_id)" />
-                          <q-btn flat round color="red-2" icon="delete" size="sm"
+                          <q-btn size="sm" color="red" label="ลบ" icon="delete"
                             @click="deleteUser(props.row.individual_id, props.row.full_name)" />
                         </q-td>
                       </template>
@@ -721,23 +721,33 @@ export default {
       if (this.selected.length === 0) return;
 
       const ok = await this.confirmDialogAsync(
-        `คุณต้องการลบข้อมูลที่เลือกจำนวน ${this.selected.length} รายการ หรือไม่?`
+        `คุณต้องการลบข้อมูลที่เลือกทั้งหมด ${this.selected.length} รายการหรือไม่?`
       );
 
       if (!ok) return;
 
+      this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก...", spinnerColor: "red" });
+      let successCount = 0;
+      let failCount = 0;
       try {
-        const individualIds = this.selected.map((item) => item.individual_id);
-        await axios.post(`${this.apiUrl}/individuals/delete-selected`, {
-          individual_ids: individualIds,
+        for (const item of this.selected) {
+          try {
+            await axios.delete(`${this.apiUrl}/individuals/${item.individual_id}`);
+            successCount++;
+          } catch (err) {
+            console.error(`Failed to delete ID ${item.individual_id}:`, err);
+            failCount++;
+          }
+        }
+        this.$q.notify({
+          color: successCount > 0 ? "positive" : "negative",
+          message: `ลบสำเร็จ ${successCount} รายการ${failCount > 0 ? `, ล้มเหลว ${failCount} รายการ` : ""}`,
+          icon: successCount > 0 ? "check" : "error",
         });
-
-        this.notifySuccess(`ลบข้อมูลสำเร็จ ${this.selected.length} รายการ`);
         this.selected = [];
         await this.getUpdate(this.individual.member_id);
-      } catch (e) {
-        console.error(e);
-        this.notifyError("ลบข้อมูลไม่สำเร็จ");
+      } finally {
+        this.$q.loading.hide();
       }
     },
 
