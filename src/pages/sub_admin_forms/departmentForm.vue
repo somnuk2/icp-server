@@ -175,6 +175,7 @@
                             ? 'fullscreen_exit'
                             : 'fullscreen'
                             " @click="props.toggleFullscreen" class="q-ml-md" />
+                          </div>
                         </template>
                         <template v-slot:body-cell-actions="props">
                           <q-td :props="props">

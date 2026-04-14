@@ -73,7 +73,7 @@
                         table-header-style="height: 65px; " table-header-class="bg-blue-5" :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home" icon-last-page="all_inclusive"
                         icon-next-page="arrow_right" icon-prev-page="arrow_left" :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                           return `หน้า : ${endRowIndex}/${totalRowsNumber}`
-                        }">
+                        }" selection="multiple" v-model:selected="selected">
                         <template v-slot:top-right="props">
                           <div class="row q-gutter-sm items-center">
                             <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
@@ -99,6 +99,7 @@
                             ? 'fullscreen_exit'
                             : 'fullscreen'
                             " @click="props.toggleFullscreen" class="q-ml-md" />
+                          </div>
                         </template>
                         <template v-slot:body-cell-actions="props">
                           <q-td :props="props">
