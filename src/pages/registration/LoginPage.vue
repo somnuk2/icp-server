@@ -145,10 +145,10 @@ export default {
       this.$store.commit("setMyName", full_name);
       this.$store.commit("setMyStatus", status);
 
-      // 2. Hard redirect to the app root using Quasar's base environment variable
-      // This prevents 404 by ensuring we land on the correct subdirectory root
-      const baseUrl = process.env.VUE_ROUTER_BASE || "/";
-      window.location.href = window.location.origin + baseUrl;
+      // 2. Hard redirect using Native Route Resolution
+      // This calculates the full path from the router configuration itself
+      const resolved = this.$router.resolve({ name: 'IndexPage' });
+      window.location.href = window.location.origin + resolved.href;
     },
     required(val) {
       return (val && val.length > 0) || "ช่องที่ต้องกรอก";

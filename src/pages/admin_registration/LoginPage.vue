@@ -191,9 +191,9 @@ export default {
       this.$store.commit("setMyName", full_name);
       this.$store.commit("setMyStatus", status);
       
-      // Hard redirect to root using base variable
-      const baseUrl = process.env.VUE_ROUTER_BASE || "/";
-      window.location.href = window.location.origin + baseUrl;
+      // Hard redirect using Native Route Resolution
+      const resolved = this.$router.resolve({ name: 'IndexPage' });
+      window.location.href = window.location.origin + resolved.href;
     },
     required(val) {
       return (val && val.length > 0) || "ช่องที่ต้องกรอก";
