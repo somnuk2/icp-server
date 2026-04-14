@@ -192,12 +192,12 @@ export default {
       individuals1: [],
       qualification_group: { options: [] },
       qualification_groups: { options: [] },
-      qualification_group_: ref(null),
+      qualification_group_: null,
       qualification: { options: [] },
       qualifications: { options: [] },
-      qualification_: ref(null),
+      qualification_: null,
       $q: useQuasar(),
-      selected: ref([]),
+      selected: [],
     };
   },
 

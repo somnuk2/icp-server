@@ -11,18 +11,20 @@
 
         <div class="content-area q-pa-md">
 
-          <q-card flat class="bg-white q-pa-lg q-mb-md shadow-2 full-width shadow-up-1" style="border-radius: 8px;">
+          <q-card flat class="bg-white q-pa-lg q-mb-md shadow-2 full-width" style="border-radius: 8px;">
             <q-form @submit.prevent="submitForm" @reset="resetForm">
               <div class="row q-col-gutter-md">
                 <div class="col-md-6 col-xs-12">
-                  <q-select v-model="qualification_" outlined dense filled label="คุณสมบัติ/ทักษะ *"
-                    :options="qualification.options" @filter="filterQualification" bg-color="white">
-                    <template v-slot:prepend><q-icon name="assignment" /></template>
+                  <q-select v-model="career_" outlined dense filled label="อาชีพ *"
+                    use-input use-chips input-debounce="0"
+                    :options="career.options" @filter="filterCareer" bg-color="white"
+                    @new-value="createValue" @update:model-value="(val) => updateValue(val)">
+                    <template v-slot:prepend><q-icon name="work" /></template>
                   </q-select>
                 </div>
                 <div class="col-md-6 col-xs-12">
-                  <q-select v-model="qualification_group_" outlined dense filled label="กลุ่มคุณสมบัติ/ทักษะ *"
-                    :options="qualification_group.options" @filter="filterQualificationGroup" bg-color="white">
+                  <q-select v-model="career_group_" outlined dense filled label="กลุ่มอาชีพ *"
+                    :options="career_group.options" @filter="filterCareerGroup" bg-color="white">
                     <template v-slot:prepend><q-icon name="category" /></template>
                   </q-select>
                 </div>
@@ -37,15 +39,16 @@
           </q-card>
 
           <div class="full-width">
-            <q-table :rows="individuals1" :columns="columns" row-key="qualification_id" :filter="filter"
+            <q-table :rows="individuals1" :columns="columns" row-key="career_id" :filter="filter"
               :loading="loading" separator="cell" class="custom-green-table full-width shadow-2"
-              :rows-per-page-options="[10, 20, 50, 0]" selection="multiple" v-model:selected="selected">
+              :rows-per-page-options="[10, 20, 50, 0]" selection="multiple" v-model:selected="selected"
+              :pagination-label="(first, end, total) => `หน้า : ${end}/${total}`">
               <template v-slot:top>
                 <div class="full-width row q-col-gutter-sm items-center">
                   <div class="col-grow row q-gutter-sm items-center">
                     <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
                       :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
-                    <q-input dense outlined filled v-model="filter" placeholder="ค้นหา..." bg-color="white" class="col">
+                    <q-input dense outlined filled v-model="filter" placeholder="ค้นหาอาชีพ..." bg-color="white" class="col">
                       <template v-slot:append><q-icon name="search" /></template>
                     </q-input>
                   </div>
@@ -66,26 +69,26 @@
               </template>
 
               <template v-slot:header="props">
-                <q-tr :props="props" class="bg-blue-2">
-                  <q-th v-for="col in props.cols" :key="col.name" :props="props" class="text-weight-bold text-black">
+                <q-tr :props="props" class="bg-blue-3">
+                  <q-th v-for="col in props.cols" :key="col.name" :props="props" class="text-weight-bold text-black" style="font-size: 14px">
                     {{ col.label }}
                   </q-th>
                 </q-tr>
               </template>
 
               <template v-slot:body="props">
-                <q-tr :props="props" class="table-row-dark-green">
+                <q-tr :props="props" class="table-row-green">
                   <q-td key="actions" :props="props" class="text-center">
                     <q-btn size="sm" color="blue" label="แก้ไข" icon="edit" class="q-mr-xs"
-                      @click="editUser(props.row.qualification_id)" />
+                      @click="editUser(props.row)" />
                     <q-btn size="sm" color="red" label="ลบ" icon="delete"
-                      @click="deleteUser(props.row.qualification_id, props.row.qualification_name)" />
+                      @click="deleteUser(props.row.career_id, props.row.career_name)" />
                   </q-td>
-                  <q-td key="qualification_name" :props="props">
-                    {{ props.row.qualification_name }}
+                  <q-td key="career_name" :props="props">
+                    {{ props.row.career_name }}
                   </q-td>
-                  <q-td key="qualification_group_name" :props="props">
-                    {{ props.row.qualification_group_name }}
+                  <q-td key="ca_group_name" :props="props">
+                    {{ props.row.ca_group_name }}
                   </q-td>
                 </q-tr>
               </template>
@@ -105,22 +108,11 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { getRestApiUrl } from "../../utils/apiConfig.js";
 
-// Helper สำหรับ Export CSV
-function wrapCsvValue(val) {
-  let formatted = val === void 0 || val === null ? "" : String(val);
-  return `"${formatted.split('"').join('""')}"`;
-}
-
 export default {
-  name: "QualificationManager",
-  setup() {
-    return {
-      selected: ref([]),
-    };
-  },
+  name: "CareerManager",
   data() {
     return {
-      title: "จัดการคุณสมบัติ/ทักษะ",
+      title: "จัดการอาชีพ (Personal)",
       btnLabel: "เพิ่มข้อมูล",
       isEdit: false,
       loading: false,
@@ -130,27 +122,27 @@ export default {
 
       individuals1: [],
       individual: {
-        qualification_id: "",
-        qualification_name: "",
-        qualification_group_id: ""
+        career_id: "",
+        career_name: "",
+        career_group_id: ""
       },
 
-      qualification_group_: null,
-      qualification_group: { options: [] },
-      qualification_groups_master: [],
+      career_group_: null,
+      career_group: { options: [] },
+      career_groups_master: [],
 
-      qualification_: null,
-      qualification: { options: [] },
-      qualifications_master: [],
+      career_: null,
+      career: { options: [] },
+      careers_master: [],
 
-      visibleColumns: ["actions", "qualification_name", "qualification_group_name"],
+      selected: [],
+      visibleColumns: ["actions", "career_name", "ca_group_name"],
       columns: [
         { name: "actions", align: "center", label: "จัดการ" },
-        { name: "qualification_name", align: "left", label: "คุณสมบัติ/ทักษะ", field: "qualification_name", sortable: true },
-        { name: "qualification_group_name", align: "left", label: "กลุ่มคุณสมบัติ", field: "qualification_group_name", sortable: true }
+        { name: "career_name", align: "left", label: "อาชีพ", field: "career_name", sortable: true },
+        { name: "ca_group_name", align: "left", label: "กลุ่มอาชีพ", field: "ca_group_name", sortable: true }
       ],
-      $q: useQuasar(),
-      selected: ref([]),
+      $q: useQuasar()
     };
   },
 
@@ -158,14 +150,9 @@ export default {
     async getUpdate() {
       this.loading = true;
       try {
-        const res = await axios.get(this.url_api + "/list");
+        const res = await axios.get(this.url_api);
         this.individuals1 = Array.isArray(res.data) ? res.data : [];
-        // สร้างรายการสำหรับ Auto-complete
-        this.qualifications_master = this.individuals1.map(item => ({
-          label: item.qualification_name,
-          value: item.qualification_id
-        }));
-        this.qualification.options = this.qualifications_master;
+        this.getCareerList();
       } catch (e) {
         console.error(e);
       } finally {
@@ -173,31 +160,36 @@ export default {
       }
     },
 
-    async getQualification_group() {
+    getCareerList() {
+      const uniqueNames = [...new Set(this.individuals1.map(i => i.career_name))];
+      this.careers_master = uniqueNames.map(name => ({ label: name }));
+      this.career.options = this.careers_master;
+    },
+
+    async getCareer_group() {
       try {
-        const res = await axios.get(getRestApiUrl(this.$store) + "/qualification-groups");
+        const res = await axios.get(getRestApiUrl(this.$store) + "/careers/groups");
         const mapped = (res.data || []).map(item => ({
-          label: item.qualification_group_name,
-          value: item.qualification_group_id,
-          description: item.qualification_group_description,
-          icon: 'category'
+          label: item.ca_group_name,
+          value: item.career_group_id,
+          description: item.ca_group_description
         }));
-        this.qualification_group.options = mapped;
-        this.qualification_groups_master = mapped;
+        this.career_group.options = mapped;
+        this.career_groups_master = mapped;
       } catch (e) {
         console.error(e);
       }
     },
 
     submitForm() {
-      if (!this.qualification_group_) {
+      if (!this.career_group_) {
         this.$q.notify({ color: "warning", message: "กรุณาเลือกกลุ่ม" });
         return;
       }
 
       const payload = {
-        qualification_name: this.individual.qualification_name,
-        qualification_group_id: this.qualification_group_.value
+        career_name: this.individual.career_name,
+        career_group_id: this.career_group_.value
       };
 
       this.$q.dialog({
@@ -208,7 +200,7 @@ export default {
       }).onOk(async () => {
         try {
           if (this.isEdit) {
-            await axios.put(`${this.url_api}/${this.individual.qualification_id}`, payload);
+            await axios.put(`${this.url_api}/${this.individual.career_id}`, payload);
           } else {
             await axios.post(this.url_api, payload);
           }
@@ -221,21 +213,16 @@ export default {
       });
     },
 
-    async editUser(id) {
-      try {
-        const res = await axios.get(`${this.url_api}/${id}`);
-        this.isEdit = true;
-        this.btnLabel = "ตกลงแก้ไข";
-        this.individual.qualification_id = res.data.qualification_id;
-        this.individual.qualification_name = res.data.qualification_name;
+    editUser(row) {
+      this.isEdit = true;
+      this.btnLabel = "ตกลงแก้ไข";
+      this.individual.career_id = row.career_id;
+      this.individual.career_name = row.career_name;
 
-        this.qualification_ = { label: res.data.qualification_name, value: res.data.qualification_id };
-        this.qualification_group_ = { label: res.data.qualification_group_name, value: res.data.qualification_group_id };
+      this.career_ = { label: row.career_name, value: row.career_id };
+      this.career_group_ = { label: row.ca_group_name, value: row.career_group_id };
 
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } catch (e) {
-        console.error(e);
-      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
 
     deleteUser(id, name) {
@@ -263,27 +250,16 @@ export default {
         cancel: true,
         persistent: true,
       }).onOk(async () => {
-        this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก...", spinnerColor: "red" });
-        let successCount = 0;
-        let failCount = 0;
+        this.$q.loading.show({ message: "กำลังลบข้อมูลที่เลือก..." });
         try {
           for (const item of this.selected) {
-            try {
-              await axios.delete(`${this.url_api}/${item.qualification_id}`);
-              successCount++;
-            } catch (err) {
-              console.error(`Failed to delete ID ${item.qualification_id}:`, err);
-              failCount++;
-            }
+            await axios.delete(`${this.url_api}/${item.career_id}`);
           }
-          this.$q.notify({
-            color: successCount > 0 ? "positive" : "negative",
-            message: `ลบสำเร็จ ${successCount} รายการ${failCount > 0 ? `, ล้มเหลว ${failCount} รายการ` : ""}`,
-            icon: successCount > 0 ? "check" : "error",
-          });
+          this.$q.notify({ message: `ลบสำเร็จ ${this.selected.length} รายการ`, color: "positive" });
           this.selected = [];
-          this.resetForm();
-          await this.getUpdate();
+          this.getUpdate();
+        } catch (err) {
+          this.$q.notify({ message: "ลบไม่สำเร็จบางรายการ", color: "negative" });
         } finally {
           this.$q.loading.hide();
         }
@@ -293,138 +269,90 @@ export default {
     resetForm() {
       this.isEdit = false;
       this.btnLabel = "เพิ่มข้อมูล";
-      this.individual = { qualification_id: "", qualification_name: "" };
-      this.qualification_ = null;
-      this.qualification_group_ = null;
+      this.individual = { career_id: "", career_name: "" };
+      this.career_ = null;
+      this.career_group_ = null;
     },
 
-    filterQualificationGroup(val, update) {
+    filterCareerGroup(val, update) {
       update(() => {
         const needle = val.toLowerCase();
-        this.qualification_group.options = this.qualification_groups_master.filter(v => v.label.toLowerCase().includes(needle));
+        this.career_group.options = this.career_groups_master.filter(v => v.label.toLowerCase().includes(needle));
       });
     },
 
-    filterQualification(val, update) {
+    filterCareer(val, update) {
       update(() => {
         const needle = val.toLowerCase();
-        this.qualification.options = this.qualifications_master.filter(v => v.label.toLowerCase().includes(needle));
+        this.career.options = this.careers_master.filter(v => v.label.toLowerCase().includes(needle));
       });
     },
 
     createValue(val, done) {
       if (val.length > 0) {
-        this.individual.qualification_name = val;
+        this.individual.career_name = val;
         done({ label: val }, "add-unique");
       }
     },
 
     updateValue(val) {
-      this.individual.qualification_name = is.object(val) ? val.label : val;
+      this.individual.career_name = is.object(val) ? val.label : val;
     },
 
-    // นำออกไฟล์ excel
     async exportTable() {
       if (!this.individuals1 || this.individuals1.length === 0) {
-        this.$q.notify({ color: 'orange', message: 'ไม่พบข้อมูลในตาราง', icon: 'warning' });
+        this.$q.notify({ color: 'orange', message: 'ไม่พบข้อมูล', icon: 'warning' });
         return;
       }
-
       this.$q.loading.show({ message: 'กำลังสร้างไฟล์ Excel...' });
-
       try {
         const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('Qualifications');
-
-        const headerFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4472C4' } };
-        const zebraFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2F2F2' } };
-        const headerFont = { name: 'Sarabun', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
-        const dataFont = { name: 'Sarabun', size: 10 };
-        const border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
-
-        worksheet.mergeCells('A1:C1');
-        const mainTitle = worksheet.getCell('A1');
-        mainTitle.value = `รายงานข้อมูลคุณสมบัติ/ทักษะ (User Constance) - ${new Date().toLocaleDateString('th-TH')}`;
-        mainTitle.font = { name: 'Sarabun', size: 16, bold: true };
-        mainTitle.alignment = { horizontal: 'center', vertical: 'middle' };
-        worksheet.getRow(1).height = 40;
-
-        const headerRow = worksheet.getRow(2);
-        headerRow.values = ['รหัส', 'กลุ่มคุณสมบัติ', 'คุณสมบัติ/ทักษะ'];
-        headerRow.height = 30;
-        headerRow.eachCell((cell) => {
-          cell.fill = headerFill;
-          cell.font = headerFont;
-          cell.alignment = { vertical: 'middle', horizontal: 'center' };
-          cell.border = border;
-        });
-
+        const worksheet = workbook.addWorksheet('Careers');
+        worksheet.addRow(['รหัส', 'อาชีพ', 'กลุ่มอาชีพ']);
         const rows = this.selected.length > 0 ? this.selected : this.individuals1;
-        rows.forEach((row, idx) => {
-          const r = worksheet.addRow([
-            row.qualification_id,
-            row.qualification_group_name || '-',
-            row.qualification_name || '-'
-          ]);
-
-          r.eachCell((cell) => {
-            cell.font = dataFont;
-            cell.border = border;
-            cell.alignment = { vertical: 'top', horizontal: 'left', wrapText: true };
-            if (idx % 2 === 1) cell.fill = zebraFill;
-          });
+        rows.forEach(row => {
+          worksheet.addRow([row.career_id, row.career_name, row.ca_group_name]);
         });
-
-        worksheet.columns = [{ width: 10 }, { width: 40 }, { width: 40 }];
-
         const buffer = await workbook.xlsx.writeBuffer();
-        const filename = (this.file_export || "Qualifications_Report").replace(/\.xlsx$/i, '') + '.xlsx';
-        saveAs(new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), filename);
-
-        this.$q.notify({ color: 'positive', message: 'ส่งออกไฟล์ Excel เรียบร้อยแล้ว', icon: 'check' });
-      } catch (error) {
-        console.error("Export error:", error);
-        this.$q.notify({ color: 'negative', message: 'ส่งออกไม่สำเร็จ: ' + error.message, icon: 'error' });
+        saveAs(new Blob([buffer], { type: 'application/octet-stream' }), (this.file_export || 'Careers') + '.xlsx');
+        this.$q.notify({ color: 'positive', message: 'ส่งออกสำเร็จ' });
+      } catch (err) {
+        this.$q.notify({ color: 'negative', message: 'ส่งออกล้มเหลว' });
       } finally {
         this.$q.loading.hide();
       }
-    },
+    }
   },
 
   mounted() {
     this.getUpdate();
-    this.getQualification_group();
+    this.getCareer_group();
   },
 
   created() {
-    this.url_api = getRestApiUrl(this.$store) + "/qualifications";
+    this.url_api = getRestApiUrl(this.$store) + "/careers";
   }
 };
 </script>
 
 <style lang="sass">
 .content-area
-  background-color: #c8e6c9 // สีเขียวอ่อนที่ cover ทั้งหน้าจอ
+  background-color: #c8e6c9
   min-height: calc(100vh - 80px)
 
 .custom-green-table
   border-radius: 4px
-
   thead tr th
-    background-color: #bbdefb // สีฟ้าอ่อนตามตัวอย่าง
+    background-color: #bbdefb !important
     font-size: 14px
-
-  .table-row-dark-green
-    background-color: #4caf50 !important // สีเขียวเข้ม
+  .table-row-green
+    background-color: #4caf50 !important
     color: white !important
-
     &:nth-child(even)
-      background-color: #43a047 !important // สลับสีเขียวเข้มขึ้น
-
+      background-color: #43a047 !important
     .q-td
       border-color: rgba(255, 255, 255, 0.2) !important
 
-/* จำกัดความสูงตารางไม่ให้เกินหน้าจอและให้เกิด scroll ภายใน */
 .q-table__container
   max-height: 60vh
 </style>

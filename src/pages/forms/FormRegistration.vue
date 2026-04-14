@@ -446,8 +446,7 @@ export default {
     this.apiUrl = getRestApiUrl(this.$store);
   },
   mounted() {
-    // We no longer pull all members from DB for privacy and speed
-    // this.getUpdate();
+    this.getUpdate();
   },
 };
 </script>
