@@ -26,7 +26,7 @@
     <!-- ผู้ใช้ทั่วไป -->
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered v-if="
       $store.getters.myAuthenticate == true &&
-      $store.getters.myStatus == 'user'
+      $store.getters.myStatus.toLowerCase() == 'user'
     ">
       <q-list>
         <q-item-label header>
@@ -57,7 +57,7 @@
     <!-- ผู้ดูแลระบบ -->
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered v-if="
       $store.getters.myAuthenticate == true &&
-      $store.getters.myStatus == 'admin'
+      $store.getters.myStatus.toLowerCase() == 'admin'
     ">
       <q-list>
         <q-item-label header>

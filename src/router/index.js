@@ -56,15 +56,23 @@ export default defineRouter(function ({ store /* , ssrContext */ }) {
         const isAdminRoute = to.path.match(/^\/(Admin|Suser|s_|tapAdmin|tapSuper)/i);
         return next({ name: isAdminRoute ? "AdminLoginPage" : "LoginPage" });
       } else {
+        // Collect all allowed roles from the hierarchy of matched routes
+        const allAllowedRoles = to.matched
+          .filter(record => record.meta && record.meta.roles)
+          .flatMap(record => record.meta.roles)
+          .map(r => String(r).trim().toLowerCase());
+
         // Role based check (Normalized to lowercase and trimmed)
         const userRole = (role || "").trim().toLowerCase();
-        const allowedRoles = (to.meta.roles || []).map(r => String(r).trim().toLowerCase());
 
-        if (allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
-          console.warn(`RouterGuard: Role mismatch for "${to.path}". Required: ${JSON.stringify(allowedRoles)}, Found: "${userRole}"`);
-          // Redirect to home if role mismatch
+        // If roles are defined but user doesn't have them, redirect to IndexPage
+        if (allAllowedRoles.length > 0 && !allAllowedRoles.includes(userRole)) {
+          console.warn(`RouterGuard: Role mismatch for "${to.path}". Allowed: ${JSON.stringify([...new Set(allAllowedRoles)])}, Found: "${userRole}"`);
           return next({ name: "IndexPage" });
         }
+        
+        // If roles are empty but requiresAuth is true, we allow any valid userRole (authenticated)
+        // This is a safety fallback.
       }
     }
 
