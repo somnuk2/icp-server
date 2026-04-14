@@ -21,8 +21,9 @@
                       <div class="row">
                         <div class="col-md-12 col-xs-12 q-pa-xs text-center">
                           <h6>คุณต้องการออกระบบใช่ไหม?</h6>
+                          <!-- ✅ ใช้แค่ @click เท่านั้น ไม่ใช้ to เพราะขัดกัน -->
                           <q-btn class="btn btn-dark btn-lg btn-block" color="primary" label="ยืนยัน" icon="check_box"
-                            @Click="confirm()" to="/" />
+                            @click="confirm()" />
                           <q-btn class="btn btn-dark btn-lg btn-block" flat color="primary" label="ยกเลิก"
                             icon="dangerous" to="/" />
                         </div>
@@ -48,7 +49,7 @@ export default {
   },
   methods: {
     confirm() {
-      // 1. Clear all storage
+      // 1. Clear all storage first
       sessionStorage.clear();
       localStorage.clear();
 
@@ -58,13 +59,12 @@ export default {
       this.$store.commit("setMyName", "");
       this.$store.commit("setMyStatus", "");
 
-      // 3. Hard redirect to home to ensure fresh state
-      window.location.href = window.location.origin + window.location.pathname;
-    },
-    cancel() {
-      // this.$router.replace({ name: "home" });
+      // 3. Navigate to home using router (session is cleared so guard will show login)
+      const resolved = this.$router.resolve({ name: "IndexPage" });
+      window.location.href = window.location.origin + resolved.href;
     },
   },
 };
 </script>
 <style scoped></style>
+

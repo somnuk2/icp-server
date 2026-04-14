@@ -79,9 +79,9 @@ export default {
       this.$store.commit("setMyName", "");
       this.$store.commit("setMyStatus", "");
 
-      // 3. บังคับโหลดหน้าใหม่ไปที่หน้าแรก (ซึ่งไม่มีสิทธิ์แล้ว จะถูก Boot/Auth ดีดไปหน้า Login ที่ถูกต้องเอง)
-      // วิธีนี้ได้ผลแน่นอน 100% ไม่ว่าเว็บจะรันอยู่ที่ Path ไหน หรือโหมดอะไร
-      window.location.href = window.location.origin + window.location.pathname;
+      // 3. Redirect to home using router (session cleared so guard will show login)
+      const resolved = this.$router.resolve({ name: "IndexPage" });
+      window.location.href = window.location.origin + resolved.href;
     },
   },
 };
