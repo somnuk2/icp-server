@@ -3,7 +3,7 @@
     <q-page-container class="bg-grey-2">
       <q-page padding class="items-center justify-center" style="background: linear-gradient(135deg, #74c588 0%, #0ad13c 100%); min-height: 100vh;">
         <div class="full-width">
-          <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
+          <div class="col-md-10 offset-md-1 col-xs-12 q-pa-xs">
             <q-card flat class="bg-white text-black">
               <q-card-section class="bg-blue-14">
                 <h4 class="text-h5 text-white q-my-xs text-center">
@@ -168,10 +168,10 @@
                     <div class="row">
                       <div class="col-md-12 col-xs-12 q-pa-xs">
                         <div class="q-pa-xs">
-                          <q-table title="ข้อมูลส่วนตัว" :rows="plan_careers1" :columns="columns"
+                          <q-table title="ข้อมูลสมาชิก" :rows="plan_careers1" :columns="columns"
                             row-key="plan_career_id" :filter="filter" :loading="loading"
                             selection="multiple" v-model:selected="selected"
-                            :visible-columns="visibleColumns" separator="cell" table-header-style="height: 65px; "
+                            :visible-columns="visibleColumns" separator="cell" flat bordered table-header-style="height: 65px; "
                             table-header-class="bg-primary text-white" :rows-per-page-options="[30, 50, 100, 0]"
                             icon-first-page="home" icon-last-page="all_inclusive" icon-next-page="arrow_right"
                             icon-prev-page="arrow_left" :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
@@ -493,7 +493,7 @@ export default {
 
 <style lang="sass">
 .my-sticky-header-table
-  height: 310px
+  height: 500px
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th

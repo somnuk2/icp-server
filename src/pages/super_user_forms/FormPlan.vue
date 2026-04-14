@@ -3,7 +3,7 @@
     <q-page-container class="bg-grey-2">
       <q-page padding class="items-center justify-center" style="background: linear-gradient(135deg, #74c588 0%, #0ad13c 100%); min-height: 100vh;">
         <div class="full-width">
-          <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
+          <div class="col-md-10 offset-md-1 col-xs-12 q-pa-xs">
             <q-card flat class="bg-white text-black">
               <q-card-section class="bg-blue-14">
                 <h4 class="text-h5 text-white q-my-xs text-center">
@@ -352,7 +352,7 @@
                         <div class="q-pa-xs">
                           <q-table title="ข้อมูลการพัฒนาตนเอง" :rows="filteredPlans" :columns="main_columns" row-key="plan_id"
                             :filter="filter" :loading="loading" :visible-columns="visibleColumnsPlan" separator="cell"
-                            selection="multiple" v-model:selected="selected"
+                            selection="multiple" v-model:selected="selected" flat bordered
                             table-header-style="height: 65px; " table-header-class="bg-blue-5"
                             :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home"
                             icon-last-page="all_inclusive" icon-next-page="arrow_right" icon-prev-page="arrow_left"
@@ -921,7 +921,7 @@ export default {
 
 <style lang="sass">
 .my-sticky-header-table
-  height: 310px
+  height: 500px
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th

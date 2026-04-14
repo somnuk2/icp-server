@@ -1147,7 +1147,7 @@ export default {
 </script>
 <style lang="sass">
 .my-sticky-header-table
-  height: 310px
+  height: 500px
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
