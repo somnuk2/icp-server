@@ -185,14 +185,15 @@ export default {
         });
     },
     storeCommit(member_id, full_name, status) {
-      if (member_id != 0 && full_name != "" && status != "") {
-        this.myAuthenticate = true;
-        this.$store.commit("setMyAuthenticate", this.myAuthenticate);
-        this.$store.commit("setMyMember_id", member_id);
-        this.$store.commit("setMyName", full_name);
-        this.$store.commit("setMyStatus", status);
-        this.$router.replace({ path: "/" });
-      }
+      this.myAuthenticate = true;
+      this.$store.commit("setMyAuthenticate", true);
+      this.$store.commit("setMyMember_id", member_id);
+      this.$store.commit("setMyName", full_name);
+      this.$store.commit("setMyStatus", status);
+      
+      // Hard redirect to root
+      const rootPath = window.location.pathname.replace(/\/AdminLoginPage\/?$/, '');
+      window.location.href = window.location.origin + (rootPath || '/');
     },
     required(val) {
       return (val && val.length > 0) || "ช่องที่ต้องกรอก";
@@ -218,13 +219,10 @@ export default {
     },
   },
   mounted() {
-    this.createState();
+    // skip aggressive clearing
   },
   created() {
     this.apiUrl = getRestApiUrl(this.$store);
-    // ล้างสถานะเบื้องต้นเมื่อเข้าหน้านี้
-    this.createState();
-    sessionStorage.clear();
     localStorage.removeItem("token");
   },
 };

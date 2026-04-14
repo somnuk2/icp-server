@@ -25,43 +25,51 @@ export default defineRouter(function ({ store /* , ssrContext */ }) {
 
   // ✅ Authentication & Session Guard
   Router.beforeEach((to, from, next) => {
-    // 1. Session Restoration (If Vuex state lost on refresh but sessionStorage remains)
     const token = sessionStorage.getItem("token");
     const role = sessionStorage.getItem("status");
     const name = sessionStorage.getItem("name");
     const member_id = sessionStorage.getItem("member_id");
 
+    // 1. Session Restoration (If Vuex state lost on refresh but sessionStorage remains)
     if (token && !store.getters.myAuthenticate) {
+      console.log("RouterGuard: Restoring session from sessionStorage");
       store.commit("setMyAuthenticate", true);
       store.commit("setMyMember_id", member_id);
       store.commit("setMyName", name);
       store.commit("setMyStatus", role);
     }
 
-    // 2. Routing Protection
-    if (to.meta.requiresAuth === true) {
-      // Check for token in sessionStorage
-      if (!sessionStorage.getItem("token")) {
-        // Not logged in -> Redirect to login
-        if (to.path.startsWith("/Admin") || to.path.startsWith("/Suser") || to.path.startsWith("/s_") || to.path.startsWith("/tapAdmin") || to.path.startsWith("/tapSuper") ) {
-          next({ name: "AdminLoginPage" });
-        } else {
-          next({ name: "LoginPage" });
-        }
+    // 2. Prevent visiting Login pages if already authenticated
+    if (to.name === "LoginPage" || to.name === "AdminLoginPage") {
+      if (token) {
+        console.log("RouterGuard: Already authenticated, redirecting to home.");
+        return next({ name: "IndexPage" });
+      }
+    }
+
+    // 3. Routing Protection
+    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+    
+    if (requiresAuth) {
+      if (!token) {
+        console.warn(`RouterGuard: Access denied to "${to.path}". No token. Redirecting to login.`);
+        const isAdminRoute = to.path.match(/^\/(Admin|Suser|s_|tapAdmin|tapSuper)/i);
+        return next({ name: isAdminRoute ? "AdminLoginPage" : "LoginPage" });
       } else {
-        // Logged in -> Check Roles if defined
-        const userRole = sessionStorage.getItem("status");
-        if (to.meta.roles && !to.meta.roles.includes(userRole)) {
-          // Role not allowed
-          next({ name: "IndexPage" });
-        } else {
-          next();
+        // Role based check (Normalized to lowercase and trimmed)
+        const userRole = (role || "").trim().toLowerCase();
+        const allowedRoles = (to.meta.roles || []).map(r => String(r).trim().toLowerCase());
+
+        if (allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
+          console.warn(`RouterGuard: Role mismatch for "${to.path}". Required: ${JSON.stringify(allowedRoles)}, Found: "${userRole}"`);
+          // Redirect to home if role mismatch
+          return next({ name: "IndexPage" });
         }
       }
-    } else {
-      // Not a protected route
-      next();
     }
+
+    // Default: Allow navigation
+    next();
   });
 
   return Router

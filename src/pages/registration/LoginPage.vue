@@ -139,13 +139,15 @@ export default {
       }
     },
     storeCommit(member_id, full_name, status) {
-      // อัปเดต Store
+      // 1. Commit to local store instance (optional since we reload)
       this.$store.commit("setMyAuthenticate", true);
       this.$store.commit("setMyMember_id", member_id);
       this.$store.commit("setMyName", full_name);
       this.$store.commit("setMyStatus", status);
-      // ใช้ router.replace เพื่อไปหน้าหลัก (Auth Guard จะไม่บล็อกเพราะ requiresAuth = false)
-      this.$router.replace({ name: "IndexPage" });
+
+      // 2. Hard redirect to the root of the app to force a clean reload with new session
+      const rootPath = window.location.pathname.replace(/\/LoginPage\/?$/, '');
+      window.location.href = window.location.origin + (rootPath || '/');
     },
     required(val) {
       return (val && val.length > 0) || "ช่องที่ต้องกรอก";
@@ -166,12 +168,7 @@ export default {
   },
   created() {
     this.apiUrl = getRestApiUrl(this.$store);
-    // Clear state/session on login page load
-    this.$store.commit("setMyAuthenticate", false);
-    this.$store.commit("setMyMember_id", 0);
-    this.$store.commit("setMyName", "");
-    this.$store.commit("setMyStatus", "");
-    sessionStorage.clear(); // ✅ Clear all on login page
+    // Remove aggressive sessionStorage.clear() to prevent loop clearing on guard redirects
     localStorage.removeItem("token");
   },
 };
