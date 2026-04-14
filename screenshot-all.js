@@ -137,13 +137,19 @@ async function setupAuthPage(browser, auth) {
   });
 
   if (auth) {
-    // ✅ Inject token ลง sessionStorage (ระบบใหม่ใช้ sessionStorage ไม่ใช่ localStorage)
-    // Navigation Guard จะอ่าน sessionStorage และ restore เข้า Vuex Store
+    // ✅ Inject token ลงทั้ง sessionStorage (ระบบใหม่) และ localStorage (ระบบเก่า)
+    // เพื่อให้ทำงานได้กับทุก version ของ Server
     await context.addInitScript(({ token, status, name, member_id }) => {
+      // sessionStorage - ระบบใหม่ (หลัง security patch)
       sessionStorage.setItem('token', token);
       sessionStorage.setItem('status', status);
       sessionStorage.setItem('name', name);
       sessionStorage.setItem('member_id', String(member_id));
+      // localStorage - ระบบเก่า (fallback)
+      localStorage.setItem('token', token);
+      localStorage.setItem('status', status);
+      localStorage.setItem('name', name);
+      localStorage.setItem('member_id', String(member_id));
     }, {
       token: auth.token,
       status: auth.role,
