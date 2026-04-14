@@ -118,7 +118,9 @@ async function apiLogin(account) {
       email: account.email,
       password: account.password,
     });
-    const { token, member_id, full_name, role } = res.data;
+    const { token, member_id, full_name } = res.data;
+    // รองรับทั้งฟิลด์ role และ status จาก API
+    const role = res.data.role || res.data.status || 'user';
     console.log(`  ✅ API Login OK → role: ${role}, member_id: ${member_id}`);
     return { token, member_id, full_name, role };
   } catch (err) {
@@ -135,12 +137,13 @@ async function setupAuthPage(browser, auth) {
   });
 
   if (auth) {
-    // Inject token ลง localStorage ก่อน Vue โหลด (ทุกหน้า)
+    // ✅ Inject token ลง sessionStorage (ระบบใหม่ใช้ sessionStorage ไม่ใช่ localStorage)
+    // Navigation Guard จะอ่าน sessionStorage และ restore เข้า Vuex Store
     await context.addInitScript(({ token, status, name, member_id }) => {
-      localStorage.setItem('token', token);
-      localStorage.setItem('status', status);
-      localStorage.setItem('name', name);
-      localStorage.setItem('member_id', String(member_id));
+      sessionStorage.setItem('token', token);
+      sessionStorage.setItem('status', status);
+      sessionStorage.setItem('name', name);
+      sessionStorage.setItem('member_id', String(member_id));
     }, {
       token: auth.token,
       status: auth.role,
