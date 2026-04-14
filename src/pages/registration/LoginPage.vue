@@ -109,7 +109,9 @@ export default {
           gemini_api_key: this.input.gemini_api_key?.trim() || null,
         });
 
-        const { token, member_id, full_name, role } = response.data;
+        // รองรับทั้งฟิลด์ role และ status จาก API
+        const { token, member_id, full_name } = response.data;
+        const role = response.data.role || response.data.status;
 
         if (token) {
           // บันทึกข้อมูลลง sessionStorage (ล้างอัตโนมัติเมื่อปิด Browser)

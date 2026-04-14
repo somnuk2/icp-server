@@ -156,7 +156,9 @@ export default {
         });
 
         console.log("data:", res.data);
-        const { token, member_id, full_name, role } = res.data;
+        // รองรับทั้งฟิลด์ role และ status จาก API
+        const { token, member_id, full_name } = res.data;
+        const role = res.data.role || res.data.status;
 
         if (token) {
           // บันทึกข้อมูลลง sessionStorage (ล้างอัตโนมัติเมื่อปิด Browser)
