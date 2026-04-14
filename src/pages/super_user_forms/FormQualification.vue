@@ -250,6 +250,55 @@
                         </q-btn>
                       </div>
                     </div>
+                    <!-- ส่วนการกรองข้อมูล (Filter Section) -->
+                    <div class="row q-col-gutter-sm q-mb-md">
+                      <div class="col-12">
+                        <q-card flat bordered class="bg-blue-1">
+                          <q-item class="bg-blue-2">
+                            <q-item-section avatar>
+                              <q-icon name="manage_search" color="primary" size="md" />
+                            </q-item-section>
+                            <q-item-section>
+                              <q-item-label class="text-bold text-primary text-subtitle1">ส่วนที่ 1: ค้นหาและกรองข้อมูล</q-item-label>
+                              <q-item-label caption class="text-primary">ระบุเงื่อนไขเพื่อดึงข้อมูลคุณสมบัติที่ต้องการ</q-item-label>
+                            </q-item-section>
+                          </q-item>
+
+                          <q-card-section class="q-py-md">
+                            <div class="row q-col-gutter-sm items-center">
+                              <!-- ส่วนเลือกนักเรียน -->
+                              <div class="col-md-5 col-xs-12">
+                                <q-select dense outlined bg-color="white" v-model="filterConditions.full_name"
+                                  :options="members.options" label="กรองรายชื่อนักเรียน (ไม่เลือก = ทั้งหมด)" 
+                                  emit-value map-options clearable>
+                                  <template v-slot:prepend>
+                                    <q-icon name="person" color="primary" />
+                                  </template>
+                                </q-select>
+                              </div>
+                              <!-- ส่วนเลือกอาชีพ -->
+                              <div class="col-md-5 col-xs-12">
+                                <q-select dense outlined bg-color="white" v-model="filterConditions.career_name"
+                                  :options="career_names.options" label="กรองตามอาชีพ (ไม่เลือก = ทั้งหมด)"
+                                  emit-value map-options clearable>
+                                  <template v-slot:prepend>
+                                    <q-icon name="work" color="primary" />
+                                  </template>
+                                </q-select>
+                              </div>
+                              <!-- ปุ่มกรองข้อมูล -->
+                              <div class="col-md-2 col-xs-12">
+                                <q-btn color="primary" unelevated icon="search" label="ค้นหา"
+                                  class="full-width" style="height: 40px">
+                                  <q-tooltip>ค้นหาข้อมูลตามเงื่อนไขที่เลือก</q-tooltip>
+                                </q-btn>
+                              </div>
+                            </div>
+                          </q-card-section>
+                        </q-card>
+                      </div>
+                    </div>
+
                     <!-- Section 2: Report Export Tools -->
                     <div class="row q-mt-sm q-mb-md">
                       <div class="col-12">
@@ -259,8 +308,8 @@
                               <q-icon name="file_download_done" color="green-10" size="md" />
                             </q-item-section>
                             <q-item-section>
-                              <q-item-label class="text-bold text-green-10 text-subtitle1">เครื่องมือส่งออกรายงาน
-                                (Excel)</q-item-label>
+                              <q-item-label class="text-bold text-green-10 text-subtitle1">ส่วนที่ 2: เครื่องมือส่งออกรายงาน (Excel)</q-item-label>
+                              <q-item-label caption class="text-green-8">ระบบจะส่งออกข้อมูลตามเงื่อนไขที่เลือกในส่วนการกรอง</q-item-label>
                             </q-item-section>
                           </q-item>
                           <q-card-section class="q-py-md">
@@ -287,7 +336,7 @@
                     <div class="row">
                       <div class="col-md-12 col-xs-12 q-pa-xs">
                         <div class="q-pa-xs">
-                          <q-table title="ข้อมูลคุณสมบัติ/ทักษะ" :rows="qualifications1" :columns="columns"
+                          <q-table title="ข้อมูลคุณสมบัติ/ทักษะ" :rows="filteredQualifications" :columns="columns"
                             row-key="qa_plan_career_id" :filter="filter" :loading="loading"
                             :visible-columns="visibleColumns" separator="cell" class="my-sticky-header-table" flat bordered
                             :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home"
@@ -295,7 +344,7 @@
                             :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                               return `หน้า : ${endRowIndex}/${totalRowsNumber}`
                             }" selection="multiple" v-model:selected="selectedRows"
-                            table-header-style="height: 65px; " table-header-class="bg-primary text-white">
+                            table-header-style="height: 65px; " table-header-class="bg-blue-5">
                             <template v-slot:top-left>
                               <div class="row q-gutter-sm items-center">
                                 <q-btn v-if="selectedRows.length > 0" flat color="red" icon="delete"
@@ -420,11 +469,28 @@ export default {
       level_id: null,
       level: { options: [] },
       level_: { options: [] },
+      full_names: { options: [] },
+      full_names_: { options: [] },
+      career_names: { options: [] },
+      career_names_: { options: [] },
+      filterConditions: { full_name: "", career_name: "" },
       $q: useQuasar(),
       members: { options: [] },
       members_: { options: [] },
       member: ref({ label: "", value: "", description: "" }),
     };
+  },
+  computed: {
+    filteredQualifications() {
+      let data = this.qualifications1;
+      if (this.filterConditions.full_name) {
+        data = data.filter(r => r.full_name === this.filterConditions.full_name);
+      }
+      if (this.filterConditions.career_name) {
+        data = data.filter(r => r.career_name === this.filterConditions.career_name);
+      }
+      return data;
+    }
   },
   methods: {
     async exportTable() {
@@ -473,6 +539,12 @@ export default {
       try {
         const res = await axios.get(`${getRestApiUrl(this.$store)}/qa-plan-careers`);
         this.qualifications1 = Array.isArray(res.data) ? res.data : [];
+        
+        // Prepare filter options
+        const uniqueCareers = [...new Set(this.qualifications1.map(item => item.career_name))].sort();
+        this.career_names.options = uniqueCareers.map(c => ({ label: c, value: c }));
+        this.career_names_.options = this.career_names.options;
+
       } catch (error) { this.$q.notify({ message: "Error: " + error.message, color: "negative" }); }
       finally { this.loading = false; }
     },
