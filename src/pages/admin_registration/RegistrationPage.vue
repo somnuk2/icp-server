@@ -3,7 +3,7 @@
     <q-page-container class="bg-grey-2">
       <q-page padding class="row items-center justify-center" style="background: linear-gradient(#74c588, #0ad13c)">
         <div class="row full-width">
-          <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
+          <div class="col-md-10 offset-md-1 col-xs-12 q-pa-xs">
             <q-card flat class="bg-white text-black">
               <q-card-section class="bg-blue-14">
                 <h4 class="text-h5 text-white q-ma-xs text-center">

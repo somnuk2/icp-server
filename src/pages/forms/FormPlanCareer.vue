@@ -3,7 +3,7 @@
     <q-page-container class="bg-grey-2">
       <q-page padding class="items-center justify-center bg-grey-2" style="min-height: 100vh;">
         <div class="full-width">
-          <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
+          <div class="col-md-10 offset-md-1 col-xs-12 q-pa-xs">
             <q-card flat class="bg-white text-black">
               <q-card-section class="bg-primary">
                 <h4 class="text-h5 text-white q-my-xs text-center">{{ title }}</h4>

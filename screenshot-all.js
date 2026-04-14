@@ -81,6 +81,10 @@ const ADMIN_ROUTES = [
   { label: '08b_admin_plan_excel', path: '/AdminFormPlan', menuText: 'จัดการพัฒนาตนเอง', clickBtn: 'ส่งออก excel', title: 'Admin: พัฒนาตนเอง - Export Excel' },
   { label: '09_admin_self_assessment', path: '/AdminFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', title: 'Admin: ประเมินตนเอง' },
   { label: '09b_admin_self_assessment_excel', path: '/AdminFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', clickBtn: 'ส่งออก excel', title: 'Admin: ประเมินตนเอง - Export Excel' },
+  { label: '10a_admin_faculty', path: '/facultyForm', title: 'Admin: จัดการคณะ' },
+  { label: '10b_admin_institute_item', path: '/instituteForm', title: 'Admin: จัดการวิทยาลัย/คณะ' },
+  { label: '10c_admin_degree', path: '/degreeForm', title: 'Admin: จัดการระดับการศึกษา' },
+  { label: '10d_admin_department', path: '/departmentForm', title: 'Admin: จัดการสาขาวิชา' },
 ];
 
 const SUSER_ROUTES = [
@@ -101,6 +105,10 @@ const SUSER_ROUTES = [
   { label: '07b_suser_plan_excel', path: '/SuserFormPlan', menuText: 'จัดการพัฒนาตนเอง', clickBtn: 'ส่งออก excel', title: 'SuperUser: พัฒนาตนเอง - Export Excel' },
   { label: '08_suser_self_assessment', path: '/SuserFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', title: 'SuperUser: ประเมินตนเอง' },
   { label: '08b_suser_self_assessment_excel', path: '/SuserFormSelfAssessment', menuText: 'จัดการประเมินตนเอง', clickBtn: 'ส่งออก excel', title: 'SuperUser: ประเมินตนเอง - Excel Report' },
+  { label: '09a_suser_faculty', path: '/s_facultyForm', title: 'SuperUser: จัดการคณะ' },
+  { label: '09b_suser_institute_item', path: '/s_instituteForm', title: 'SuperUser: จัดการวิทยาลัย/คณะ' },
+  { label: '09c_suser_degree', path: '/s_degreeForm', title: 'SuperUser: จัดการระดับการศึกษา' },
+  { label: '09d_suser_department', path: '/s_departmentForm', title: 'SuperUser: จัดการสาขาวิชา' },
 ];
 
 // ===== ล็อกอินผ่าน API =====

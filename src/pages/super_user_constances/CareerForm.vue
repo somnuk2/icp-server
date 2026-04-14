@@ -4,7 +4,7 @@
       <div>
         <q-page padding class="items-center justify-center" style="background: linear-gradient(#74c588, #0ad13c)">
           <div class="full-width">
-            <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
+            <div class="col-md-10 offset-md-1 col-xs-12 q-pa-xs">
               <q-card flat class="bg-white text-black">
                 <q-card-section class="bg-blue-14">
                   <h4 class="text-h5 text-white q-my-xs text-center">
@@ -486,7 +486,7 @@ export default {
 
 <style lang="sass">
 .my-sticky-header-table
-  height: 310px
+  height: 500px
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
