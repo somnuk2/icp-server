@@ -2,9 +2,9 @@ import { boot } from 'quasar/wrappers'
 
 export default boot(({ router, store }) => {
   router.beforeEach((to, from, next) => {
-    // 1. ดึงข้อมูลจาก localStorage
-    const token = localStorage.getItem("token")?.trim();
-    const rawRole = localStorage.getItem("status")?.trim() || "";
+    // 1. ดึงข้อมูลจาก localStorage หรือ sessionStorage
+    const token = (localStorage.getItem("token") || sessionStorage.getItem("token"))?.trim();
+    const rawRole = (localStorage.getItem("status") || sessionStorage.getItem("status"))?.trim() || "";
     const userRole = rawRole.toLowerCase();
 
     // 2. ตรวจสอบสถานะ Login
@@ -13,13 +13,13 @@ export default boot(({ router, store }) => {
     if (store?.state?.authenticate) {
       isAuthenticated = true;
     } else if (token && userRole) {
-      // กู้คืน Store จาก localStorage (กรณีรีเฟรชหน้า)
+      // กู้คืน Store จาก Storage (กรณีรีเฟรชหน้า)
       isAuthenticated = true;
       if (store && typeof store.commit === 'function') {
         store.commit("setMyAuthenticate", true);
         store.commit("setMyStatus", rawRole);
-        store.commit("setMyName", localStorage.getItem("name") || "");
-        store.commit("setMyMember_id", localStorage.getItem("member_id") || "");
+        store.commit("setMyName", localStorage.getItem("name") || sessionStorage.getItem("name") || "");
+        store.commit("setMyMember_id", localStorage.getItem("member_id") || sessionStorage.getItem("member_id") || "");
       }
     }
 

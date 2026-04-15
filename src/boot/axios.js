@@ -12,7 +12,7 @@ export default defineBoot(({ app, store, router }) => {
   // Request Interceptor: Attach Token
   api.interceptors.request.use(
     (config) => {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token')
       if (token) {
         config.headers.Authorization = `Bearer ${token}`
       }
@@ -28,17 +28,18 @@ export default defineBoot(({ app, store, router }) => {
       if (error.response && error.response.status === 401) {
         // Token expired or invalid
         localStorage.removeItem('token')
+        sessionStorage.removeItem('token')
         store.commit('setMyAuthenticate', false)
-        router.push('/registration/LoginPage') // Adjust path if needed
+        router.push('/registration/LoginPage')
       }
       return Promise.reject(error)
     }
   )
 
-  // Synchronize global axios defaults too, in case components use it directly
+  // Synchronize global axios defaults too
   axios.interceptors.request.use(
     (config) => {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token')
       if (token && !config.headers.Authorization) {
         config.headers.Authorization = `Bearer ${token}`
       }
