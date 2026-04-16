@@ -436,10 +436,10 @@
                       <template v-slot:body-cell-actions="props">
                         <q-td :props="props" class="text-center">
                           <div class="row q-gutter-xs justify-center no-wrap">
-                            <q-btn size="sm" color="blue-7" label="แก้ไข" unelevated no-caps @click="editUser(props.row.individual_id)">
+                            <q-btn size="sm" color="blue-7" label="edit" unelevated no-caps @click="editUser(props.row.individual_id)">
                               <q-tooltip class="bg-blue">แก้ไขข้อมูล</q-tooltip>
                             </q-btn>
-                            <q-btn size="sm" color="red-7" label="ลบ" unelevated no-caps @click="deleteUser(props.row.individual_id, props.row.full_name)">
+                            <q-btn size="sm" color="red-7" label="delete" unelevated no-caps @click="deleteUser(props.row.individual_id, props.row.full_name)">
                               <q-tooltip class="bg-red">ลบข้อมูล</q-tooltip>
                             </q-btn>
                           </div>
@@ -527,7 +527,7 @@ export default {
       selected: ref([]),
 
       columns: [
-        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;" },
+        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 120px;", headerStyle: "width: 120px;" },
         { name: "status", align: "left", label: "บทบาท", field: "status", sortable: true, style: "width: 100px;", headerStyle: "width: 100px;" },
         { name: "full_name", align: "left", label: "ชื่อ-สกุล", field: "full_name", sortable: true, style: "min-width: 180px;", headerStyle: "min-width: 180px;" },
         { name: "birthday", align: "center", label: "ปีเกิด", field: "birthday", style: "width: 80px;", headerStyle: "width: 80px;" },
