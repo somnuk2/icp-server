@@ -97,7 +97,7 @@
                     <div class="q-pa-xs">
                       <q-table title="ข้อมูลปริญญา" :rows="individuals1" :columns="columns" row-key="degree_id"
                         :filter="filter" :loading="loading" :visible-columns="visibleColumns" separator="cell"
-                        table-header-style="height: 65px; " table-header-class="bg-blue-5"
+                        table-header-style="height: 65px;" table-header-class="bg-primary text-white"
                         :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home" icon-last-page="all_inclusive"
                         icon-next-page="arrow_right" icon-prev-page="arrow_left" :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                           return `หน้า : ${endRowIndex}/${totalRowsNumber}`

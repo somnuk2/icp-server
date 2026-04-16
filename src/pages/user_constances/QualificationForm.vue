@@ -60,6 +60,7 @@
             <q-table :rows="individuals1" :columns="columns" row-key="qualification_id" :filter="filter"
               :loading="loading" :visible-columns="visibleColumns" separator="cell"
               class="custom-green-table shadow-2 full-width" :rows-per-page-options="[10, 30, 50, 0]"
+              table-header-style="height: 65px;" table-header-class="bg-primary text-white"
               :pagination-label="(first, end, total) => `หน้า : ${end}/${total}`" selection="multiple" v-model:selected="selected">
               <template v-slot:top>
                 <div class="full-width row q-col-gutter-sm items-center">

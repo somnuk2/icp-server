@@ -143,7 +143,8 @@
                     <div class="row">
                       <div class="col-12 q-pa-xs">
                         <q-table title="ข้อมูลผลงาน" :rows="references1" :columns="references" row-key="reference_id"
-                          :filter="filter_reference" :loading="loading" separator="cell">
+                          :filter="filter_reference" :loading="loading" separator="cell"
+                          table-header-style="height: 65px;" table-header-class="bg-primary text-white">
                           <template v-slot:top-right="props">
                             <div class="row items-center q-col-gutter-sm">
                               <div class="col-6">
@@ -256,6 +257,7 @@
                           :columns="main_columns" row-key="self_assessment_id" :filter="filter" :loading="loading"
                           selection="multiple" v-model:selected="selected"
                           separator="cell" style="min-height: 55vh" no-data-label="ไม่พบข้อมูล"
+                          table-header-style="height: 65px;" table-header-class="bg-primary text-white"
                           :rows-per-page-options="[30, 50, 100, 0]">
                           <template v-slot:top-right="props">
                             <div class="row q-gutter-sm items-center">

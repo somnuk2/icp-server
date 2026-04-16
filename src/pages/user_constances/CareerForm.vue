@@ -41,6 +41,7 @@
             <q-table :rows="individuals1" :columns="columns" row-key="career_id" :filter="filter"
               :loading="loading" separator="cell" class="custom-green-table full-width shadow-2"
               :rows-per-page-options="[10, 20, 50, 0]" selection="multiple" v-model:selected="selected"
+              table-header-style="height: 65px;" table-header-class="bg-primary text-white"
               :pagination-label="(first, end, total) => `หน้า : ${end}/${total}`">
               <template v-slot:top>
                 <div class="full-width row q-col-gutter-sm items-center">

@@ -138,7 +138,7 @@
                     <!-- Table Content -->
                     <q-table title="ข้อมูลอาชีพเป้าหมาย" :rows="plan_careers1" :columns="columns"
                       row-key="plan_career_id" :filter="filter" :loading="loading" :visible-columns="visibleColumns"
-                      separator="cell" table-header-class="bg-blue-5" :rows-per-page-options="[30, 50, 100, 0]">
+                      separator="cell" table-header-style="height: 65px;" table-header-class="bg-primary text-white" :rows-per-page-options="[30, 50, 100, 0]">
                       <template #top-right="props">
                         <div class="row q-gutter-sm items-center">
                           <q-input borderless dense debounce="300" v-model="filter" placeholder="ค้นหาอาชีพ">

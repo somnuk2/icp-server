@@ -58,6 +58,7 @@
           <q-table class="custom-green-table shadow-2 full-width" title="ข้อมูลสมาชิก" :rows="members1"
             :columns="columns" row-key="member_id" :filter="filter" :loading="loading" separator="cell"
             :rows-per-page-options="[10, 30, 50, 0]"
+            table-header-style="height: 65px;" table-header-class="bg-primary text-white"
             :pagination-label="(first, end, total) => `หน้า : ${end}/${total}`">
             <template v-slot:top-right>
               <q-input dense outlined v-model="filter" placeholder="ค้นหา..." bg-color="white">

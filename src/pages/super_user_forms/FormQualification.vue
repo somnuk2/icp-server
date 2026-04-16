@@ -345,7 +345,7 @@
                             :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
                               return `หน้า : ${endRowIndex}/${totalRowsNumber}`
                             }" selection="multiple" v-model:selected="selectedRows"
-                            table-header-style="height: 65px; " table-header-class="bg-blue-5">
+                            table-header-style="height: 65px;" table-header-class="bg-primary text-white">
                             <template v-slot:top-left>
                               <div class="row q-gutter-sm items-center">
                                 <q-btn v-if="selectedRows.length > 0" flat color="red" :label="`ลบที่เลือก (${selectedRows.length})`" @click="deleteSelected" />

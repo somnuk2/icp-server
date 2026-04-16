@@ -151,7 +151,7 @@
                     <q-table title="ข้อมูลส่วนตัว" :rows="safeIndividuals" :columns="columns" row-key="individual_id"
                       :filter="filter" :loading="loading" :visible-columns="visibleColumns" separator="cell"
                       selection="multiple" v-model:selected="selected" class="my-custom-table shadow-1 border-radius-8"
-                      table-header-class="bg-blue-3 text-black">
+                      table-header-style="height: 65px;" table-header-class="bg-primary text-white">
                       <template #top-right="props">
                         <div class="row q-col-gutter-xs items-center">
                           <q-input borderless dense debounce="300" v-model="filter" placeholder="ค้นหา..."><template

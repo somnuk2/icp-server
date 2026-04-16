@@ -425,7 +425,7 @@
                       <q-table ref="tb" title="ข้อมูลส่วนตัว" :rows="individuals1" :columns="columns" row-key="individual_id"
                         :filter="filter" :loading="loading" :visible-columns="visibleColumns" separator="cell"
                         selection="multiple" v-model:selected="selected"
-                        table-header-style="height: 65px; " table-header-class="bg-blue-5"
+                        table-header-style="height: 65px;" table-header-class="bg-primary text-white"
                         :rows-per-page-options="[10, 20, 30, 50, 100, 0]" v-model:pagination="pagination"
                         icon-first-page="home" icon-last-page="all_inclusive" icon-next-page="arrow_right"
                         icon-prev-page="arrow_left" :pagination-label="getPaginationLabel">

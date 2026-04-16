@@ -86,7 +86,7 @@
                       <div class="col-md-12 col-xs-12 q-pa-xs">
                         <q-table class="my-sticky-header-table" title="ข้อมูลสมาชิค" :rows="members1" :columns="columns"
                           row-key="name" :filter="filter" :loading="loading" separator="cell"
-                          table-header-style="height: 65px; " table-header-class="bg-blue-5"
+                          table-header-style="height: 65px;" table-header-class="bg-primary text-white"
                           :rows-per-page-options="[30, 50, 100, 0]" icon-first-page="home"
                           icon-last-page="all_inclusive" icon-next-page="arrow_right" icon-prev-page="arrow_left"
                           :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
