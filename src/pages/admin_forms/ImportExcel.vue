@@ -11,7 +11,7 @@
             </div>
             <q-space />
             <div class="q-gutter-sm">
-              <q-btn flat dense icon="delete_sweep" label="ล้างข้อมูล" @click="clearTable" />
+              <q-btn flat dense label="ล้างข้อมูล" @click="clearTable" />
             </div>
           </q-card-section>
 

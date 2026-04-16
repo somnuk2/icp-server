@@ -68,11 +68,11 @@
                       <div class="row">
                         <div class="col-md-12 col-xs-12 q-pa-xs row justify-center">
                           <!-- บันทึก/แก้ไข -->
-                          <q-btn :label="btnLabel" type="submit" color="primary" icon="save" />
+                          <q-btn :label="btnLabel" type="submit" color="primary" />
                           <!-- ยกเลิก -->
-                          <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-pa-xs" icon="clear" />
+                          <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-pa-xs" />
                           <!-- ออก -->
-                          <q-btn icon="logout" label="ออก" color="primary" flat class="q-pa-xs" to="/" />
+                          <q-btn label="ออก" color="primary" flat class="q-pa-xs" to="/" />
                         </div>
                       </div>
                     </q-form>
@@ -90,8 +90,7 @@
                         }" selection="multiple" v-model:selected="selected">
                         <template v-slot:top-right="props">
                           <div class="row q-gutter-sm items-center">
-                            <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
-                              :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+                            <q-btn v-if="selected.length > 0" flat color="red" :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
                             <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาอาชีพ..." outlined
                               bg-color="white">
                               <template v-slot:append>
@@ -109,21 +108,18 @@
                           <q-select v-model="visibleColumns" multiple outlined dense options-dense
                             :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
                             option-value="name" options-cover style="min-width: 150px" />
-                          <q-btn flat round dense :icon="props.inFullscreen
-                            ? 'fullscreen_exit'
-                            : 'fullscreen'
-                            " @click="props.toggleFullscreen" class="q-ml-md" />
+                          <q-btn flat round dense :@click="props.toggleFullscreen" class="q-ml-md" />
                           </div>
                         </template>
                         <template v-slot:body-cell-actions="props">
-                          <q-td :props="props">
-                            <q-btn color="blue" label="แก้ไข" @click="editUser(props.row)" no-caps></q-btn>
-                            <q-btn color="red" label="ลบ" @click="
+                          <q-td :props="props" class="text-center">
+                            <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row)"></q-btn>
+                            <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="
                               deleteUser(
                                 props.row.career_id,
                                 props.row.career_name
                               )
-                              " no-caps></q-btn>
+                              "></q-btn>
                           </q-td>
                         </template>
                       </q-table>
@@ -176,7 +172,7 @@ export default {
         "ca_group_name",
       ]),
       columns: [
-        { name: "actions", align: "center", label: "แก้ไข/ลบ" },
+        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;" },
         {
           name: "career_id",
           align: "center",

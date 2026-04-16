@@ -19,8 +19,7 @@
                     <!-- ข้อมูลส่วนตัว (ผู้ดูแลระบบ) -->
                     <div class="row q-col-gutter-sm">
                       <div class="col-12">
-                        <q-expansion-item group="main-form" icon="person"
-                          label="ข้อมูลส่วนตัว (ผู้ดูแลระบบ) - คลิกเพื่อ ย่อ/ขยาย"
+                        <q-expansion-item group="main-form" label="ข้อมูลส่วนตัว (ผู้ดูแลระบบ) - คลิกเพื่อ ย่อ/ขยาย"
                           header-class="text-white text-subtitle1 bg-primary" class="shadow-1 overflow-hidden"
                           style="border-radius: 8px" default-opened>
                           <q-card>
@@ -301,8 +300,7 @@
                     <!-- ✅ ข้อมูลพื้นฐานเพิ่มเติม (คืนกลับมาแล้ว) -->
                     <div class="row q-col-gutter-sm">
                       <div class="col-12">
-                        <q-expansion-item group="extra-info" icon="info"
-                          label="ข้อมูลพื้นฐานเพิ่มเติม (คลิกเพื่อ ย่อ/ขยาย)"
+                        <q-expansion-item group="extra-info" label="ข้อมูลพื้นฐานเพิ่มเติม (คลิกเพื่อ ย่อ/ขยาย)"
                           header-class="text-white text-subtitle1 bg-primary" class="shadow-1 overflow-hidden"
                           style="border-radius: 8px">
                           <q-card>
@@ -356,15 +354,13 @@
                     <!-- ปุ่มควบคุม -->
                     <div class="row">
                       <div class="col-12 q-pa-xs row justify-center">
-                        <q-btn :label="btnLabel" type="submit" color="primary" icon="save" :disable="!pdpa" />
-                        <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-pa-xs" icon="clear" />
-                        <q-btn icon="logout" label="ออก" color="primary" flat class="q-pa-xs" to="/" />
-                        <q-btn color="primary" label="กลับฟอร์มการลงทะเบียน" no-caps flat icon="skip_previous"
-                          to="/AdminFormRegistration">
+                        <q-btn :label="btnLabel" type="submit" color="primary" :disable="!pdpa" />
+                        <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-pa-xs" />
+                        <q-btn label="ออก" color="primary" flat class="q-pa-xs" to="/" />
+                        <q-btn color="primary" label="กลับฟอร์มการลงทะเบียน" no-caps flat to="/AdminFormRegistration">
                           <q-tooltip class="bg-accent">กลับฟอร์มการลงทะเบียน</q-tooltip>
                         </q-btn>
-                        <q-btn color="primary" label="ไปฟอร์มกำหนดอาชีพเป้าหมาย" no-caps flat icon="skip_next"
-                          to="/AdminFormPlanCareer">
+                        <q-btn color="primary" label="ไปฟอร์มกำหนดอาชีพเป้าหมาย" no-caps flat to="/AdminFormPlanCareer">
                           <q-tooltip class="bg-accent">ไปฟอร์มกำหนดอาชีพเป้าหมาย</q-tooltip>
                         </q-btn>
                       </div>
@@ -390,16 +386,15 @@
                       <template v-slot:top-left>
                         <div class="row q-gutter-sm items-center">
                           <div class="text-h6">ข้อมูลส่วนตัว</div>
-                          <q-chip color="primary" text-color="white" icon="people">
+                          <q-chip color="primary" text-color="white" >
                             {{ individuals1.length }} รายการ
                           </q-chip>
 
-                          <q-btn v-if="pagination.rowsPerPage !== 0" dense flat color="primary" icon="unfold_more"
-                            label="แสดงทั้งหมด" @click="showAllRows" size="sm">
+                          <q-btn v-if="pagination.rowsPerPage !== 0" dense flat color="primary" label="แสดงทั้งหมด" @click="showAllRows" size="sm">
                             <q-tooltip>แสดงข้อมูลทั้งหมด</q-tooltip>
                           </q-btn>
 
-                          <q-btn v-else dense flat color="primary" icon="unfold_less" label="ย่อตาราง"
+                          <q-btn v-else dense flat color="primary" label="ย่อตาราง"
                             @click="collapseTable" size="sm">
                             <q-tooltip>แสดงแบบแบ่งหน้า</q-tooltip>
                           </q-btn>
@@ -409,8 +404,7 @@
                       <!-- Top-right -->
                       <template v-slot:top-right="props">
                         <div class="row q-gutter-sm items-center">
-                          <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
-                            :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+                          <q-btn v-if="selected.length > 0" flat color="red" :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
 
                           <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาข้อมูลส่วนตัว..." outlined
                             bg-color="white">
@@ -424,26 +418,25 @@
                               <q-icon name="save" />
                             </template>
                           </q-input>
-                          <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
+                          <q-btn flat color="black" label="ส่งออก excel" @click="exportTable()" />
 
                           <q-select v-model="visibleColumns" multiple outlined dense options-dense
                             :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
                             option-value="name" options-cover style="min-width: 160px" bg-color="white" />
 
-                          <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                            @click="props.toggleFullscreen" />
+                          <q-btn flat round dense :@click="props.toggleFullscreen" />
                         </div>
                       </template>
 
                       <!-- ✅ ปุ่มแก้ไข/ลบ (คืนให้ทำงานแล้ว) -->
                       <template v-slot:body-cell-actions="props">
-                        <q-td :props="props">
+                        <q-td :props="props" class="text-center">
                           <div class="row q-gutter-xs justify-center no-wrap">
-                            <q-btn round flat color="blue-7" icon="edit" size="sm"
+                            <q-btn round flat color="blue-7" size="sm"
                               @click="editUser(props.row.individual_id)" unelevated>
                               <q-tooltip class="bg-blue">แก้ไขข้อมูล</q-tooltip>
                             </q-btn>
-                            <q-btn round flat color="red-7" icon="delete" size="sm"
+                            <q-btn round flat color="red-7" size="sm"
                               @click="deleteUser(props.row.individual_id, props.row.full_name)" unelevated>
                               <q-tooltip class="bg-red">ลบข้อมูล</q-tooltip>
                             </q-btn>
@@ -532,7 +525,7 @@ export default {
       selected: ref([]),
 
       columns: [
-        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 120px;", headerStyle: "width: 120px;" },
+        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;" },
         { name: "status", align: "left", label: "บทบาท", field: "status", sortable: true, style: "width: 100px;", headerStyle: "width: 100px;" },
         { name: "full_name", align: "left", label: "ชื่อ-สกุล", field: "full_name", sortable: true, style: "min-width: 180px;", headerStyle: "min-width: 180px;" },
         { name: "birthday", align: "center", label: "ปีเกิด", field: "birthday", style: "width: 80px;", headerStyle: "width: 80px;" },

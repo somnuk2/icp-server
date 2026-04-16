@@ -8,19 +8,18 @@
       indicator-color="primary"
       align="justify"
     >
-      <q-tab name="project" icon="description" label="โตรงการ" />
-      <q-tab name="disability" icon="accessible" label="ความพิการ" />
-      <q-tab name="target" icon="check_circle" label="ค่าเป้าหมาย" />
-      <q-tab name="improvement" icon="fact_check" label="ค่าการประเมิน" />
-      <q-tab name="level" icon="verified_user" label="ระดับความสำคัญ" />
-      <q-tab name="importance" icon="privacy_tip" label="ความสำคัญ" />
-      <q-tab name="career_group" icon="assignment" label="กลุ่มอาชีพ" />
+      <q-tab name="project" label="โตรงการ" />
+      <q-tab name="disability" label="ความพิการ" />
+      <q-tab name="target" label="ค่าเป้าหมาย" />
+      <q-tab name="improvement" label="ค่าการประเมิน" />
+      <q-tab name="level" label="ระดับความสำคัญ" />
+      <q-tab name="importance" label="ความสำคัญ" />
+      <q-tab name="career_group" label="กลุ่มอาชีพ" />
       <q-tab
         name="qualification_group"
-        icon="pending_actions"
         label="กลุ่มคุณสมบัติ/ทักษะ"
       />
-      <q-tab name="development" icon="psychology" label="ชนิดการพัฒนา" />
+      <q-tab name="development" label="ชนิดการพัฒนา" />
     </q-tabs>
     <q-separator />
     <q-tab-panels v-model="tab" animated>

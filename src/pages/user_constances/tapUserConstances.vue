@@ -8,8 +8,8 @@
       indicator-color="blue-7"
       align="justify"
     >
-      <q-tab name="career" icon="assignment" label="อาชีพ" />
-      <q-tab name="qualification" icon="pending_actions" label="คุณสมบัติ" />
+      <q-tab name="career" label="อาชีพ" />
+      <q-tab name="qualification" label="คุณสมบัติ" />
     </q-tabs>
     <q-separator />
     <q-tab-panels v-model="tab" animated>

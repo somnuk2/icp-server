@@ -8,7 +8,7 @@
       indicator-color="blue-7"
       align="justify"
     >
-      <q-tab name="FormPlan" icon="person_add_alt" label="ฟอร์มการพัฒนาตนเอง" />
+      <q-tab name="FormPlan" label="ฟอร์มการพัฒนาตนเอง" />
     </q-tabs>
     <q-separator />
     <q-tab-panels v-model="tab" animated>

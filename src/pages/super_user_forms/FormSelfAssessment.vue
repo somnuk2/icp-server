@@ -242,20 +242,17 @@
                                   </q-input>
                                 </div>
                                 <div class="col-md-3 col-xs-4 q-pa-xs">
-                                  <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
+                                  <q-btn flat color="black" label="ส่งออก excel" @click="exportTable()" />
                                 </div>
                                 <!-- ปุ่มเพิ่มแหล่งอ้างอิง -->
                                 <div class="col-md-2 col-xs-4 q-pa-xs">
-                                  <q-btn rounded flat @click="show_dialog = true" icon="add_circle" label="เพิ่มข้อมูล"
+                                  <q-btn rounded flat @click="show_dialog = true" label="เพิ่มข้อมูล"
                                     no-caps>
                                     <q-tooltip class="bg-accent">เพิ่มแหล่งอ้างอิง/ผลงาน</q-tooltip>
                                   </q-btn>
                                 </div>
                                 <div class="col-md-1 col-xs-4 q-pa-xs">
-                                  <q-btn flat round dense :icon="props.inFullscreen
-                                    ? 'fullscreen_exit'
-                                    : 'fullscreen'
-                                    " @click="props.toggleFullscreen" class="q-ml-md" />
+                                  <q-btn flat round dense :@click="props.toggleFullscreen" class="q-ml-md" />
                                 </div>
                               </div>
                               <!-- dialog เพิ่มข้อมูล -->
@@ -283,11 +280,11 @@
                             </template>
                             <!-- แก้ไขข้อมูล + ลบข้อมูล -->
                             <template v-slot:body-cell-actions="props">
-                              <q-td :props="props">
+                              <q-td :props="props" class="text-center">
                                 <!-- แก้ไขข้อมูล -->
-                                <q-btn color="blue" label="แก้ไข" @click="editItem(props.row)" no-caps></q-btn>
+                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editItem(props.row)"></q-btn>
                                 <!-- ลบข้อมูล -->
-                                <q-btn color="red" label="ลบ" @click="deleteItem(props.row)" no-caps></q-btn>
+                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="deleteItem(props.row)"></q-btn>
                               </q-td>
                             </template>
                           </q-table>
@@ -299,14 +296,13 @@
                       <!-- ปุ่มควบคุม -->
                       <div class="col-md-12 col-xs-12 q-pa-xs row justify-center">
                         <!-- บันทึก/แก้ไข -->
-                        <q-btn :label="btnLabel" type="submit" color="primary" icon="save" />
+                        <q-btn :label="btnLabel" type="submit" color="primary" />
                         <!-- ยกเลิก -->
-                        <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-pa-xs" icon="clear" />
+                        <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-pa-xs" />
                         <!-- ออก -->
-                        <q-btn icon="logout" label="ออก" color="primary" flat class="q-pa-xs" to="/" />
+                        <q-btn label="ออก" color="primary" flat class="q-pa-xs" to="/" />
                         <!-- ย้อนกลับ -->
-                        <q-btn color="primary" label="กลับฟอร์มการพัฒนาตนเอง" no-caps flat icon="skip_previous"
-                          to="/SuserFormPlan">
+                        <q-btn color="primary" label="กลับฟอร์มการพัฒนาตนเอง" no-caps flat to="/SuserFormPlan">
                           <q-tooltip class="bg-accent">กลับฟอร์มการพัฒนาตนเอง</q-tooltip>
                         </q-btn>
                         <!-- ไปฟอร์มการแจ้งเตือน (ถูกนำออกแล้ว) -->
@@ -342,7 +338,7 @@
                               </div>
                               <!-- ปุ่มกรองข้อมูล -->
                               <div class="col-md-2 col-xs-12">
-                                <q-btn color="primary" unelevated icon="search" label="ค้นหา" @click="getFilterMonth()"
+                                <q-btn color="primary" unelevated label="ค้นหา" @click="getFilterMonth()"
                                   class="full-width" style="height: 40px">
                                   <q-tooltip>ค้นหาข้อมูลตามปีที่เลือก</q-tooltip>
                                 </q-btn>
@@ -380,7 +376,7 @@
                               </div>
                               <!-- Export Button -->
                               <div class="col-md-3 col-xs-12 text-center">
-                                <q-btn flat color="black" icon="download" label="ส่งออก excel"
+                                <q-btn flat color="black" label="ส่งออก excel"
                                   @click="exportTableRef()" class="full-width q-py-xs" />
                               </div>
                               <div class="col-md-4 col-xs-12">
@@ -414,8 +410,7 @@
                             }">
                             <template v-slot:top-right="props">
                               <div class="row q-gutter-sm items-center">
-                                <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
-                                  :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+                                <q-btn v-if="selected.length > 0" flat color="red" :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
 
                                 <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาในตาราง..." outlined
                                   bg-color="white">
@@ -426,26 +421,24 @@
                                 <q-select v-model="visibleColumnsAssessment" multiple outlined dense options-dense
                                   :display-value="$q.lang.table.columns" emit-value map-options :options="main_columns"
                                   option-value="name" options-cover style="min-width: 150px" bg-color="white" />
-                                <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                                  @click="props.toggleFullscreen" />
+                                <q-btn flat round dense :@click="props.toggleFullscreen" />
                               </div>
                             </template>
                             <template v-slot:body-cell-actions="props">
                               <q-tr :props="props">
                                 <q-td auto-width>
-                                  <q-btn color="blue" label="แก้ไข" @click="
+                                  <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="
                                     OnEdit(props.row.self_assessment_id)
-                                    " no-caps />
-                                  <q-btn color="red" label="ลบ" @click="
+                                    ">
+                                  <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="
                                     onDelete(
                                       props.row.self_assessment_id,
                                       props.row.self_assessment_date
                                     )
-                                    " no-caps />
+                                    ">
                                 </q-td>
                                 <q-td auto-width>
-                                  <q-toggle v-model="props.expand" checked-icon="add" unchecked-icon="remove"
-                                    label="ผลงาน" @update:model-value="
+                                  <q-toggle v-model="props.expand" checked-unchecked-label="ผลงาน" @update:model-value="
                                       subRow(props.row.self_assessment_id)
                                       " no-caps />
                                 </q-td>
@@ -571,7 +564,7 @@ export default {
       visibleColumnsAssessment: ref(["actions", "full_name", "self_assessment_date", "career_name", "qualification_name", "importance_name", "target_value", "perform_value", "plan_title", "reference_description"]),
       visibleColumnsReference: ref(["actions", "reference_description"]),
       main_columns: [
-        { name: "actions", align: "center", label: "แก้ไข/ลบ : ผลงาน" },
+        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;" },
         { name: "full_name", align: "left", label: "ชื่อ-สกุล", field: "full_name", sortable: true },
         { name: "self_assessment_date", align: "center", label: "วันประเมิน", field: "self_assessment_date", sortable: true },
         { name: "career_name", align: "left", label: "อาชีพ", field: "career_name", sortable: true },
@@ -583,7 +576,7 @@ export default {
         { name: "reference_description", align: "left", label: "หลักฐาน", field: "reference_description", sortable: true },
       ],
       references: [
-        { name: "actions", align: "center", label: "แก้ไข/ลบ" },
+        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;" },
         { name: "reference_description", align: "left", label: "แหล่งอ้างอิง/ผลงาน", field: "reference_description", sortable: true },
       ],
       sub_columns: [

@@ -152,12 +152,11 @@
                                 </q-input>
                               </div>
                               <div class="col-4">
-                                <q-btn rounded flat icon="add_circle" label="เพิ่มข้อมูล" no-caps
+                                <q-btn rounded flat label="เพิ่มข้อมูล" no-caps
                                   @click="openAddRefDialog()" />
                               </div>
                               <div class="col-2">
-                                <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                                  @click="props.toggleFullscreen" />
+                                <q-btn flat round dense :@click="props.toggleFullscreen" />
                               </div>
                             </div>
 
@@ -179,9 +178,9 @@
                           </template>
 
                           <template v-slot:body-cell-actions="props">
-                            <q-td :props="props">
-                              <q-btn color="blue" label="แก้ไข" no-caps class="q-mr-sm" @click="editItem(props.row)" />
-                              <q-btn color="red" label="ลบ" no-caps @click="deleteItem(props.row)" />
+                            <q-td :props="props" class="text-center">
+                              <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editItem(props.row)">
+                              <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="deleteItem(props.row)">
                             </q-td>
                           </template>
                         </q-table>
@@ -191,11 +190,11 @@
                     <!-- ปุ่มบันทึก -->
                     <div class="row">
                       <div class="col-12 q-pa-xs row justify-center">
-                        <q-btn :label="btnLabel" type="submit" color="primary" icon="save" class="q-mr-sm" />
-                        <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-mr-sm" icon="clear" />
-                        <q-btn icon="logout" label="ออก" color="primary" flat class="q-mr-sm" to="/" />
+                        <q-btn :label="btnLabel" type="submit" color="primary" class="q-mr-sm" />
+                        <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-mr-sm" />
+                        <q-btn label="ออก" color="primary" flat class="q-mr-sm" to="/" />
                         <!-- กลับฟอร์มแผนการพัฒนาตนเอง -->
-                        <q-btn color="primary" no-caps flat icon="skip_previous" label="กลับฟอร์มแผนการพัฒนาตนเอง"
+                        <q-btn color="primary" no-caps flat label="กลับฟอร์มแผนการพัฒนาตนเอง"
                           to="/AdminFormPlan">
                           <q-tooltip class="bg-accent">กลับฟอร์มแผนการพัฒนาตนเอง</q-tooltip>
                         </q-btn>
@@ -232,11 +231,11 @@
                                   @filter="filterYear" clearable />
                               </div>
                               <div class="col-md-3 col-xs-12">
-                                <q-btn color="primary" unelevated icon="search" label="กรองข้อมูล" class="full-width"
+                                <q-btn color="primary" unelevated label="กรองข้อมูล" class="full-width"
                                   @click="applyFiltersClient()" />
                               </div>
                               <div class="col-md-3 col-xs-12">
-                                <q-btn color="grey-8" unelevated icon="restart_alt" label="แสดงทั้งหมด"
+                                <q-btn color="grey-8" unelevated label="แสดงทั้งหมด"
                                   class="full-width" @click="loadAll()" />
                               </div>
                               <div class="col-md-2 col-xs-12">
@@ -257,25 +256,21 @@
                           :rows-per-page-options="[30, 50, 100, 0]">
                           <template v-slot:top-right="props">
                             <div class="row q-gutter-sm items-center">
-                              <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
-                                :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+                              <q-btn v-if="selected.length > 0" flat color="red" :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
 
                               <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาในตาราง..." outlined
                                 bg-color="white">
                                 <template v-slot:append><q-icon name="search" /></template>
                               </q-input>
-                              <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable" />
-                              <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                                @click="props.toggleFullscreen" />
+                              <q-btn flat color="black" label="ส่งออก excel" @click="exportTable" />
+                              <q-btn flat round dense :@click="props.toggleFullscreen" />
                             </div>
                           </template>
 
                           <template v-slot:body-cell-actions="props">
-                            <q-td :props="props">
-                              <q-btn color="blue" label="แก้ไข" no-caps class="q-mr-sm"
-                                @click="OnEdit(props.row.self_assessment_id)" />
-                              <q-btn color="red" label="ลบ" no-caps
-                                @click="onDelete(props.row.self_assessment_id, props.row.self_assessment_date)" />
+                            <q-td :props="props" class="text-center">
+                              <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="OnEdit(props.row.self_assessment_id)">
+                              <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="onDelete(props.row.self_assessment_id, props.row.self_assessment_date)">
                             </q-td>
                           </template>
                         </q-table>
@@ -360,13 +355,13 @@ export default {
       editedReference: { reference_id: "", reference_description: "" },
 
       references: [
-        { name: "actions", align: "center", label: "แก้ไข/ลบ" },
+        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;" },
         { name: "reference_description", align: "left", label: "แหล่งอ้างอิง/ผลงาน", field: "reference_description", sortable: true },
       ],
 
       // history columns
       main_columns: [
-        { name: "actions", align: "center", label: "แก้ไข/ลบ", field: "" },
+        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;", field: "" },
         { name: "full_name", align: "left", label: "ชื่อ-สกุล", field: "full_name", sortable: true },
         { name: "self_assessment_date", align: "center", label: "วันประเมิน", field: "self_assessment_date", sortable: true },
         { name: "career_name", align: "left", label: "อาชีพ", field: "career_name", sortable: true },

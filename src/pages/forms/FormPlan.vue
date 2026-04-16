@@ -28,8 +28,7 @@
                             AI</q-item-label>
                         </q-item-section>
                         <q-item-section side>
-                          <q-btn outline color="green" icon="add_box" label="เพิ่มแผนด้วยตนเอง"
-                            @click="showManualFormDialog = true" data-testid="btn-manual-plan" />
+                          <q-btn size="sm" color="green" label="เตือน" unelevated no-caps @click="showManualFormDialog = true">
                         </q-item-section>
                       </q-item>
 
@@ -38,7 +37,7 @@
                         header-class="q-py-md items-center bg-grey-1" expand-separator default-opened>
                         <template #header>
                           <q-item-section avatar>
-                            <q-avatar color="deep-purple-1" text-color="deep-purple-7" icon="work" />
+                            <q-avatar color="deep-purple-1" text-color="deep-purple-7" />
                           </q-item-section>
                           <q-item-section>
                             <q-item-label class="text-subtitle1 text-weight-bold">{{ career.label }}</q-item-label>
@@ -61,7 +60,7 @@
                                     }}</q-item-label>
                                 </q-item-section>
                                 <q-item-section side>
-                                  <q-btn unelevated rounded color="deep-purple-7" icon="bolt" label="แนะนำแผนพัฒนา"
+                                  <q-btn unelevated rounded color="deep-purple-7" label="แนะนำแผนพัฒนา"
                                     @click.stop="recommendForQualification(qual)"
                                     :loading="loadingQualAI === qual.qa_plan_career_id" class="q-px-md">
                                     <q-tooltip>รับคำแนะนำจาก AI สำหรับคุณสมบัตินี้</q-tooltip>
@@ -98,9 +97,9 @@
                                           </div>
 
                                           <div>
-                                            <q-btn v-if="!rec.isEditing" flat round color="grey-7" icon="edit" size="sm"
+                                            <q-btn v-if="!rec.isEditing" flat round color="grey-7" size="sm"
                                               @click="rec.isEditing = true" />
-                                            <q-btn v-else flat round color="positive" icon="check" size="sm"
+                                            <q-btn v-else flat round color="positive" size="sm"
                                               @click="rec.isEditing = false" />
                                           </div>
                                         </div>
@@ -125,11 +124,11 @@
 
                                       <q-item-section side top>
                                         <div class="row q-gutter-x-sm">
-                                          <q-btn flat round color="red-4" icon="close" size="sm"
+                                          <q-btn flat round color="red-4" size="sm"
                                             @click="aiRecommendations = aiRecommendations.filter(r => r !== rec)">
                                             <q-tooltip>ลบข้อแนะนำนี้</q-tooltip>
                                           </q-btn>
-                                          <q-btn unelevated color="positive" icon="add_check" label="ยอมรับและเพิ่มลงแผน"
+                                          <q-btn unelevated color="positive" label="ยอมรับและเพิ่มลงแผน"
                                             @click="acceptAiRecommendation(rec)" />
                                         </div>
                                       </q-item-section>
@@ -174,10 +173,10 @@
                             style="width: 150px">
                             <template v-slot:append><q-icon name="save" /></template>
                           </q-input>
-                          <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable" />
+                          <q-btn flat color="black" label="ส่งออก excel" @click="exportTable" />
                           <q-checkbox v-if="plans1.length > 0" v-model="isAllSelected" label="เลือกทั้งหมด"
                             @update:model-value="toggleSelectAll" class="q-mx-sm" />
-                          <q-btn v-if="tickedPlans.length > 0" color="negative" icon="delete" label="ลบที่เลือก"
+                          <q-btn v-if="tickedPlans.length > 0" color="negative" label="ลบที่เลือก"
                             @click="deleteSelectedPlans" no-caps class="q-ml-sm" />
                         </div>
                       </q-card-section>
@@ -208,12 +207,10 @@
                               </div>
 
                               <div v-if="prop.node.type === 'plan'" class="row q-gutter-xs">
-                                <q-btn flat round color="blue" icon="edit" size="sm"
-                                  @click.stop="onEdit(prop.node.rawData.plan_id)">
+                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click.stop="onEdit(prop.node.rawData.plan_id)">
                                   <q-tooltip>แก้ไขแผนนี้</q-tooltip>
                                 </q-btn>
-                                <q-btn flat round color="red" icon="delete" size="sm"
-                                  @click.stop="onDelete(prop.node.rawData.plan_id, prop.node.rawData.plan_title)">
+                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click.stop="onDelete(prop.node.rawData.plan_id, prop.node.rawData.plan_title)">
                                   <q-tooltip>ลบแผนนี้</q-tooltip>
                                 </q-btn>
                               </div>
@@ -231,13 +228,11 @@
 
                 <!-- Navigation Buttons -->
                 <div class="row justify-center items-center q-gutter-sm q-mt-sm q-mb-md">
-                  <q-btn icon="logout" label="ออก" color="primary" flat to="/" />
-                  <q-btn color="primary" label="กลับฟอร์มกำหนดคุณสมบัติ" no-caps flat icon="skip_previous"
-                    to="/FormQualification">
+                  <q-btn label="ออก" color="primary" flat to="/" />
+                  <q-btn color="primary" label="กลับฟอร์มกำหนดคุณสมบัติ" no-caps flat to="/FormQualification">
                     <q-tooltip class="bg-accent">กลับฟอร์มกำหนดคุณสมบัติ/ทักษะ</q-tooltip>
                   </q-btn>
-                  <q-btn color="primary" label="ไปฟอร์มการประเมินตนเอง" no-caps flat icon="skip_next"
-                    to="/FormSelfAssessment">
+                  <q-btn color="primary" label="ไปฟอร์มการประเมินตนเอง" no-caps flat to="/FormSelfAssessment">
                     <q-tooltip class="bg-accent">ไปฟอร์มการประเมินตนเอง</q-tooltip>
                   </q-btn>
                 </div>
@@ -432,9 +427,9 @@
 
               <!-- ปุ่มควบคุม -->
               <div class="row justify-center items-center q-gutter-sm q-mt-sm q-mb-md">
-                <q-btn :label="btnLabel" type="submit" color="primary" icon="save" unelevated class="q-px-md"
+                <q-btn :label="btnLabel" type="submit" color="primary" unelevated class="q-px-md"
                   data-testid="btn-submit-plan" />
-                <q-btn label="ยกเลิก" type="reset" color="primary" outline icon="clear" class="q-px-md" />
+                <q-btn label="ยกเลิก" type="reset" color="primary" outline class="q-px-md" />
                 <q-btn label="ปิด" color="grey" flat @click="showManualFormDialog = false" class="q-mx-sm" />
               </div>
             </q-form>
@@ -526,7 +521,7 @@ const plans1 = ref([]);
 
 // ✅ เพิ่ม columns ไว้เหมือนเดิม
 const columns = [
-  { name: "actions", align: "center", label: "แก้ไข/ลบ", field: () => "" },
+  { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;", field: () => "" },
   {
     name: "career_name",
     label: "อาชีพ",

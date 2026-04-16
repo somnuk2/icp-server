@@ -8,7 +8,7 @@
       indicator-color="blue-7"
       align="justify"
     >
-      <q-tab name="FormNotification" icon="alarm" label="ฟอร์มการแจ้งเตือน" />
+      <q-tab name="FormNotification" label="ฟอร์มการแจ้งเตือน" />
     </q-tabs>
     <q-separator />
     <q-tab-panels v-model="tab" animated>

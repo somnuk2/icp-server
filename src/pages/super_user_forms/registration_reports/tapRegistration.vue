@@ -10,7 +10,6 @@
     >
       <q-tab
         name="FormRegistration"
-        icon="averified"
         label="ฟอร์มการลงทะเบียน"
       />
     </q-tabs>

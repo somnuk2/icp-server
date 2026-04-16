@@ -103,10 +103,10 @@
                     <!-- ปุ่มควบคุม -->
                     <div class="row">
                       <div class="col-md-12 col-xs-12 q-pa-xs row justify-center">
-                        <q-btn :label="btnLabel" type="submit" color="primary" icon="save" />
-                        <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-pa-xs" icon="clear" />
-                        <q-btn icon="logout" label="ออก" color="primary" flat class="q-pa-xs" to="/" />
-                        <q-btn color="primary" no-caps flat icon="skip_next" label="ไปฟอร์มการจัดการข้อมูลการศึกษา"
+                        <q-btn :label="btnLabel" type="submit" color="primary" />
+                        <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-pa-xs" />
+                        <q-btn label="ออก" color="primary" flat class="q-pa-xs" to="/" />
+                        <q-btn color="primary" no-caps flat label="ไปฟอร์มการจัดการข้อมูลการศึกษา"
                           class="q-pa-xs" to="/tapFormInstitute">
                           <q-tooltip class="bg-accent">ไปฟอร์มกรอกข้อมูลส่วนตัว</q-tooltip>
                         </q-btn>
@@ -133,8 +133,7 @@
                             }" selection="multiple" v-model:selected="selectedRows">
                             <template v-slot:top-right="props">
                               <div class="row q-gutter-sm items-center">
-                                <q-btn v-if="selectedRows.length > 0" flat color="red" icon="delete"
-                                  :label="`ลบที่เลือก (${selectedRows.length})`" @click="deleteSelected" />
+                                <q-btn v-if="selectedRows.length > 0" flat color="red" :label="`ลบที่เลือก (${selectedRows.length})`" @click="deleteSelected" />
 
                                 <q-input borderless dense debounce="300" v-model="filter" placeholder="ค้นหาสมาชิค">
                                   <template v-slot:append>
@@ -147,23 +146,22 @@
                                     <q-icon name="save" />
                                   </template>
                                 </q-input>
-                                <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
+                                <q-btn flat color="black" label="ส่งออก excel" @click="exportTable()" />
                                 <q-select v-model="visibleColumns" multiple outlined dense options-dense
                                   :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
                                   option-value="name" options-cover style="min-width: 150px" bg-color="white" />
-                                <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                                  @click="props.toggleFullscreen" />
+                                <q-btn flat round dense :@click="props.toggleFullscreen" />
                               </div>
                             </template>
                             <template v-slot:body-cell-actions="props">
-                              <q-td :props="props">
-                                <q-btn color="blue" label="แก้ไข" @click="editUser(props.row.member_id)" no-caps></q-btn>
-                                <q-btn color="red" label="ลบ" @click="
+                              <q-td :props="props" class="text-center">
+                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.member_id)"></q-btn>
+                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="
                                   deleteUser(
                                     props.row.member_id,
                                     props.row.full_name
                                   )
-                                  " no-caps></q-btn>
+                                  "></q-btn>
                               </q-td>
                             </template>
                           </q-table>
@@ -239,7 +237,7 @@ export default {
         "is_verified",
       ]),
       columns: [
-        { name: "actions", align: "center", label: "แก้ไข/ลบ" },
+        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;" },
         {
           name: "full_name",
           align: "left",

@@ -18,11 +18,11 @@
                     <q-icon name="settings" class="q-mr-xs" /> การจัดการข้อมูลพื้นฐาน (ค่าคงที่)
                   </div>
                   <div class="row justify-center q-gutter-sm">
-                    <q-btn unelevated rounded color="blue-7" icon="school" label="สถาบัน"
+                    <q-btn unelevated rounded color="blue-7" label="สถาบัน"
                       @click="showInstituteDialog = true" class="q-px-lg menu-btn" />
-                    <q-btn unelevated rounded color="blue-8" icon="account_balance" label="คณะ"
+                    <q-btn unelevated rounded color="blue-8" label="คณะ"
                       @click="showFacultyDialog = true" class="q-px-lg menu-btn" />
-                    <q-btn unelevated rounded color="blue-9" icon="history_edu" label="ระดับการศึกษา"
+                    <q-btn unelevated rounded color="blue-9" label="ระดับการศึกษา"
                       @click="showDegreeDialog = true" class="q-px-lg menu-btn" />
                   </div>
                 </q-card-section>
@@ -115,19 +115,17 @@
                       <div class="row">
                         <div class="col-md-12 col-xs-12 q-pa-xs row justify-center">
                           <!-- บันทึก/แก้ไข -->
-                          <q-btn :label="btnLabel" type="submit" color="primary" icon="save" />
+                          <q-btn :label="btnLabel" type="submit" color="primary" />
                           <!-- ยกเลิก -->
-                          <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-pa-xs" icon="clear" />
+                          <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-pa-xs" />
                           <!-- ออก -->
-                          <q-btn icon="logout" label="ออก" color="primary" flat class="q-pa-xs" to="/" />
+                          <q-btn label="ออก" color="primary" flat class="q-pa-xs" to="/" />
                           <!-- กลับฟอร์มการลงทะเบียน -->
-                          <q-btn color="primary" label="กลับฟอร์มการลงทะเบียน" no-caps flat icon="skip_previous"
-                            to="/SuserFormRegistration">
+                          <q-btn color="primary" label="กลับฟอร์มการลงทะเบียน" no-caps flat to="/SuserFormRegistration">
                             <q-tooltip class="bg-accent">กลับฟอร์มการลงทะเบียน</q-tooltip>
                           </q-btn>
                           <!-- ไปฟอร์มกำหนดอาชีพเป้าหมาย -->
-                          <q-btn color="primary" label="ไปฟอร์มข้อมูลส่วนตัว" no-caps flat icon="skip_next"
-                            to="/SuserFormComponent">
+                          <q-btn color="primary" label="ไปฟอร์มข้อมูลส่วนตัว" no-caps flat to="/SuserFormComponent">
                             <q-tooltip class="bg-accent">ไปฟอร์มกำหนดอาชีพเป้าหมาย</q-tooltip>
                           </q-btn>
                         </div>
@@ -147,8 +145,7 @@
                         }" selection="multiple" v-model:selected="selected">
                         <template v-slot:top-right="props">
                           <div class="row q-gutter-sm items-center">
-                            <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
-                              :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+                            <q-btn v-if="selected.length > 0" flat color="red" :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
                             <q-input dense debounce="300" v-model="filter" placeholder="ค้นหาข้อมูลสาขาวิชา..."
                               outlined bg-color="white">
                               <template v-slot:append>
@@ -162,26 +159,22 @@
                               <q-icon name="save" />
                             </template>
                           </q-input>
-                          <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
+                          <q-btn flat color="black" label="ส่งออก excel" @click="exportTable()" />
                           <q-select v-model="visibleColumns" multiple outlined dense options-dense
                             :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
                             option-value="name" options-cover style="min-width: 150px" />
-                          <q-btn flat round dense :icon="props.inFullscreen
-                            ? 'fullscreen_exit'
-                            : 'fullscreen'
-                            " @click="props.toggleFullscreen" class="q-ml-md" />
+                          <q-btn flat round dense :@click="props.toggleFullscreen" class="q-ml-md" />
                           </div>
                         </template>
                         <template v-slot:body-cell-actions="props">
-                          <q-td :props="props">
-                            <q-btn color="blue" label="แก้ไข" @click="editUser(props.row.department_id)"
-                              no-caps></q-btn>
-                            <q-btn color="red" label="ลบ" @click="
+                          <q-td :props="props" class="text-center">
+                            <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.department_id)"></q-btn>
+                            <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="
                               deleteUser(
                                 props.row.department_id,
                                 props.row.department_name
                               )
-                              " no-caps></q-btn>
+                              "></q-btn>
                           </q-td>
                         </template>
                       </q-table>
@@ -263,7 +256,7 @@ export default {
         "department_name",
       ]),
       columns: [
-        { name: "actions", align: "center", label: "แก้ไข/ลบ" },
+        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;" },
         {
           name: "institute_name",
           align: "left",

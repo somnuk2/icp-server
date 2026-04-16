@@ -114,18 +114,18 @@
                       <!-- ปุ่มควบคุม -->
                       <div class="col-md-12 col-xs-12 q-pa-xs row justify-center">
                         <!-- บันทึก -->
-                        <q-btn :label="btnLabel" type="submit" color="primary" icon="save" />
+                        <q-btn :label="btnLabel" type="submit" color="primary" />
                         <!-- ยกเลิก -->
-                        <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-pa-xs" icon="clear" />
+                        <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-pa-xs" />
                         <!-- ออก -->
-                        <q-btn icon="logout" label="ออก" color="primary" flat class="q-pa-xs" to="/" />
+                        <q-btn label="ออก" color="primary" flat class="q-pa-xs" to="/" />
                         <!-- กลับฟอร์มกรอกข้อมูลส่วนตัว -->
-                        <q-btn color="primary" no-caps flat icon="skip_previous" label="กลับฟอร์มกรอกข้อมูลส่วนตัว"
+                        <q-btn color="primary" no-caps flat label="กลับฟอร์มกรอกข้อมูลส่วนตัว"
                           to="/SuserFormComponent">
                           <q-tooltip class="bg-accent">กลับฟอร์มกรอกข้อมูลส่วนตัว</q-tooltip>
                         </q-btn>
                         <!-- ไปฟอร์มกำหนดคุณสมบัติ/ทักษะ -->
-                        <q-btn color="primary" no-caps flat icon="skip_next" label="ไปฟอร์มกำหนดคุณสมบัติ/ทักษะ"
+                        <q-btn color="primary" no-caps flat label="ไปฟอร์มกำหนดคุณสมบัติ/ทักษะ"
                           to="/SuserFormQualification">
                           <q-tooltip class="bg-accent">ไปฟอร์มกำหนดคุณสมบัติ/ทักษะ</q-tooltip>
                         </q-btn>
@@ -157,7 +157,7 @@
                               </div>
                               <!-- Export Button -->
                               <div class="col-md-6 col-xs-12 text-center">
-                                <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" class="full-width q-py-xs" />
+                                <q-btn flat color="black" label="ส่งออก excel" @click="exportTable()" class="full-width q-py-xs" />
                               </div>
                             </div>
                           </q-card-section>
@@ -181,8 +181,7 @@
                             }">
                             <template v-slot:top-right="props">
                               <div class="row q-gutter-sm items-center">
-                                <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
-                                  :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+                                <q-btn v-if="selected.length > 0" flat color="red" :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
 
                                 <q-input borderless dense debounce="300" v-model="filter"
                                     placeholder="ค้นหาอาชีพเป้าหมาย">
@@ -193,20 +192,18 @@
                                 <q-select v-model="visibleColumns" multiple outlined dense options-dense
                                   :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
                                   option-value="name" options-cover style="min-width: 150px" bg-color="white" />
-                                <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                                  @click="props.toggleFullscreen" />
+                                <q-btn flat round dense :@click="props.toggleFullscreen" />
                               </div>
                             </template>
                             <template v-slot:body-cell-actions="props">
-                              <q-td :props="props">
-                                <q-btn color="blue" label="แก้ไข" @click="editUser(props.row.plan_career_id)"
-                                  no-caps></q-btn>
-                                <q-btn color="red" label="ลบ" @click="
+                              <q-td :props="props" class="text-center">
+                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.plan_career_id)"></q-btn>
+                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="
                                   deleteUser(
                                     props.row.plan_career_id,
                                     props.row.career_name
                                   )
-                                  " no-caps></q-btn>
+                                  "></q-btn>
                               </q-td>
                             </template>
                           </q-table>
@@ -248,7 +245,7 @@ export default {
       isEdit: false,
       visibleColumns: ref(["actions", "full_name", "career_name", "ca_group_name", "start_date"]),
       columns: [
-        { name: "actions", align: "center", label: "แก้ไข/ลบ" },
+        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;" },
         { name: "status", label: "บทบาท", align: "center", field: "status", sortable: true },
         { name: "full_name", label: "ชื่อ-สกุล", align: "left", field: "full_name", sortable: true },
         { name: "career_name", label: "อาชีพ", align: "left", field: "career_name", sortable: true },

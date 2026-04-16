@@ -8,7 +8,7 @@
       indicator-color="blue-7"
       align="justify"
     >
-      <q-tab name="FormPlanCareer" icon="work" label="ฟอร์มอาชีพเป้าหมาย" />
+      <q-tab name="FormPlanCareer" label="ฟอร์มอาชีพเป้าหมาย" />
     </q-tabs>
     <q-separator />
     <q-tab-panels v-model="tab" animated>

@@ -10,7 +10,6 @@
     >
       <q-tab
         name="FormComponent"
-        icon="account_circle"
         label="ฟอร์มข้อมูลส่วนตัว"
       />
     </q-tabs>

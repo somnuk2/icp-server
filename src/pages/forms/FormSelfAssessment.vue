@@ -27,8 +27,7 @@
                         </q-item-label>
                       </q-item-section>
                       <q-item-section side>
-                        <q-btn outline color="green" icon="add_box" label="เพิ่มข้อมูลด้วยตนเอง"
-                          @click="showManualFormDialog = true" data-testid="btn-open-manual" />
+                        <q-btn size="sm" color="green" label="เตือน" unelevated no-caps @click="showManualFormDialog = true">
                       </q-item-section>
                     </q-item>
 
@@ -37,7 +36,7 @@
                       header-class="q-py-md items-center bg-grey-1" expand-separator default-opened>
                       <template #header>
                         <q-item-section avatar>
-                          <q-avatar color="deep-purple-1" text-color="deep-purple-7" icon="work" />
+                          <q-avatar color="deep-purple-1" text-color="deep-purple-7" />
                         </q-item-section>
                         <q-item-section>
                           <q-item-label class="text-subtitle1 text-weight-bold">{{ career.label }}</q-item-label>
@@ -71,7 +70,7 @@
                                   <q-select dense standout="bg-primary text-white" style="min-width: 200px" color="primary"
                                     v-model="qualAssessmentScores[qual.qa_plan_career_id]" :options="performOptionsAll"
                                     emit-value map-options label="เลือกผลประเมิน" class="col" />
-                                  <q-btn unelevated color="deep-purple-7" icon="bolt" label="AI ช่วยประเมิน" size="sm"
+                                  <q-btn unelevated color="deep-purple-7" label="AI ช่วยประเมิน" size="sm"
                                     @click="recommendScoreForQualification(qual)"
                                     :loading="loadingQualScoreAI === qual.qa_plan_career_id">
                                     <q-tooltip>AI แนะนำระดับผลการประเมินจากแผนที่มีทั้งหมด</q-tooltip>
@@ -89,7 +88,7 @@
                                       <div class="text-caption text-grey-8">ช่องทาง: {{ plan.plan_channel }}</div>
                                     </div>
                                     <div class="col-auto">
-                                      <q-btn unelevated color="blue-7" icon="psychology" label="ขอคำแนะนำหลักฐาน"
+                                      <q-btn unelevated color="blue-7" label="ขอคำแนะนำหลักฐาน"
                                         size="sm" rounded @click="recommendEvidencesForPlan(plan, qual)"
                                         :loading="loadingPlanEvidenceAI === plan.plan_id" />
                                     </div>
@@ -111,10 +110,9 @@
                                             }}</q-item-label>
                                         </q-item-section>
                                         <q-item-section side>
-                                            <q-btn flat round size="xs" :icon="ev.isEditing ? 'check' : 'edit'"
-                                              :color="ev.isEditing ? 'positive' : 'grey-6'"
+                                            <q-btn flat round size="xs" ::color="ev.isEditing ? 'positive' : 'grey-6'"
                                               @click="ev.isEditing = !ev.isEditing" />
-                                            <q-btn flat round size="xs" icon="close" color="red-4"
+                                            <q-btn flat round size="xs" color="red-4"
                                               @click="planEvidences[plan.plan_id].splice(idx, 1)" />
                                         </q-item-section>
                                       </q-item>
@@ -129,7 +127,7 @@
 
                               <!-- 3. Final Save Button -->
                               <div class="row justify-center q-mt-md">
-                                <q-btn color="positive" icon="save" label="บันทึกการประเมินชุดนี้" push
+                                <q-btn color="positive" label="บันทึกการประเมินชุดนี้" push
                                   @click="saveCombinedAssessment(qual)"
                                   :disable="!qualAssessmentScores[qual.qa_plan_career_id]" />
                               </div>
@@ -284,12 +282,11 @@
                                   </div>
 
                                   <div class="col-md-4 col-xs-4 q-pa-xs">
-                                    <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
+                                    <q-btn flat color="black" label="ส่งออก excel" @click="exportTable()" />
                                   </div>
 
                                   <div class="col-md-4 col-xs-4 q-pa-xs">
-                                    <q-btn rounded flat @click="openAddReferenceDialog()" icon="add_circle"
-                                      label="เพิ่มข้อมูล" no-caps data-testid="btn-open-reference-dialog">
+                                    <q-btn rounded flat @click="openAddReferenceDialog()" label="เพิ่มข้อมูล" no-caps data-testid="btn-open-reference-dialog">
                                       <q-tooltip class="bg-accent">เพิ่มแหล่งอ้างอิง/ผลงาน</q-tooltip>
                                     </q-btn>
                                   </div>
@@ -303,16 +300,15 @@
 
                                   <div class="col-md-4 col-xs-4 q-pa-xs">
                                     <q-btn flat round dense
-                                      :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                                      @click="props.toggleFullscreen" class="q-ml-md" />
+                                      :@click="props.toggleFullscreen" class="q-ml-md" />
                                   </div>
                                 </div>
                               </template>
 
                               <template v-slot:body-cell-actions="props">
                                 <q-td :props="props" class="text-center">
-                                  <q-btn size="sm" color="blue" icon="mode_edit" label="แก้ไข" class="q-mr-xs" @click="editItem(props.row)" />
-                                  <q-btn size="sm" color="red" icon="delete" label="ลบ" @click="deleteItem(props.row)" />
+                                  <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editItem(props.row)">
+                                  <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="deleteItem(props.row)">
                                 </q-td>
                               </template>
                             </q-table>
@@ -322,9 +318,8 @@
 
                       <!-- ปุ่มควบคุม Dialog -->
                       <div class="row justify-center items-center q-gutter-sm q-mt-sm q-mb-md">
-                        <q-btn :label="btnLabel" type="submit" color="primary" icon="save"
-                          data-testid="btn-submit-self" />
-                        <q-btn label="ยกเลิก" type="reset" color="primary" flat icon="clear" />
+                        <q-btn :label="btnLabel" type="submit" color="primary" data-testid="btn-submit-self" />
+                        <q-btn label="ยกเลิก" type="reset" color="primary" flat />
                         <q-btn label="ปิด" color="grey" flat @click="showManualFormDialog = false" />
                       </div>
                     </q-form>
@@ -338,7 +333,7 @@
                   <q-card-section class="row items-center q-pb-none">
                     <div class="text-h6">เพิ่มข้อมูลแหล่งอ้างอิง/ผลงาน</div>
                     <q-space />
-                    <q-btn flat round icon="close" v-close-popup />
+                    <q-btn flat round v-close-popup />
                   </q-card-section>
 
                   <q-card-section class="q-gutter-md">
@@ -370,9 +365,8 @@
 
               <!-- Navigation Buttons -->
               <div class="row justify-center items-center q-gutter-sm q-mt-sm q-mb-md">
-                <q-btn icon="logout" label="ออก" color="primary" flat to="/" />
-                <q-btn color="primary" label="กลับฟอร์มรายงานการพัฒนาตนเอง" no-caps flat icon="skip_previous"
-                  to="/FormPlan">
+                <q-btn label="ออก" color="primary" flat to="/" />
+                <q-btn color="primary" label="กลับฟอร์มรายงานการพัฒนาตนเอง" no-caps flat to="/FormPlan">
                   <q-tooltip class="bg-accent">กลับฟอร์มการพัฒนาตนเอง</q-tooltip>
                 </q-btn>
                 <!-- ไปฟอร์มรายงาน (ไม่มี route /FormReport ในระบบ) -->
@@ -404,12 +398,12 @@
                             <template v-slot:prepend><q-icon name="calendar_today" /></template>
                           </q-select>
 
-                          <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
+                          <q-btn flat color="black" label="ส่งออก excel" @click="exportTable()" />
 
                           <q-checkbox v-model="isAllSelected" label="เลือกทั้งหมด" color="primary"
                             @update:model-value="toggleSelectAll" class="q-mx-sm" />
 
-                          <q-btn v-if="tickedAssessments.length > 0" color="red" icon="delete_sweep" label="ลบที่เลือก"
+                          <q-btn v-if="tickedAssessments.length > 0" color="red" label="ลบที่เลือก"
                             @click="deleteSelectedAssessments" class="q-ml-sm" glossy />
                         </div>
                       </q-card-section>
@@ -430,22 +424,20 @@
                               <q-space />
 
                               <div v-if="prop.node.header === 'assessment'" class="row q-gutter-xs">
-                                <q-btn flat round dense color="blue" icon="edit" size="sm"
-                                  @click.stop="OnEdit(prop.node.raw.self_assessment_id)">
+                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click.stop="OnEdit(prop.node.raw.self_assessment_id)">
                                   <q-tooltip>แก้ไขผลการประเมิน</q-tooltip>
                                 </q-btn>
-                                <q-btn flat round dense color="red" icon="delete" size="sm"
-                                  @click.stop="onDelete(prop.node.raw.self_assessment_id, prop.node.raw.self_assessment_date)">
+                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click.stop="onDelete(prop.node.raw.self_assessment_id, prop.node.raw.self_assessment_date)">
                                   <q-tooltip>ลบผลการประเมิน</q-tooltip>
                                 </q-btn>
                               </div>
 
                               <div v-if="prop.node.header === 'reference_detail'" class="row q-gutter-xs">
-                                <q-btn flat round dense color="blue-5" icon="edit" size="sm"
+                                <q-btn flat round dense color="blue-5" size="sm"
                                   @click.stop="editItem(prop.node.raw)">
                                   <q-tooltip>แก้ไขหลักฐาน</q-tooltip>
                                 </q-btn>
-                                <q-btn flat round dense color="red-4" icon="delete" size="sm"
+                                <q-btn flat round dense color="red-4" size="sm"
                                   @click.stop="deleteItem(prop.node.raw)">
                                   <q-tooltip>ลบหลักฐาน</q-tooltip>
                                 </q-btn>
@@ -560,7 +552,7 @@ export default {
       // columns
       visibleColumnsReference: ["actions", "Plan", "reference"],
       references: [
-        { name: "actions", align: "center", label: "แก้ไข/ลบ" },
+        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;" },
         {
           name: "Plan",
           align: "left",

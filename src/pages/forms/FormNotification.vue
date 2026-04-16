@@ -82,19 +82,17 @@
                       <div class="row">
                         <div class="col-md-12 col-xs-12 q-pa-xs row justify-center">
                           <!-- บันทึก/แก้ไข -->
-                          <q-btn :label="btnLabel" type="submit" color="primary" icon="save" />
+                          <q-btn :label="btnLabel" type="submit" color="primary" />
                           <!-- ยกเลิก -->
-                          <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-pa-xs" icon="clear" />
+                          <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-pa-xs" />
                           <!-- ออก -->
-                          <q-btn icon="logout" label="ออก" color="primary" flat class="q-pa-xs" to="/" />
+                          <q-btn label="ออก" color="primary" flat class="q-pa-xs" to="/" />
                           <!-- กลับฟอร์มการลงทะเบียน -->
-                          <q-btn color="primary" label="กลับฟอร์มการลงทะเบียน" no-caps flat icon="skip_previous"
-                            to="/RegistrationPage">
+                          <q-btn color="primary" label="กลับฟอร์มการลงทะเบียน" no-caps flat to="/RegistrationPage">
                             <q-tooltip class="bg-accent">กลับฟอร์มการลงทะเบียน</q-tooltip>
                           </q-btn>
                           <!-- ไปฟอร์มกำหนดอาชีพเป้าหมาย -->
-                          <q-btn color="primary" label="ไปฟอร์มกำหนดอาชีพเป้าหมาย" no-caps flat icon="skip_next"
-                            to="/FormPlanCareer">
+                          <q-btn color="primary" label="ไปฟอร์มกำหนดอาชีพเป้าหมาย" no-caps flat to="/FormPlanCareer">
                             <q-tooltip class="bg-accent">ไปฟอร์มกำหนดอาชีพเป้าหมาย</q-tooltip>
                           </q-btn>
                         </div>
@@ -128,21 +126,18 @@
                               </template>
                             </q-input>
                             <q-btn flat icon-right="archive" label="ส่งออก excel" @click="exportTable()" />
-                            <q-btn flat round dense :icon="props.inFullscreen
-                              ? 'fullscreen_exit'
-                              : 'fullscreen'
-                              " @click="props.toggleFullscreen" />
+                            <q-btn flat round dense :@click="props.toggleFullscreen" />
                           </div>
                         </template>
                         <template v-slot:body-cell-actions="props">
-                          <q-td :props="props">
-                            <q-btn flat color="blue" icon="edit" @click="editUser(props.row.notification_id)">
+                          <q-td :props="props" class="text-center">
+                            <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.notification_id)">
                               <q-tooltip>แก้ไข</q-tooltip>
                             </q-btn>
-                            <q-btn flat color="red" icon="delete" @click="deleteUser(props.row.notification_id, props.row.notification_date)">
+                            <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="deleteUser(props.row.notification_id, props.row.notification_date)">
                               <q-tooltip>ลบ</q-tooltip>
                             </q-btn>
-                            <q-btn flat color="green" icon="notifications_active" @click="getUpdateNotify(props.row.member_id)">
+                            <q-btn size="sm" color="green" label="เตือน" unelevated no-caps @click="getUpdateNotify(props.row.member_id)">
                               <q-tooltip>ทดสอบแจ้งเตือน</q-tooltip>
                             </q-btn>
                           </q-td>
@@ -175,7 +170,7 @@ export default {
       isEdit: false,
       btnLabel: "เพิ่มข้อมูล",
       columns: [
-        { name: "actions", align: "center", label: "จัดการ" },
+        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;" },
         { name: "message", align: "left", label: "ข้อความแจ้งเตือน", field: "message", sortable: true },
         { name: "notification_date", align: "center", label: "วันเริ่มแจ้งเตือน", field: "notification_date", sortable: true },
         { name: "frequency_name", align: "center", label: "ความถี่", field: "frequency_name", sortable: true },

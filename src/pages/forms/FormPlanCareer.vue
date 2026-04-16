@@ -19,10 +19,9 @@
                         <div class="text-subtitle2 text-grey-8 q-mb-md">พิจารณาจากข้อมูลส่วนตัวของคุณ</div>
                       </div>
                       <div class="row q-gutter-sm">
-                        <q-btn icon="refresh" label="ขอคำแนะนำใหม่" color="deep-purple-7" outline
+                        <q-btn label="ขอคำแนะนำใหม่" color="deep-purple-7" outline
                           @click="recommendCareer" :loading="isAiLoading" />
-                        <q-btn icon="add_box" label="เพิ่มอาชีพด้วยตนเอง" color="green"
-                          @click="showManualFormDialog = true" outline />
+                        <q-btn size="sm" color="green" label="เตือน" unelevated no-caps @click="showManualFormDialog = true">
                       </div>
                     </div>
 
@@ -57,15 +56,15 @@
                               {{ rec.status === "Existing" ? "มีในระบบ" : "อาชีพใหม่" }}
                             </q-badge>
 
-                            <q-btn icon="edit" round color="orange" size="sm" @click="openEditAiRec(rec)">
+                            <q-btn round color="orange" size="sm" @click="openEditAiRec(rec)">
                               <q-tooltip>แก้ไขวันเริ่มแผนก่อนเพิ่ม</q-tooltip>
                             </q-btn>
 
-                             <q-btn icon="close" round color="red-4" size="sm" @click="aiRecommendations = aiRecommendations.filter(r => r !== rec)">
+                             <q-btn round color="red-4" size="sm" @click="aiRecommendations = aiRecommendations.filter(r => r !== rec)">
                                <q-tooltip>ลบข้อแนะนำนี้</q-tooltip>
                              </q-btn>
  
-                             <q-btn icon="add" round color="primary" size="sm" @click="acceptAiRecommendation(rec)">
+                             <q-btn round color="primary" size="sm" @click="acceptAiRecommendation(rec)">
                                <q-tooltip>เพิ่มอาชีพนี้ในแผน</q-tooltip>
                              </q-btn>
                           </div>
@@ -94,10 +93,10 @@
                             style="width: 150px">
                             <template v-slot:append><q-icon name="save" /></template>
                           </q-input>
-                          <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable" />
+                          <q-btn flat color="black" label="ส่งออก excel" @click="exportTable" />
                           <q-checkbox v-model="isSelectAll" label="เลือกทั้งหมด" color="primary" class="q-mx-sm"
                             @update:model-value="toggleSelectAll" />
-                          <q-btn v-if="tickedCareers.length > 0" color="red" icon="delete_sweep" label="ลบที่เลือก"
+                          <q-btn v-if="tickedCareers.length > 0" color="red" label="ลบที่เลือก"
                             @click="deleteSelected" class="q-ml-sm" />
                         </div>
                       </q-card-section>
@@ -116,12 +115,10 @@
                                 </div>
                               </div>
                               <div class="row q-gutter-xs">
-                                <q-btn flat round color="blue" icon="edit" size="sm"
-                                  @click.stop="editUser(prop.node.rawData.plan_career_id)">
+                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click.stop="editUser(prop.node.rawData.plan_career_id)">
                                   <q-tooltip>แก้ไขอาชีพนี้</q-tooltip>
                                 </q-btn>
-                                <q-btn flat round color="red" icon="delete" size="sm"
-                                  @click.stop="deleteUser(prop.node.rawData.plan_career_id, prop.node.rawData.career_name)">
+                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click.stop="deleteUser(prop.node.rawData.plan_career_id, prop.node.rawData.career_name)">
                                   <q-tooltip>ลบอาชีพนี้</q-tooltip>
                                 </q-btn>
                               </div>
@@ -153,21 +150,19 @@
 
                           <q-input borderless dense v-model="file_export" placeholder="ชื่อไฟล์ CSV" />
 
-                          <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" />
+                          <q-btn flat color="black" label="ส่งออก excel" @click="exportTable()" />
 
                           <q-select v-model="visibleColumns" multiple dense options-dense outlined
                             :options="columnsForVisibleSelect" option-value="name" option-label="label" emit-value
                             map-options style="min-width: 240px;" />
 
-                          <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                            @click="props.toggleFullscreen" />
+                          <q-btn flat round dense :@click="props.toggleFullscreen" />
                         </div>
                       </template>
                       <template #body-cell-actions="props">
-                        <q-td :props="props">
-                          <q-btn color="blue" label="แก้ไข" @click="editUser(props.row.plan_career_id)" no-caps />
-                          <q-btn color="red" label="ลบ" class="q-ml-sm"
-                            @click="deleteUser(props.row.plan_career_id, props.row.career_name)" no-caps />
+                        <q-td :props="props" class="text-center">
+                          <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.plan_career_id)">
+                          <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="deleteUser(props.row.plan_career_id, props.row.career_name)">
                         </q-td>
                       </template>
                     </q-table>
@@ -176,13 +171,11 @@
 
                 <!-- Bottom Navigation Buttons (Optional, e.g. Back/Next) -->
                 <div class="row justify-center q-my-md">
-                  <q-btn icon="logout" label="ออก" color="primary" flat to="/" class="q-mx-sm" />
-                  <q-btn color="primary" label="กลับฟอร์มกรอกข้อมูลส่วนตัว" no-caps flat icon="skip_previous"
-                    to="/FormComponent" class="q-mx-sm">
+                  <q-btn label="ออก" color="primary" flat to="/" class="q-mx-sm" />
+                  <q-btn color="primary" label="กลับฟอร์มกรอกข้อมูลส่วนตัว" no-caps flat to="/FormComponent" class="q-mx-sm">
                     <q-tooltip>กลับฟอร์มกรอกข้อมูลส่วนตัว</q-tooltip>
                   </q-btn>
-                  <q-btn color="primary" label="ไปฟอร์มกำหนดคุณสมบัติ" no-caps flat icon="skip_next"
-                    to="/FormQualification" class="q-mx-sm">
+                  <q-btn color="primary" label="ไปฟอร์มกำหนดคุณสมบัติ" no-caps flat to="/FormQualification" class="q-mx-sm">
                     <q-tooltip>ไปฟอร์มกำหนดคุณสมบัติ/ทักษะ</q-tooltip>
                   </q-btn>
                 </div>
@@ -261,9 +254,9 @@
 
               <!-- ปุ่มควบคุมหลัก -->
               <div class="row justify-center q-my-md">
-                <q-btn :label="btnLabel" type="submit" color="primary" icon="save" class="q-mx-sm"
+                <q-btn :label="btnLabel" type="submit" color="primary" class="q-mx-sm"
                   data-testid="btn-submit-career" />
-                <q-btn label="ยกเลิก" type="reset" color="primary" flat icon="clear" class="q-mx-sm" />
+                <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-mx-sm" />
                 <q-btn label="ปิด" color="grey" flat @click="showManualFormDialog = false" class="q-mx-sm" />
               </div>
             </q-form>
@@ -517,7 +510,7 @@ const careerGroupOptions = computed(() => {
 });
 
 const columns = [
-  { name: "actions", align: "center", label: "แก้ไข/ลบ", field: "" },
+  { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;", field: "" },
   { name: "career_name", label: "อาชีพ", align: "left", field: "career_name", sortable: true },
   { name: "ca_group_name", label: "กลุ่มอาชีพ", align: "left", field: "ca_group_name", sortable: true },
   { name: "start_date", label: "วันเริ่มแผน", align: "center", field: "start_date", sortable: true }

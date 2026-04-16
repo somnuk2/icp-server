@@ -47,10 +47,10 @@
               </div>
 
               <div class="row justify-center q-gutter-x-md q-mt-md">
-                <q-btn :label="btnLabel" type="submit" color="primary" icon="save" unelevated />
-                <q-btn label="ยกเลิก" type="reset" color="grey-7" flat icon="clear" />
-                <q-btn label="ออก" color="red" flat icon="logout" to="/" />
-                <q-btn label="ไปฟอร์มกรอกข้อมูลส่วนตัว" color="secondary" flat icon="skip_next" to="/FormComponent" />
+                <q-btn :label="btnLabel" type="submit" color="primary" unelevated />
+                <q-btn label="ยกเลิก" type="reset" color="grey-7" flat />
+                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps >
+                <q-btn label="ไปฟอร์มกรอกข้อมูลส่วนตัว" color="secondary" flat to="/FormComponent" />
               </div>
             </q-form>
           </q-card>
@@ -69,13 +69,12 @@
                 <q-input dense outlined v-model="file_export" placeholder="ชื่อไฟล์นำออก" bg-color="white"
                   style="width: 150px" />
 
-                <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable" />
+                <q-btn flat color="black" label="ส่งออก excel" @click="exportTable" />
 
                 <q-select v-model="visibleColumns" multiple outlined dense options-dense emit-value map-options
                   :options="columns" option-value="name" options-cover style="min-width: 150px" bg-color="white" />
 
-                <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                  @click="props.toggleFullscreen" />
+                <q-btn flat round dense :@click="props.toggleFullscreen" />
               </div>
             </template>
 
@@ -90,10 +89,8 @@
             <template v-slot:body="props">
               <q-tr :props="props" class="table-row-green">
                 <q-td key="actions" :props="props" class="text-center">
-                  <q-btn size="sm" color="blue" label="แก้ไข" icon="edit" class="q-mr-xs" @click="editUser(props.row.member_id)"
-                    unelevated />
-                  <q-btn size="sm" color="red" label="ลบ" icon="delete" @click="deleteUser(props.row.member_id, props.row.full_name)"
-                    unelevated />
+                  <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.member_id)">
+                  <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="deleteUser(props.row.member_id, props.row.full_name)">
                 </q-td>
                 <q-td v-for="col in props.cols.filter(c => c.name !== 'actions')" :key="col.name" :props="props">
                   {{ col.value }}

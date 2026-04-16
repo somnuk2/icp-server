@@ -81,15 +81,15 @@
                   </div>
                   <!-- Edit Button -->
                   <div class="q-mt-md q-gutter-md">
-                    <q-btn round color="primary" icon="camera_alt" size="lg" @click="triggerFileInput"
+                    <q-btn round color="primary" size="lg" @click="triggerFileInput"
                       class="btn-edit-photo hover-scale">
                       <q-tooltip>เปลี่ยนรูปโปรไฟล์</q-tooltip>
                     </q-btn>
-                    <q-btn round color="negative" icon="picture_as_pdf" size="lg" @click="exportToPDF"
+                    <q-btn round color="negative" size="lg" @click="exportToPDF"
                       class="hover-scale">
                       <q-tooltip>ส่งออก PDF</q-tooltip>
                     </q-btn>
-                    <q-btn round style="background: #00c4cc; color: white;" icon="auto_awesome" size="lg"
+                    <q-btn round style="background: #00c4cc; color: white;" size="lg"
                       @click="exportToCanva" class="hover-scale">
                       <q-tooltip>ส่งออก Canva (SVG)</q-tooltip>
                     </q-btn>

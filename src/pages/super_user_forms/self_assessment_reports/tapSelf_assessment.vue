@@ -10,7 +10,6 @@
     >
       <q-tab
         name="FormSelfAssessment"
-        icon="manage_accounts"
         label="ฟอร์มการประเมินตนเอง"
       />
     </q-tabs>

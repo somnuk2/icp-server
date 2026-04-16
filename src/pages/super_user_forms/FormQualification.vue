@@ -233,18 +233,18 @@
                       <!-- ปุ่มควบคุม -->
                       <div class="col-md-12 col-xs-12 q-pa-xs row justify-center">
                         <!-- บันทึก/แก้ไข -->
-                        <q-btn :label="btnLabel" type="submit" color="primary" icon="save" />
+                        <q-btn :label="btnLabel" type="submit" color="primary" />
                         <!-- ยกเลิก -->
-                        <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-pa-xs" icon="clear" />
+                        <q-btn label="ยกเลิก" type="reset" color="primary" flat class="q-pa-xs" />
                         <!-- ออก -->
-                        <q-btn icon="logout" label="ออก" color="primary" flat class="q-pa-xs" to="/" />
+                        <q-btn label="ออก" color="primary" flat class="q-pa-xs" to="/" />
                         <!-- ย้อนกลับ -->
-                        <q-btn color="primary" no-caps flat icon="skip_previous" label="กลับฟอร์มกำหนดอาชีพเป้าหมาย"
+                        <q-btn color="primary" no-caps flat label="กลับฟอร์มกำหนดอาชีพเป้าหมาย"
                           to="/SuserFormPlanCareer">
                           <q-tooltip class="bg-accent">กลับฟอร์มกำหนดอาชีพเป้าหมาย</q-tooltip>
                         </q-btn>
                         <!-- ไปข้างหน้า -->
-                        <q-btn color="primary" no-caps flat icon="skip_next" label="ไปฟอร์มการพัฒนาตนเอง"
+                        <q-btn color="primary" no-caps flat label="ไปฟอร์มการพัฒนาตนเอง"
                           to="/SuserFormPlan">
                           <q-tooltip class="bg-accent">ไปฟอร์มการพัฒนาตนเอง</q-tooltip>
                         </q-btn>
@@ -288,7 +288,7 @@
                               </div>
                               <!-- ปุ่มกรองข้อมูล -->
                               <div class="col-md-2 col-xs-12">
-                                <q-btn color="primary" unelevated icon="search" label="ค้นหา"
+                                <q-btn color="primary" unelevated label="ค้นหา"
                                   class="full-width" style="height: 40px">
                                   <q-tooltip>ค้นหาข้อมูลตามเงื่อนไขที่เลือก</q-tooltip>
                                 </q-btn>
@@ -325,7 +325,7 @@
                               </div>
                               <!-- Export Button -->
                               <div class="col-md-6 col-xs-12 text-center">
-                                <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable()" class="full-width q-py-xs" />
+                                <q-btn flat color="black" label="ส่งออก excel" @click="exportTable()" class="full-width q-py-xs" />
                               </div>
                             </div>
                           </q-card-section>
@@ -348,8 +348,7 @@
                             table-header-style="height: 65px; " table-header-class="bg-blue-5">
                             <template v-slot:top-left>
                               <div class="row q-gutter-sm items-center">
-                                <q-btn v-if="selectedRows.length > 0" flat color="red" icon="delete"
-                                  :label="`ลบที่เลือก (${selectedRows.length})`" @click="deleteSelected" />
+                                <q-btn v-if="selectedRows.length > 0" flat color="red" :label="`ลบที่เลือก (${selectedRows.length})`" @click="deleteSelected" />
                               </div>
                             </template>
                             <template v-slot:top-right="props">
@@ -363,21 +362,19 @@
                                 <q-select v-model="visibleColumns" multiple outlined dense options-dense
                                   :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
                                   option-value="name" options-cover style="min-width: 150px" bg-color="white" />
-                                <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                                  @click="props.toggleFullscreen" />
+                                <q-btn flat round dense :@click="props.toggleFullscreen" />
                               </div>
                             </template>
                             <template v-slot:body-cell-actions="props">
-                              <q-td :props="props">
-                                <q-btn color="blue" label="แก้ไข" @click="editUser(props.row.qa_plan_career_id)"
-                                  no-caps></q-btn>
-                                <q-btn color="red" label="ลบ" @click="
+                              <q-td :props="props" class="text-center">
+                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.qa_plan_career_id)"></q-btn>
+                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="
                                   onDelete(
                                     props.row.qa_plan_career_id,
                                     props.row.career_name,
                                     props.row.qualification_name
                                   )
-                                  " no-caps></q-btn>
+                                  "></q-btn>
                               </q-td>
                             </template>
                           </q-table>
@@ -444,7 +441,7 @@ export default {
       qualification_group_name: "",
       visibleColumns: ref(["actions", "full_name", "career_name", "ca_group_name", "qualification_name", "qualification_group_name", "level_description", "target_name"]),
       columns: [
-        { name: "actions", align: "center", label: "แก้ไข/ลบ" },
+        { name: "actions", align: "center", label: "แก้ไข/ลบ", style: "width: 170px;", headerStyle: "width: 170px;" },
         { name: "full_name", label: "ชื่อ-สกุล", align: "left", field: "full_name", sortable: true },
         { name: "career_name", label: "อาชีพ", align: "left", field: "career_name", sortable: true },
         { name: "ca_group_name", label: "กลุ่มอาชีพ", align: "left", field: "ca_group_name", sortable: true },

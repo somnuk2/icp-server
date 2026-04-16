@@ -2,7 +2,7 @@
   <q-card>
     <q-tabs v-model="tab" dense class="bg-blue-2 text-purple" active-color="primary" indicator-color="blue-7"
       align="justify">
-      <q-tab name="department" icon="add_home" label="การจัดการสาขาวิชา" />
+      <q-tab name="department" label="การจัดการสาขาวิชา" />
     </q-tabs>
     <q-separator />
     <q-tab-panels v-model="tab" animated>

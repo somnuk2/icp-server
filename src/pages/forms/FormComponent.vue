@@ -14,7 +14,7 @@
                 <q-card-section class="q-pa-lg">
                   <q-form @submit.prevent="submitForm" @reset.prevent="resetForm" class="q-gutter-y-lg">
 
-                    <q-expansion-item expand-separator icon="person" label="ส่วนข้อมูลส่วนตัว"
+                    <q-expansion-item expand-separator label="ส่วนข้อมูลส่วนตัว"
                       header-class="bg-blue-1 text-primary text-h6 text-weight-bold" default-opened
                       class="shadow-1 overflow-hidden border-radius-8">
                       <q-card>
@@ -101,7 +101,7 @@
                       </q-card>
                     </q-expansion-item>
 
-                    <q-expansion-item expand-separator icon="library_add" label="ส่วนข้อมูลพื้นฐานเพิ่มเติม"
+                    <q-expansion-item expand-separator label="ส่วนข้อมูลพื้นฐานเพิ่มเติม"
                       header-class="bg-blue-1 text-primary text-h6 text-weight-bold"
                       class="shadow-1 overflow-hidden border-radius-8">
                       <q-card>
@@ -143,9 +143,9 @@
                     </div>
 
                     <div class="row justify-center q-gutter-sm">
-                      <q-btn :label="btnLabel" type="submit" color="primary" icon="save" :disable="!pdpa" />
-                      <q-btn label="ยกเลิก" type="reset" color="primary" flat icon="clear" />
-                      <q-btn label="ออก" color="primary" flat icon="logout" to="/" />
+                      <q-btn :label="btnLabel" type="submit" color="primary" :disable="!pdpa" />
+                      <q-btn label="ยกเลิก" type="reset" color="primary" flat />
+                      <q-btn label="ออก" color="primary" flat to="/" />
                     </div>
 
                     <q-table title="ข้อมูลส่วนตัว" :rows="safeIndividuals" :columns="columns" row-key="individual_id"
@@ -156,29 +156,26 @@
                         <div class="row q-col-gutter-xs items-center">
                           <q-input borderless dense debounce="300" v-model="filter" placeholder="ค้นหา..."><template
                               #append><q-icon name="search" /></template></q-input>
-                          <q-btn v-if="selected.length > 0" color="negative" icon="delete" label="ลบที่เลือก"
+                          <q-btn v-if="selected.length > 0" color="negative" label="ลบที่เลือก"
                             @click="deleteSelected" dense class="q-px-sm q-ml-sm" />
-                          <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable" />
+                          <q-btn flat color="black" label="ส่งออก excel" @click="exportTable" />
                           <q-select v-model="visibleColumns" multiple outlined dense options-dense
                             :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
                             option-value="name" style="min-width: 150px" />
-                          <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                            @click="props.toggleFullscreen" />
+                          <q-btn flat round dense :@click="props.toggleFullscreen" />
                         </div>
                       </template>
 
                       <template #body-cell-actions="props">
                         <q-td :props="props" class="text-center">
-                          <q-btn size="sm" color="blue" label="แก้ไข" icon="edit" class="q-mr-xs"
-                            @click="editUser(props.row.individual_id)" />
-                          <q-btn size="sm" color="red" label="ลบ" icon="delete"
-                            @click="deleteUser(props.row.individual_id, props.row.full_name)" />
+                          <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.individual_id)">
+                          <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="deleteUser(props.row.individual_id, props.row.full_name)">
                         </q-td>
                       </template>
                     </q-table>
 
                     <div class="row justify-between q-mt-md">
-                      <q-btn color="primary" flat icon="skip_previous" label="กลับหน้าลงทะเบียน"
+                      <q-btn color="primary" flat label="กลับหน้าลงทะเบียน"
                         to="/FormRegistration" />
                       <q-btn color="primary" flat icon-right="skip_next" label="ไปหน้าอาชีพเป้าหมาย"
                         to="/FormPlanCareer" />

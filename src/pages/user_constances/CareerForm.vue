@@ -31,9 +31,9 @@
               </div>
 
               <div class="row justify-center q-gutter-x-md q-mt-md">
-                <q-btn :label="btnLabel" type="submit" color="primary" icon="save" unelevated />
-                <q-btn label="ยกเลิก" type="reset" color="grey-7" flat icon="close" />
-                <q-btn label="ออก" color="red" flat icon="logout" to="/" />
+                <q-btn :label="btnLabel" type="submit" color="primary" unelevated />
+                <q-btn label="ยกเลิก" type="reset" color="grey-7" flat />
+                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps >
               </div>
             </q-form>
           </q-card>
@@ -46,8 +46,7 @@
               <template v-slot:top>
                 <div class="full-width row q-col-gutter-sm items-center">
                   <div class="col-grow row q-gutter-sm items-center">
-                    <q-btn v-if="selected.length > 0" flat color="red" icon="delete"
-                      :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
+                    <q-btn v-if="selected.length > 0" flat color="red" :label="`ลบที่เลือก (${selected.length})`" @click="deleteSelected" />
                     <q-input dense outlined filled v-model="filter" placeholder="ค้นหาอาชีพ..." bg-color="white" class="col">
                       <template v-slot:append><q-icon name="search" /></template>
                     </q-input>
@@ -58,7 +57,7 @@
                     </q-input>
                   </div>
                   <div class="col-auto">
-                    <q-btn flat color="black" icon="download" label="ส่งออก excel" @click="exportTable" />
+                    <q-btn flat color="black" label="ส่งออก excel" @click="exportTable" />
                   </div>
                   <div class="col-auto">
                     <q-select v-model="visibleColumns" multiple outlined dense filled bg-color="white"
@@ -79,10 +78,8 @@
               <template v-slot:body="props">
                 <q-tr :props="props" class="table-row-green">
                   <q-td key="actions" :props="props" class="text-center">
-                    <q-btn size="sm" color="blue" label="แก้ไข" icon="edit" class="q-mr-xs"
-                      @click="editUser(props.row)" />
-                    <q-btn size="sm" color="red" label="ลบ" icon="delete"
-                      @click="deleteUser(props.row.career_id, props.row.career_name)" />
+                    <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row)">
+                    <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="deleteUser(props.row.career_id, props.row.career_name)">
                   </q-td>
                   <q-td key="career_name" :props="props">
                     {{ props.row.career_name }}
