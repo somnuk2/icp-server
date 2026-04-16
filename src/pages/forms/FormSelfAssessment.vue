@@ -27,7 +27,7 @@
                         </q-item-label>
                       </q-item-section>
                       <q-item-section side>
-                        <q-btn size="sm" color="green" label="เตือน" unelevated no-caps @click="showManualFormDialog = true">
+                        <q-btn size="sm" color="green" label="เตือน" unelevated no-caps @click="showManualFormDialog = true" />
                       </q-item-section>
                     </q-item>
 
@@ -307,8 +307,7 @@
 
                               <template v-slot:body-cell-actions="props">
                                 <q-td :props="props" class="text-center">
-                                  <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editItem(props.row)">
-                                  <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="deleteItem(props.row)">
+                                  <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editItem(props.row)" /><q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="deleteItem(props.row)" />
                                 </q-td>
                               </template>
                             </q-table>
@@ -424,11 +423,9 @@
                               <q-space />
 
                               <div v-if="prop.node.header === 'assessment'" class="row q-gutter-xs">
-                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click.stop="OnEdit(prop.node.raw.self_assessment_id)">
-                                  <q-tooltip>แก้ไขผลการประเมิน</q-tooltip>
+                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click.stop="OnEdit(prop.node.raw.self_assessment_id)" ><q-tooltip>แก้ไขผลการประเมิน</q-tooltip>
                                 </q-btn>
-                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click.stop="onDelete(prop.node.raw.self_assessment_id, prop.node.raw.self_assessment_date)">
-                                  <q-tooltip>ลบผลการประเมิน</q-tooltip>
+                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click.stop="onDelete(prop.node.raw.self_assessment_id, prop.node.raw.self_assessment_date)" ><q-tooltip>ลบผลการประเมิน</q-tooltip>
                                 </q-btn>
                               </div>
 

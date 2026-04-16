@@ -28,7 +28,7 @@
                             AI</q-item-label>
                         </q-item-section>
                         <q-item-section side>
-                          <q-btn size="sm" color="green" label="เตือน" unelevated no-caps @click="showManualFormDialog = true">
+                          <q-btn size="sm" color="green" label="เตือน" unelevated no-caps @click="showManualFormDialog = true" />
                         </q-item-section>
                       </q-item>
 
@@ -207,11 +207,9 @@
                               </div>
 
                               <div v-if="prop.node.type === 'plan'" class="row q-gutter-xs">
-                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click.stop="onEdit(prop.node.rawData.plan_id)">
-                                  <q-tooltip>แก้ไขแผนนี้</q-tooltip>
+                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click.stop="onEdit(prop.node.rawData.plan_id)" ><q-tooltip>แก้ไขแผนนี้</q-tooltip>
                                 </q-btn>
-                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click.stop="onDelete(prop.node.rawData.plan_id, prop.node.rawData.plan_title)">
-                                  <q-tooltip>ลบแผนนี้</q-tooltip>
+                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click.stop="onDelete(prop.node.rawData.plan_id, prop.node.rawData.plan_title)" ><q-tooltip>ลบแผนนี้</q-tooltip>
                                 </q-btn>
                               </div>
                             </div>

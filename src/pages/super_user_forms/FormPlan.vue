@@ -378,13 +378,13 @@
                             </template>
                             <template v-slot:body-cell-actions="props">
                               <q-td :props="props" class="text-center">
-                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="onEdit(props.row.plan_id)"></q-btn>
+                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="onEdit(props.row.plan_id)" />
                                 <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="
                                   onDelete(
                                     props.row.plan_id,
                                     props.row.plan_title
                                   )
-                                  "></q-btn>
+                                  " />
                               </q-td>
                             </template>
                           </q-table>

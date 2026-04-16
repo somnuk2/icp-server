@@ -85,13 +85,13 @@
                           <q-td :props="props" class="text-center">
                             <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="
                               editUser(props.row)
-                              "></q-btn>
+                              " />
                             <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="
                               deleteUser(
                                 props.row.qualification_group_id,
                                 props.row.qualification_group_name
                               )
-                              "></q-btn>
+                              " />
                           </q-td>
                         </template>
                       </q-table>

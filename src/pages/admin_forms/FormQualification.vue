@@ -290,14 +290,14 @@
                             </template>
                             <template v-slot:body-cell-actions="props">
                               <q-td :props="props" class="text-center">
-                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.qa_plan_career_id)"></q-btn>
+                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.qa_plan_career_id)" />
                                 <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="
                                   onDelete(
                                     props.row.qa_plan_career_id,
                                     props.row.career_name,
                                     props.row.qualification_name
                                   )
-                                  "></q-btn>
+                                  " />
                               </q-td>
                             </template>
                           </q-table>

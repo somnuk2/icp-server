@@ -21,8 +21,7 @@
                       <div class="row q-gutter-sm">
                         <q-btn label="ขอคำแนะนำใหม่" color="deep-purple-7" outline
                           @click="recommendCareer" :loading="isAiLoading" />
-                        <q-btn size="sm" color="green" label="เตือน" unelevated no-caps @click="showManualFormDialog = true">
-                      </div>
+                        <q-btn size="sm" color="green" label="เตือน" unelevated no-caps @click="showManualFormDialog = true" /></div>
                     </div>
 
                     <!-- Loading State -->
@@ -115,11 +114,9 @@
                                 </div>
                               </div>
                               <div class="row q-gutter-xs">
-                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click.stop="editUser(prop.node.rawData.plan_career_id)">
-                                  <q-tooltip>แก้ไขอาชีพนี้</q-tooltip>
+                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click.stop="editUser(prop.node.rawData.plan_career_id)" ><q-tooltip>แก้ไขอาชีพนี้</q-tooltip>
                                 </q-btn>
-                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click.stop="deleteUser(prop.node.rawData.plan_career_id, prop.node.rawData.career_name)">
-                                  <q-tooltip>ลบอาชีพนี้</q-tooltip>
+                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click.stop="deleteUser(prop.node.rawData.plan_career_id, prop.node.rawData.career_name)" ><q-tooltip>ลบอาชีพนี้</q-tooltip>
                                 </q-btn>
                               </div>
                             </div>
@@ -161,8 +158,7 @@
                       </template>
                       <template #body-cell-actions="props">
                         <q-td :props="props" class="text-center">
-                          <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.plan_career_id)">
-                          <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="deleteUser(props.row.plan_career_id, props.row.career_name)">
+                          <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.plan_career_id)" /><q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="deleteUser(props.row.plan_career_id, props.row.career_name)" />
                         </q-td>
                       </template>
                     </q-table>

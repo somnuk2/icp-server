@@ -189,15 +189,14 @@
                         </template>
                         <template v-slot:body-cell-actions="props">
                           <q-td :props="props" class="text-center">
-                            <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.notification_id)"></q-btn>
+                            <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.notification_id)" />
                             <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="
                               deleteUser(
                                 props.row.notification_id,
                                 props.row.notification_date
                               )
-                              "></q-btn>
-                            <q-btn size="sm" color="green" label="เตือน" unelevated no-caps @click="getUpdateNotify(props.row.member_id)"></q-btn>
-                          </q-td>
+                              " />
+                            <q-btn size="sm" color="green" label="เตือน" unelevated no-caps @click="getUpdateNotify(props.row.member_id)" /></q-td>
                         </template>
                       </q-table>
                     </div>

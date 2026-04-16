@@ -282,10 +282,9 @@
                             <template v-slot:body-cell-actions="props">
                               <q-td :props="props" class="text-center">
                                 <!-- แก้ไขข้อมูล -->
-                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editItem(props.row)"></q-btn>
+                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editItem(props.row)" />
                                 <!-- ลบข้อมูล -->
-                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="deleteItem(props.row)"></q-btn>
-                              </q-td>
+                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="deleteItem(props.row)" /></q-td>
                             </template>
                           </q-table>
                         </div>
@@ -429,13 +428,13 @@
                                 <q-td auto-width>
                                   <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="
                                     OnEdit(props.row.self_assessment_id)
-                                    ">
+                                    " />
                                   <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="
                                     onDelete(
                                       props.row.self_assessment_id,
                                       props.row.self_assessment_date
                                     )
-                                    ">
+                                    " />
                                 </q-td>
                                 <q-td auto-width>
                                   <q-toggle v-model="props.expand" checked-unchecked-label="ผลงาน" @update:model-value="

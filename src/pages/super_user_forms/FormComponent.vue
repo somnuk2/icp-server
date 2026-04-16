@@ -473,13 +473,13 @@
                         <!-- ปุ่มควบคุม -->
                         <template v-slot:body-cell-actions="props">
                           <q-td :props="props" class="text-center">
-                            <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.individual_id)"></q-btn>
+                            <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.individual_id)" />
                             <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="
                               deleteUser(
                                 props.row.individual_id,
                                 props.row.full_name
                               )
-                              "></q-btn>
+                              " />
                           </q-td>
                         </template>
                       </q-table>

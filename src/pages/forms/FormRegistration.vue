@@ -49,8 +49,7 @@
               <div class="row justify-center q-gutter-x-md q-mt-md">
                 <q-btn :label="btnLabel" type="submit" color="primary" unelevated />
                 <q-btn label="ยกเลิก" type="reset" color="grey-7" flat />
-                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps >
-                <q-btn label="ไปฟอร์มกรอกข้อมูลส่วนตัว" color="secondary" flat to="/FormComponent" />
+                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps  /><q-btn label="ไปฟอร์มกรอกข้อมูลส่วนตัว" color="secondary" flat to="/FormComponent" />
               </div>
             </q-form>
           </q-card>
@@ -89,8 +88,7 @@
             <template v-slot:body="props">
               <q-tr :props="props" class="table-row-green">
                 <q-td key="actions" :props="props" class="text-center">
-                  <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.member_id)">
-                  <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="deleteUser(props.row.member_id, props.row.full_name)">
+                  <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click="editUser(props.row.member_id)" /><q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click="deleteUser(props.row.member_id, props.row.full_name)" />
                 </q-td>
                 <q-td v-for="col in props.cols.filter(c => c.name !== 'actions')" :key="col.name" :props="props">
                   {{ col.value }}

@@ -32,8 +32,7 @@
                               class="q-px-sm">
                               <q-tooltip>ขอคำแนะนำทุกอาชีพ</q-tooltip>
                             </q-btn>
-                            <q-btn size="sm" color="green" label="เตือน" unelevated no-caps @click="showManualFormDialog = true">
-                              <q-tooltip>เพิ่มคุณสมบัติด้วยตนเอง</q-tooltip>
+                            <q-btn size="sm" color="green" label="เตือน" unelevated no-caps @click="showManualFormDialog = true" ><q-tooltip>เพิ่มคุณสมบัติด้วยตนเอง</q-tooltip>
                             </q-btn>
                           </div>
                         </q-item-section>
@@ -194,11 +193,9 @@
                                 </div>
                               </div>
                               <div v-if="prop.node.type === 'qualification'" class="row q-gutter-xs">
-                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click.stop="editItem(prop.node.rawData)">
-                                  <q-tooltip>แก้ไขข้อมูลนี้</q-tooltip>
+                                <q-btn size="sm" color="blue" label="แก้ไข" unelevated no-caps @click.stop="editItem(prop.node.rawData)" ><q-tooltip>แก้ไขข้อมูลนี้</q-tooltip>
                                 </q-btn>
-                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click.stop="deleteItem(prop.node.rawData)">
-                                  <q-tooltip>ลบข้อมูลนี้</q-tooltip>
+                                <q-btn size="sm" color="red" label="ลบ" unelevated no-caps @click.stop="deleteItem(prop.node.rawData)" ><q-tooltip>ลบข้อมูลนี้</q-tooltip>
                                 </q-btn>
                               </div>
                             </div>
