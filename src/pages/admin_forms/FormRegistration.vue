@@ -150,7 +150,11 @@
                                 <q-select v-model="visibleColumns" multiple outlined dense options-dense
                                   :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
                                   option-value="name" options-cover style="min-width: 150px" bg-color="white" />
-                                <q-btn flat round dense :@click="props.toggleFullscreen" />
+                                <q-btn
+                                  flat round dense
+                                  :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+                                  @click="props.toggleFullscreen"
+                                />
                               </div>
                             </template>
                             <template v-slot:body-cell-actions="props">

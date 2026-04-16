@@ -156,7 +156,11 @@
                                   @click="openAddRefDialog()" />
                               </div>
                               <div class="col-2">
-                                <q-btn flat round dense :@click="props.toggleFullscreen" />
+                                <q-btn
+                                  flat round dense
+                                  :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+                                  @click="props.toggleFullscreen"
+                                />
                               </div>
                             </div>
 
@@ -262,7 +266,11 @@
                                 <template v-slot:append><q-icon name="search" /></template>
                               </q-input>
                               <q-btn flat color="black" label="ส่งออก excel" @click="exportTable" />
-                              <q-btn flat round dense :@click="props.toggleFullscreen" />
+                              <q-btn
+                                flat round dense
+                                :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+                                @click="props.toggleFullscreen"
+                              />
                             </div>
                           </template>
 

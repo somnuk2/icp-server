@@ -424,20 +424,22 @@
                             :display-value="$q.lang.table.columns" emit-value map-options :options="columns"
                             option-value="name" options-cover style="min-width: 160px" bg-color="white" />
 
-                          <q-btn flat round dense :@click="props.toggleFullscreen" />
+                          <q-btn
+                            flat round dense
+                            :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+                            @click="props.toggleFullscreen"
+                            class="q-ml-md"
+                          />
                         </div>
                       </template>
 
-                      <!-- ✅ ปุ่มแก้ไข/ลบ (คืนให้ทำงานแล้ว) -->
                       <template v-slot:body-cell-actions="props">
                         <q-td :props="props" class="text-center">
                           <div class="row q-gutter-xs justify-center no-wrap">
-                            <q-btn round flat color="blue-7" size="sm"
-                              @click="editUser(props.row.individual_id)" unelevated>
+                            <q-btn size="sm" color="blue-7" label="แก้ไข" unelevated no-caps @click="editUser(props.row.individual_id)">
                               <q-tooltip class="bg-blue">แก้ไขข้อมูล</q-tooltip>
                             </q-btn>
-                            <q-btn round flat color="red-7" size="sm"
-                              @click="deleteUser(props.row.individual_id, props.row.full_name)" unelevated>
+                            <q-btn size="sm" color="red-7" label="ลบ" unelevated no-caps @click="deleteUser(props.row.individual_id, props.row.full_name)">
                               <q-tooltip class="bg-red">ลบข้อมูล</q-tooltip>
                             </q-btn>
                           </div>
